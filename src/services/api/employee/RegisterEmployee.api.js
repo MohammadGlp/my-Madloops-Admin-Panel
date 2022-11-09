@@ -1,4 +1,4 @@
-import http from "../../Interceptor/Interceptor";
+import http from '../../Interceptor/Interceptor';
 
 //Main Url Of Our Project Backend
 const MainURL = process.env.REACT_APP_PUBLIC_API_URL;
@@ -7,7 +7,7 @@ export const RegisterEmployee = async (object) => {
   try {
     //Calling Api To Send The Information From Register Form
     const result = await http.post(
-      `https://api.madloops.sepehracademy.ir/api/auth/employee/register`,
+      `${MainURL}/auth/employee/register`,
       object
     );
 

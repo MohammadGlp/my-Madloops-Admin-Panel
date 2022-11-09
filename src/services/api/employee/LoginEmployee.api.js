@@ -15,7 +15,7 @@ export const LoginEmployee = async (object) => {
 
     //Calling Api To Send The Information From Login Form
     const result = await http.post(
-      `https://api.madloops.sepehracademy.ir/api/auth/employee/login`,
+      `${MainURL}/auth/employee/login`,
       employeeData
     );
 

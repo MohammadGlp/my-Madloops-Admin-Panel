@@ -58,24 +58,7 @@ const LoginBasic = () => {
   const onSubmit = (data) => {
     console.log(data);
     if (Object.values(data).every((field) => field.length > 0)) {
-      toast(
-        <div className="d-flex">
-          <div className="me-1">
-            <Avatar size="sm" color="success" icon={<Check size={12} />} />
-          </div>
-          <div className="d-flex flex-column">
-            <h6>وارد شدید!</h6>
-            <ul className="list-unstyled mb-0">
-              <li>
-                <strong>email</strong>: {data.email}
-              </li>
-              <li>
-                <strong>password</strong>: {data.password}
-              </li>
-            </ul>
-          </div>
-        </div>
-      );
+      toast.success("کاربر عزیز خوش آمدید");
     }
   };
 

@@ -53,10 +53,7 @@ const LoginBasic = () => {
 
   const onSubmit = async (data) => {
     console.log(data);
-    if (Object.values(data).every((field) => field.length > 0)) {
-      toast.success("کاربر عزیز خوش آمدید");
-    }
-    const result = await LoginEmployee(data);
+    await LoginEmployee(data);
   };
 
   return (

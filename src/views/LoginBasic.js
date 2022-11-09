@@ -14,12 +14,71 @@ import {
   Label,
   Input,
   Button,
+  FormFeedback,
 } from "reactstrap";
+
+// ** React Imports
+import { Fragment } from "react";
+
+// ** Third Party Components
+import * as yup from "yup";
+import toast from "react-hot-toast";
+import { Check } from "react-feather";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+// ** Custom Components
+import Avatar from "@components/avatar";
 
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
 
 const LoginBasic = () => {
+  const SignupSchema = yup.object().shape({
+    email: yup
+      .string()
+      .email("الگوی وارد شده صحیح نمی باشد")
+      .required("لطفا فیلد ایمیل را پر کنید"),
+    password: yup
+      .string()
+      .required("لطفا رمز عبور خود را وارد کنید")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+        "باید شامل 8 نویسه، یک حروف بزرگ، یک عدد و یک نویسه خاص باشد"
+      ),
+  });
+
+  // ** Hooks
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: "onChange", resolver: yupResolver(SignupSchema) });
+
+  const onSubmit = (data) => {
+    console.log(data);
+    if (Object.values(data).every((field) => field.length > 0)) {
+      toast(
+        <div className="d-flex">
+          <div className="me-1">
+            <Avatar size="sm" color="success" icon={<Check size={12} />} />
+          </div>
+          <div className="d-flex flex-column">
+            <h6>وارد شدید!</h6>
+            <ul className="list-unstyled mb-0">
+              <li>
+                <strong>email</strong>: {data.email}
+              </li>
+              <li>
+                <strong>password</strong>: {data.password}
+              </li>
+            </ul>
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <div className="auth-wrapper auth-basic px-2" dir="rtl">
       <div className="auth-inner my-2">
@@ -36,37 +95,56 @@ const LoginBasic = () => {
               خوش آمدید
             </CardTitle>
             <CardText className="mb-2 text-center">ورود کارمندان</CardText>
-            <Form
-              className="auth-login-form mt-2"
-              onSubmit={(e) => e.preventDefault()}
-            >
+            <Form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-1">
-                <Label className="form-label" for="login-email">
+                <Label className="form-label" for="email">
                   ایمیل :
                 </Label>
-                <Input
-                  type="email"
-                  id="login-email"
-                  placeholder="john@example.com"
-                  autoFocus
+                <Controller
+                  id="email"
+                  name="email"
+                  defaultValue=""
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder="bruce.wayne@email.com"
+                      invalid={errors.email && true}
+                    />
+                  )}
                 />
+                {errors.email && (
+                  <FormFeedback>{errors.email.message}</FormFeedback>
+                )}
               </div>
               <div className="mb-1">
-                <div className="d-flex justify-content-between">
-                  <Label className="form-label" for="login-password">
-                    پسورد :
-                  </Label>
-                </div>
-                <Input
-                  className="input-group-merge"
-                  id="login-password"
-                  type="password"
+                <Label className="form-label" for="password">
+                  پسورد :
+                </Label>
+                <Controller
+                  id="password"
+                  name="password"
+                  defaultValue=""
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="Password"
+                      invalid={errors.password && true}
+                    />
+                  )}
                 />
+                {errors.password && (
+                  <FormFeedback>{errors.password.message}</FormFeedback>
+                )}
               </div>
-              <Button color="primary" block>
+              <Button color="primary" block type="submit">
                 ورود
               </Button>
             </Form>
+
             <p className="text-center mt-2">
               <Link to="/register">
                 <span>ثبت نام</span>

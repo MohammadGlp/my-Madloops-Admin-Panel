@@ -27,6 +27,9 @@ const DefaultRoute = '/home';
 
 const Home = lazy(() => import('../../views/Home'));
 const Courses = lazy(() => import('../../views/Courses/Courses'));
+const CourseEdit = lazy(() =>
+  import('../../views/Courses/CoursesEdit')
+);
 const Login = lazy(() => import('../../views/LoginBasic'));
 const Register = lazy(() => import('../../views/RegisterBasic'));
 const Error = lazy(() => import('../../views/Error'));
@@ -51,8 +54,8 @@ const Routes = [
     element: <Home />,
   },
   {
-    path: '/courses-page',
-    element: <Courses />,
+    path: '/editCourse/:courseId',
+    element: <CourseEdit />,
   },
   {
     path: '/login',

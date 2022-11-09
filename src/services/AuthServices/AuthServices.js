@@ -1,9 +1,10 @@
-import * as Storage from "../Storage/Storage";
+import * as Storage from '../storage/storage';
 
 const getCurrentUser = () => {
   try {
     const userInfo = JSON.parse(
-      Storage.sessionGetItem("userInfo") || Storage.getItem("userInfo")
+      Storage.sessionGetItem('userInfo') ||
+        Storage.getItem('userInfo')
     );
     return userInfo;
   } catch (error) {
@@ -17,7 +18,7 @@ const logOut = () => {
 };
 
 const getToken = () => {
-  return Storage.sessionGetItem("token") || Storage.getItem("token");
+  return Storage.sessionGetItem('token') || Storage.getItem('token');
 };
 
 export { getCurrentUser, logOut, getToken };

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getItem } from '../storage/storage';
+import { getItem } from '../../storage/storage';
 
 axios.interceptors.response.use(
   (response) => {

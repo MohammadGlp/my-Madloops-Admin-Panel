@@ -97,6 +97,8 @@ const RegisterBasic = () => {
       password: data.password,
       role: `${data.role.value}`,
       address: "sari/darband/shahan",
+      profile:
+        "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
     });
     console.log(response);
     if (response) {

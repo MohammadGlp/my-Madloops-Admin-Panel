@@ -38,7 +38,7 @@ export const LoginEmployee = async (object) => {
     //Redirect The Employee To Admin Pannel Page
     setTimeout(() => {
       window.location = '/home';
-    }, 5000);
+    }, 2000);
     return result.data;
   } catch (error) {
     return null;

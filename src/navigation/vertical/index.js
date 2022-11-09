@@ -1,16 +1,5 @@
-import { Mail, Home, Layers } from 'react-feather';
+// ** Navigation imports
+import courses from './courses';
 
-export default [
-  {
-    id: 'home',
-    title: 'Home',
-    icon: <Home size={20} />,
-    navLink: '/home',
-  },
-  {
-    id: 'secondPage',
-    title: 'Courses',
-    icon: <Layers size={20} />,
-    navLink: '/courses-page',
-  },
-];
+// ** Merge & Export
+export default [...courses];

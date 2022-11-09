@@ -43,7 +43,7 @@ const Routes = [
     element: <Home />,
   },
   {
-    path: '/courses-page',
+    path: '/courses',
     element: <Courses />,
   },
   {

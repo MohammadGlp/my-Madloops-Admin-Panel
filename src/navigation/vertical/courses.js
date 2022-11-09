@@ -9,8 +9,14 @@ export default [
   },
   {
     id: 'courses',
-    title: 'Courses',
+    title: 'لیست دوره ها',
     icon: <Layers size={20} />,
     navLink: '/courses',
+  },
+  {
+    id: 'courses',
+    title: 'اضافه کردن دوره',
+    icon: <Layers size={20} />,
+    navLink: '/addCourse',
   },
 ];

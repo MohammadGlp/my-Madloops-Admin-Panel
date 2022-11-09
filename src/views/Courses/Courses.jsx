@@ -7,11 +7,13 @@ import { DeleteCourse } from '../../services/api/DeleteCourse.api';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 const Courses = () => {
-  const [courses, setCourses] = useState([]);
+  const [courses, setCourses] = useState();
   useEffect(() => {
     const getAll = async () => {
-      const courses = await getAllCourses();
-      setCourses(courses.data.result);
+      try {
+        const courses = await getAllCourses();
+        setCourses(courses?.data.result);
+      } catch (error) {}
     };
     getAll();
   }, []);
@@ -31,7 +33,7 @@ const Courses = () => {
     }
   };
 
-  return (
+  return courses ? (
     <Table responsive>
       <thead>
         <tr>
@@ -86,7 +88,8 @@ const Courses = () => {
         ))}
       </tbody>
     </Table>
-    // <DataTableServerSide />
+  ) : (
+    <p>Loading...</p>
   );
 };
 

@@ -1,23 +1,17 @@
-import http from "../../Services/Interceptor/Interceptor";
-import { toast } from "react-toastify";
+import http from '../Interceptor/Interceptor';
 
-//Main Url Of Our Project Backend
 const MainURL = process.env.REACT_APP_PUBLIC_API_URL;
 
 export const AddCourse = async (courseData) => {
-  try {
-    //Calling Api To Create An Course ... !!!
-    const result = await http.post(`${MainURL}course/add`, courseData);
+  const result = await http.post(`${MainURL}course`, {
+    title: courseData.title,
+    cost: Number(courseData.cost),
+    endDate: courseData.endDate,
+    startDate: courseData.startDate,
+    capacity: Number(courseData.capacity),
+    teacher: courseData.teacher.value,
+    lesson: courseData.lesson.value,
+  });
 
-    console.log(result);
-
-    //Condition To Displaying Success Massage To Creating An Course Was Seccessfull ::
-    if ((result.data.success = true)) {
-      toast.success(`دوره با موفقیت افزوده شد`);
-    }
-
-    return result.data;
-  } catch (error) {
-    console.log(error);
-  }
+  return result.data;
 };

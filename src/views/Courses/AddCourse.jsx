@@ -30,15 +30,14 @@ import '@styles/react/libs/flatpickr/flatpickr.scss';
 
 import { GetAllTeachers } from '../../services/api/GetAllTeachers.api';
 import { GetAllLessons } from '../../services/api/getAllLessons.api';
-import { EditCourse } from '../../services/api/EditCourse.api';
-import { GetCourseById } from '../../services/api/GetCourseById.api';
-const CoursesEdit = () => {
+import { AddCourse } from '../../services/api/AddCourse.api';
+
+const CourseAdd = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
 
   const [allTeachers, setAllTeachers] = useState([]);
   const [allLessons, setAllLessons] = useState([]);
-  const [course, setCourse] = useState({});
 
   const getTeachers = async () => {
     const teachers = await GetAllTeachers();
@@ -50,15 +49,9 @@ const CoursesEdit = () => {
     setAllLessons(lessons.result);
   };
 
-  const getCourse = async () => {
-    const course = await GetCourseById(courseId);
-    setCourse(course.result);
-  };
-
   useEffect(() => {
     getTeachers();
     getLessons();
-    getCourse();
   }, []);
 
   const SignupSchema = yup.object().shape({
@@ -103,17 +96,17 @@ const CoursesEdit = () => {
 
   const onSubmit = async (data) => {
     try {
-      await EditCourse(data, courseId);
+      await AddCourse(data);
       navigate('/courses');
     } catch (error) {
-      toast.error('ویرایش دوره با خطا مواجه شد');
+      toast.error('افزودن دوره با خطا مواجه شد');
     }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag="h4">ویرایش درس</CardTitle>
+        <CardTitle tag="h4">افزودن درس جدید</CardTitle>
       </CardHeader>
 
       <CardBody>
@@ -128,7 +121,7 @@ const CoursesEdit = () => {
                   id="title"
                   type="text"
                   name="title"
-                  defaultValue={course.title}
+                  defaultValue=""
                   control={control}
                   render={({ field }) => (
                     <Input
@@ -151,7 +144,7 @@ const CoursesEdit = () => {
                 <Controller
                   id="cost"
                   name="cost"
-                  defaultValue={course.cost}
+                  defaultValue=""
                   control={control}
                   render={({ field }) => (
                     <Input
@@ -177,7 +170,7 @@ const CoursesEdit = () => {
                   control={control}
                   id="startDate"
                   name="startDate"
-                  defaultValue={course.startDate}
+                  defaultValue=""
                   render={({ field }) => (
                     <Cleave
                       {...field}
@@ -205,7 +198,7 @@ const CoursesEdit = () => {
                   control={control}
                   id="endDate"
                   name="endDate"
-                  defaultValue={course.endDate}
+                  defaultValue=""
                   render={({ field }) => (
                     <Cleave
                       {...field}
@@ -233,7 +226,7 @@ const CoursesEdit = () => {
                   id="capacity"
                   name="capacity"
                   type="number"
-                  defaultValue={course.capacity}
+                  defaultValue=""
                   control={control}
                   render={({ field }) => (
                     <Input
@@ -300,7 +293,7 @@ const CoursesEdit = () => {
                   color="primary"
                   type="submit"
                 >
-                  ویرایش
+                  افزودن
                 </Button>
                 <Button
                   outline
@@ -318,4 +311,4 @@ const CoursesEdit = () => {
   );
 };
 
-export default CoursesEdit;
+export default CourseAdd;

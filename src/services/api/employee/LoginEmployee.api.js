@@ -1,9 +1,10 @@
-import http from "../../Interceptor/Interceptor";
-import * as Storage from "../../Storage/Storage";
-import toast from "react-hot-toast";
+import http from '../../Interceptor/Interceptor';
+import * as Storage from '../../storage/Storage';
+import toast from 'react-hot-toast';
 
 //Main Url Of Our Project Backend
-const MainURL = process.env.REACT_APP_PUBLIC_URL;
+const MainURL = process.env.REACT_APP_PUBLIC_API_URL;
+console.log(MainURL);
 
 export const LoginEmployee = async (object) => {
   try {
@@ -25,11 +26,11 @@ export const LoginEmployee = async (object) => {
 
     //Set The Employee Token & Employee Information In Local Storage Or Session Storage
 
-    Storage.setItem("token", employeeToken);
-    Storage.setItem("userInfo", JSON.stringify(employeeInfo));
+    Storage.setItem('token', employeeToken);
+    Storage.setItem('userInfo', JSON.stringify(employeeInfo));
 
-    Storage.sessionSetItem("token", employeeToken);
-    Storage.sessionSetItem("userInfo", JSON.stringify(employeeInfo));
+    Storage.sessionSetItem('token', employeeToken);
+    Storage.sessionSetItem('userInfo', JSON.stringify(employeeInfo));
 
     //Condition For Displaying Toast Massage If The Login Is Seccessfull
     if ((result.data.success = true))
@@ -37,7 +38,7 @@ export const LoginEmployee = async (object) => {
 
     //Redirect The Employee To Admin Pannel Page
     setTimeout(() => {
-      window.location = "/home";
+      window.location = '/home';
     }, 2000);
     return result.data;
   } catch (error) {

@@ -52,7 +52,6 @@ const LoginBasic = () => {
   } = useForm({ mode: "onChange", resolver: yupResolver(SignupSchema) });
 
   const onSubmit = async (data) => {
-    console.log(data);
     await LoginEmployee(data);
   };
 

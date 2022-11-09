@@ -2,10 +2,8 @@
 import { Link, useNavigate } from "react-router-dom";
 
 // ** Custom Components
-import InputPasswordToggle from "@components/input-password-toggle";
 import * as yup from "yup";
 import toast from "react-hot-toast";
-import { Check } from "react-feather";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Cleave from "cleave.js/react";
@@ -27,7 +25,7 @@ import {
 } from "reactstrap";
 import { selectThemeColors } from "@utils";
 import Select from "react-select";
-// ** Styles
+// ** Styless
 import classnames from "classnames";
 import "@styles/react/pages/page-authentication.scss";
 import "cleave.js/dist/addons/cleave-phone.ir";

@@ -1,12 +1,12 @@
 import http from "../Interceptor/Interceptor";
 import { getCurrentUser } from "../AuthServices/AuthServices";
-import { setItem, sessionSetItem } from "../Storage/Storage";
-import { toast } from "react-toastify";
+import { setItem, sessionSetItem } from "../storage/storage";
+import toast from "react-hot-toast";
 
 //Main Url Of Our Project Backend
 const MainURL = process.env.REACT_APP_PUBLIC_API_URL;
 
-export const EditEmployeeInfo = async (object, refreshEmployeeInfo) => {
+export const EditEmployeeInfo = async (object) => {
   try {
     const employeeInfo = getCurrentUser();
     //This If & Else Statement Check ::
@@ -22,10 +22,14 @@ export const EditEmployeeInfo = async (object, refreshEmployeeInfo) => {
     ) {
       toast.error("اطلاعات وارد شده تکراری است");
     } else {
-      const result = await http.put(
-        `${MainURL}employee/${employeeInfo._id}`,
-        object
-      );
+      const result = await http.put(`${MainURL}employee/${employeeInfo._id}`, {
+        fullName: object.fullName,
+        email: object.email,
+        address: object.address,
+        phoneNumber: object.phoneNumber,
+        nationalId: object.nationalId,
+        birthDate: object.birthDate,
+      });
       // Access The Result Of Our Request
       const newInfo = result.data.result;
 
@@ -48,9 +52,6 @@ export const EditEmployeeInfo = async (object, refreshEmployeeInfo) => {
         sessionSetItem("userInfo", JSON.stringify(info));
 
       toast.success("تغییرات با موفقیت ثبت شد");
-      setTimeout(() => {
-        refreshEmployeeInfo((old) => !old);
-      }, 5000);
 
       return result.data;
     }

@@ -27,18 +27,26 @@ import {
 // ** Default Avatar Image
 import defaultAvatar from "@src/assets/images/portrait/small/avatar-s-11.jpg";
 import { GetEmployeeById } from "./../../../../services/api/GetEmployeeById.api";
-import { getToken } from "../../../../services/AuthServices/AuthServices";
+import {
+  getToken,
+  logOut,
+} from "../../../../services/AuthServices/AuthServices";
 import { DecodeToken } from "./../../../../utility/DecodeToken";
+import { useState, useEffect } from "react";
 
 const UserDropdown = () => {
   const userToken = getToken();
-  const id = DecodeToken(userToken || userSessionToken);
-  console.log(id);
-  const getAdminById = async () => {
-    const result = await GetEmployeeById(id._id);
-    console.log(result);
-  };
-  getAdminById();
+  const id = DecodeToken(userToken);
+  const [userData, setUserData] = useState();
+
+  useEffect(() => {
+    const getAdminById = async () => {
+      const result = await GetEmployeeById(id._id);
+      setUserData(result.result);
+    };
+    getAdminById();
+  }, []);
+
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle
@@ -48,51 +56,27 @@ const UserDropdown = () => {
         onClick={(e) => e.preventDefault()}
       >
         <div className="user-nav d-sm-flex d-none">
-          <span className="user-name fw-bold">John Doe</span>
-          <span className="user-status">Admin</span>
+          <span className="user-name fw-bold">{userData?.fullName}</span>
+          <span className="user-status">{userData?.role}</span>
         </div>
         <Avatar
-          img={defaultAvatar}
+          img={userData?.profile}
           imgHeight="40"
           imgWidth="40"
-          status="online"
+          status={userData?.isActive ? "online" : "offline"}
         />
       </DropdownToggle>
       <DropdownMenu end>
-        <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
+        <DropdownItem
+          tag={Link}
+          to="/edit-profile"
+          onClick={(e) => e.preventDefault()}
+        >
           <User size={14} className="me-75" />
           <span className="align-middle">Profile</span>
         </DropdownItem>
-        <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
-          <Mail size={14} className="me-75" />
-          <span className="align-middle">Inbox</span>
-        </DropdownItem>
-        <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
-          <CheckSquare size={14} className="me-75" />
-          <span className="align-middle">Tasks</span>
-        </DropdownItem>
-        <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
-          <MessageSquare size={14} className="me-75" />
-          <span className="align-middle">Chats</span>
-        </DropdownItem>
         <DropdownItem divider />
-        <DropdownItem
-          tag={Link}
-          to="/pages/"
-          onClick={(e) => e.preventDefault()}
-        >
-          <Settings size={14} className="me-75" />
-          <span className="align-middle">Settings</span>
-        </DropdownItem>
-        <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
-          <CreditCard size={14} className="me-75" />
-          <span className="align-middle">Pricing</span>
-        </DropdownItem>
-        <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
-          <HelpCircle size={14} className="me-75" />
-          <span className="align-middle">FAQ</span>
-        </DropdownItem>
-        <DropdownItem tag={Link} to="/login">
+        <DropdownItem tag={Link} to="/login" onClick={() => logOut()}>
           <Power size={14} className="me-75" />
           <span className="align-middle">Logout</span>
         </DropdownItem>

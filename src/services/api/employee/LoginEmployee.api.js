@@ -1,9 +1,10 @@
 import http from "../../Interceptor/Interceptor";
-import * as Storage from "../../Storage/Storage";
+import * as Storage from "../../storage/storage";
 import toast from "react-hot-toast";
 
 //Main Url Of Our Project Backend
-const MainURL = process.env.REACT_APP_PUBLIC_URL;
+const MainURL = process.env.REACT_APP_PUBLIC_API_URL;
+console.log(process.env);
 
 export const LoginEmployee = async (object) => {
   try {

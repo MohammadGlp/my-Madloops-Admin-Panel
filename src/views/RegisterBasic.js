@@ -2,21 +2,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 
 // ** Custom Components
-<<<<<<< HEAD
-import InputPasswordToggle from '@components/input-password-toggle';
 import * as yup from 'yup';
 import toast from 'react-hot-toast';
-import { Check } from 'react-feather';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Cleave from 'cleave.js/react';
-=======
-import * as yup from "yup";
-import toast from "react-hot-toast";
-import { useForm, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import Cleave from "cleave.js/react";
->>>>>>> e327fa0acf0bfbe305d955aaf5d786afc5d4d99c
 // ** Custom Components
 import Avatar from '@components/avatar';
 // ** Reactstrap Imports
@@ -32,16 +22,16 @@ import {
   FormFeedback,
   Row,
   Col,
-} from "reactstrap";
-import { selectThemeColors } from "@utils";
-import Select from "react-select";
+} from 'reactstrap';
+import { selectThemeColors } from '@utils';
+import Select from 'react-select';
 // ** Styless
-import classnames from "classnames";
-import "@styles/react/pages/page-authentication.scss";
-import "cleave.js/dist/addons/cleave-phone.ir";
-import "@styles/react/pages/page-form-validation.scss";
-import "@styles/react/libs/flatpickr/flatpickr.scss";
-import { RegisterEmployee } from "../services/api/employee/RegisterEmployee.api";
+import classnames from 'classnames';
+import '@styles/react/pages/page-authentication.scss';
+import 'cleave.js/dist/addons/cleave-phone.ir';
+import '@styles/react/pages/page-form-validation.scss';
+import '@styles/react/libs/flatpickr/flatpickr.scss';
+import { RegisterEmployee } from '../services/api/employee/RegisterEmployee.api';
 
 const RegisterBasic = () => {
   const colourOptions = [

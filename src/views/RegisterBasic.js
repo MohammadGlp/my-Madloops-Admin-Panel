@@ -22,16 +22,25 @@ import {
   Input,
   Button,
   FormFeedback,
+  Row,
+  Col,
 } from "reactstrap";
-
+import { selectThemeColors } from "@utils";
+import Select from "react-select";
 // ** Styles
 import classnames from "classnames";
 import "@styles/react/pages/page-authentication.scss";
 import "cleave.js/dist/addons/cleave-phone.ir";
 import "@styles/react/pages/page-form-validation.scss";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
+import { RegisterEmployee } from "../services/api/employee/RegisterEmployee.api";
 
 const RegisterBasic = () => {
+  const colourOptions = [
+    { value: "admin", label: "اَدمین" },
+    { value: "teacher", label: "تیچر" },
+  ];
+
   const SignupSchema = yup.object().shape({
     fullName: yup.string().required("لطفا فیلد نام خانوادگی را پر کنید"),
     email: yup
@@ -77,27 +86,28 @@ const RegisterBasic = () => {
     resolver: yupResolver(SignupSchema),
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
+    const response = await RegisterEmployee({
+      fullName: data.fullName,
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+      nationalId: data.nationalId,
+      birthDate: data.birthDate,
+      password: data.password,
+      role: `${data.role.value}`,
+      address: "sari/darband/shahan",
+    });
+    console.log(response);
+    if (response) {
+      toast.success(response.message[0].message);
+    } else if (response === null) {
+      toast.error("مشکلی رخ داده است");
+    } else {
+      toast.error(response.message[0].message);
+    }
+    console.log(response);
     if (Object.values(data).every((field) => field.length > 0)) {
-      toast(
-        <div className="d-flex">
-          <div className="me-1">
-            <Avatar size="sm" color="success" icon={<Check size={12} />} />
-          </div>
-          <div className="d-flex flex-column">
-            <h6>وارد شدید!</h6>
-            <ul className="list-unstyled mb-0">
-              <li>
-                <strong>email</strong>: {data.email}
-              </li>
-              <li>
-                <strong>password</strong>: {data.password}
-              </li>
-            </ul>
-          </div>
-        </div>
-      );
     }
   };
   return (
@@ -256,6 +266,26 @@ const RegisterBasic = () => {
                   <FormFeedback>{errors.password.message}</FormFeedback>
                 )}
               </div>
+              <Row>
+                <Col className="mb-1" md="6" sm="12">
+                  <Label className="form-label">رول</Label>
+                  <Controller
+                    name="role"
+                    theme={selectThemeColors}
+                    defaultValue={colourOptions[0]}
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        options={colourOptions}
+                        isClearable={false}
+                        className="react-select"
+                        classNamePrefix="select"
+                      />
+                    )}
+                  />
+                </Col>
+              </Row>
               <Button color="primary" block type="submit">
                 ثبت نام
               </Button>

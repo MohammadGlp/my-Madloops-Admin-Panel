@@ -1,9 +1,6 @@
 // ** React Imports
 import { Link } from "react-router-dom";
 
-// ** Custom Components
-import InputPasswordToggle from "@components/input-password-toggle";
-
 // ** Reactstrap Imports
 import {
   Card,
@@ -23,15 +20,14 @@ import { Fragment } from "react";
 // ** Third Party Components
 import * as yup from "yup";
 import toast from "react-hot-toast";
-import { Check } from "react-feather";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // ** Custom Components
 import Avatar from "@components/avatar";
-
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
+import { LoginEmployee } from "./../services/api/employee/LoginEmployee.api";
 
 const LoginBasic = () => {
   const SignupSchema = yup.object().shape({
@@ -55,28 +51,12 @@ const LoginBasic = () => {
     formState: { errors },
   } = useForm({ mode: "onChange", resolver: yupResolver(SignupSchema) });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
     if (Object.values(data).every((field) => field.length > 0)) {
-      toast(
-        <div className="d-flex">
-          <div className="me-1">
-            <Avatar size="sm" color="success" icon={<Check size={12} />} />
-          </div>
-          <div className="d-flex flex-column">
-            <h6>وارد شدید!</h6>
-            <ul className="list-unstyled mb-0">
-              <li>
-                <strong>email</strong>: {data.email}
-              </li>
-              <li>
-                <strong>password</strong>: {data.password}
-              </li>
-            </ul>
-          </div>
-        </div>
-      );
+      toast.success("کاربر عزیز خوش آمدید");
     }
+    const result = await LoginEmployee(data);
   };
 
   return (

@@ -1,11 +1,11 @@
-import axios from "axios";
-import { getToken } from "../AuthServices/AuthServices";
-import toast from "react-hot-toast";
+import axios from 'axios';
+import { getToken } from '../AuthServices/AuthServices';
+import toast from 'react-hot-toast';
 
 axios.interceptors.response.use(
   (response) => {
     // console.log("با موفقیت انجام شد");
-    toast.success(response.data.message[0].message);
+    // toast.success(response.data.message[0].message);
     return response;
   },
   async (error) => {
@@ -22,10 +22,10 @@ axios.interceptors.response.use(
         // tweak it later
         // get error message from backend (see object of response later... maybe its changed)
         try {
-          toast.error(error.response.data.message[0].message);
+          // toast.error(error.response.data.message[0].message);
           // console.log(error.response.data.message.message[0].message);
         } catch (er) {
-          toast.error(error.response.data.message.message[0].message);
+          // toast.error(error.response.data.message.message[0].message);
         }
       }
     } catch (error) {}
@@ -35,7 +35,7 @@ axios.interceptors.response.use(
 
 // will send token to headers request ( in x-auth-token body )
 axios.interceptors.request.use((config) => {
-  config.headers["x-auth-token"] = getToken();
+  config.headers['x-auth-token'] = getToken();
   return config;
 });
 

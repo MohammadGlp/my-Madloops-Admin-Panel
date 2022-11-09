@@ -1,8 +1,8 @@
 // ** React Imports
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 // ** Custom Components
-import Avatar from "@components/avatar";
+import Avatar from '@components/avatar';
 
 // ** Third Party Components
 import {
@@ -14,7 +14,7 @@ import {
   CreditCard,
   HelpCircle,
   Power,
-} from "react-feather";
+} from 'react-feather';
 
 // ** Reactstrap Imports
 import {
@@ -22,21 +22,19 @@ import {
   DropdownMenu,
   DropdownToggle,
   DropdownItem,
-} from "reactstrap";
+} from 'reactstrap';
 
 // ** Default Avatar Image
-import defaultAvatar from "@src/assets/images/portrait/small/avatar-s-11.jpg";
-import { GetEmployeeById } from "./../../../../services/api/GetEmployeeById.api";
-import { getToken } from "../../../../services/AuthServices/AuthServices";
-import { DecodeToken } from "./../../../../utility/DecodeToken";
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import { GetEmployeeById } from './../../../../services/api/GetEmployeeById.api';
+import { getToken } from '../../../../services/AuthServices/AuthServices';
+import { DecodeToken } from './../../../../utility/DecodeToken';
 
 const UserDropdown = () => {
   const userToken = getToken();
   const id = DecodeToken(userToken || userSessionToken);
-  console.log(id);
   const getAdminById = async () => {
     const result = await GetEmployeeById(id._id);
-    console.log(result);
   };
   getAdminById();
   return (
@@ -59,19 +57,35 @@ const UserDropdown = () => {
         />
       </DropdownToggle>
       <DropdownMenu end>
-        <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
+        <DropdownItem
+          tag={Link}
+          to="/"
+          onClick={(e) => e.preventDefault()}
+        >
           <User size={14} className="me-75" />
           <span className="align-middle">Profile</span>
         </DropdownItem>
-        <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
+        <DropdownItem
+          tag={Link}
+          to="/"
+          onClick={(e) => e.preventDefault()}
+        >
           <Mail size={14} className="me-75" />
           <span className="align-middle">Inbox</span>
         </DropdownItem>
-        <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
+        <DropdownItem
+          tag={Link}
+          to="/"
+          onClick={(e) => e.preventDefault()}
+        >
           <CheckSquare size={14} className="me-75" />
           <span className="align-middle">Tasks</span>
         </DropdownItem>
-        <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
+        <DropdownItem
+          tag={Link}
+          to="/"
+          onClick={(e) => e.preventDefault()}
+        >
           <MessageSquare size={14} className="me-75" />
           <span className="align-middle">Chats</span>
         </DropdownItem>
@@ -84,11 +98,19 @@ const UserDropdown = () => {
           <Settings size={14} className="me-75" />
           <span className="align-middle">Settings</span>
         </DropdownItem>
-        <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
+        <DropdownItem
+          tag={Link}
+          to="/"
+          onClick={(e) => e.preventDefault()}
+        >
           <CreditCard size={14} className="me-75" />
           <span className="align-middle">Pricing</span>
         </DropdownItem>
-        <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
+        <DropdownItem
+          tag={Link}
+          to="/"
+          onClick={(e) => e.preventDefault()}
+        >
           <HelpCircle size={14} className="me-75" />
           <span className="align-middle">FAQ</span>
         </DropdownItem>

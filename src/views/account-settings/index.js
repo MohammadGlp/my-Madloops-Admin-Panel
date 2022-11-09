@@ -11,7 +11,6 @@ import { Row, Col, TabContent, TabPane } from "reactstrap";
 import Tabs from "./Tabs";
 import Breadcrumbs from "@components/breadcrumbs";
 import AccountTabContent from "./AccountTabContent";
-import SecurityTabContent from "./SecurityTabContent";
 
 // ** Styles
 import "@styles/react/libs/flatpickr/flatpickr.scss";
@@ -54,9 +53,6 @@ const AccountSettings = () => {
             <TabContent activeTab={activeTab}>
               <TabPane tabId="1">
                 <AccountTabContent data={data} />
-              </TabPane>
-              <TabPane tabId="2">
-                <SecurityTabContent />
               </TabPane>
             </TabContent>
           </Col>

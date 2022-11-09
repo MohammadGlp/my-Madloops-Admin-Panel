@@ -22,7 +22,6 @@ import {
 } from "reactstrap";
 
 // ** Demo Components
-import DeleteAccount from "./DeleteAccount";
 import classnames from "classnames";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -83,30 +82,16 @@ const AccountTabs = ({ data }) => {
   const [avatar, setAvatar] = useState(data?.profile ? data?.profile : "");
 
   const onChange = async (e) => {
-    // const file = e.target.files[0];
-    // const reader = new FileReader();
-    // const res = (reader.onload = function (event) {
-    //   // The file's text will be printed here
-    //   // console.log(event.target.result);
-    //   return event.target.result;
-    // });
-    // console.log(reader.readAsDataURL(file));
+    const reader = new FileReader(),
+      files = e.target.files;
+    reader.onload = function () {
+      console.log(reader.result);
+      setAvatar(reader.result);
+    };
+    reader.readAsDataURL(files[0]);
 
-    // const reader = new FileReader(),
-    //   files = e.target.files;
-    // reader.onload = function () {
-    //   console.log(reader.result, files[0]);
-    // };
-
-    const imagefile = document.querySelector("#file");
-    let myFormData = new FormData();
-    console.log(imagefile.files[0]);
-    myFormData.append("image", avatar);
-    console.log(myFormData);
-    // const upload = reader.readAsDataURL(files[0]);
-    // console.log(upload);
-    // //
-    // console.log(result);
+    const result = await UploadFile(avatar);
+    console.log(result);
   };
   const handleImgReset = async () => {
     setAvatar(
@@ -117,8 +102,7 @@ const AccountTabs = ({ data }) => {
   };
 
   const onSubmit = async (data) => {
-    // console.log(data);
-    const response = await EditEmployeeInfo(data, avatar);
+    const response = await EditEmployeeInfo(data);
     console.log(response);
   };
 
@@ -161,7 +145,6 @@ const AccountTabs = ({ data }) => {
                 >
                   آپلود
                   <Input
-                    id="file"
                     type="file"
                     name="profile"
                     onChange={onChange}
@@ -184,7 +167,11 @@ const AccountTabs = ({ data }) => {
               </div>
             </div>
           </div>
-          <Form className="mt-2 pt-50" onSubmit={handleSubmit(onSubmit)}>
+          <Form
+            className="mt-2 pt-50"
+            encType="multipart/form-data"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <Row>
               <Col sm="6" className="mb-1">
                 <Label className="form-label" for="fullName">
@@ -332,7 +319,6 @@ const AccountTabs = ({ data }) => {
           </Form>
         </CardBody>
       </Card>
-      <DeleteAccount />
     </Fragment>
   );
 };

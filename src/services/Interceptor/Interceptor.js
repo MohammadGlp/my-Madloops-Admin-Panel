@@ -35,6 +35,8 @@ axios.interceptors.response.use(
 
 // will send token to headers request ( in x-auth-token body )
 axios.interceptors.request.use((config) => {
+  // config.headers["content-type"] = "multipart/form-data";
+  // config.headers["accept"] = "application/json";
   config.headers['x-auth-token'] = getToken();
   return config;
 });

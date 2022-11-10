@@ -37,7 +37,7 @@ const AccountSettings = () => {
     };
     getAdminById();
   }, []);
-  console.log(data);
+
   return (
     <Fragment>
       <Breadcrumbs title="مدریت حساب" data={[{ title: "مدیریت حساب" }]} />

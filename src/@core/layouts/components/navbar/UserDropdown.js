@@ -1,8 +1,8 @@
 // ** React Imports
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 
 // ** Custom Components
-import Avatar from '@components/avatar';
+import Avatar from "@components/avatar";
 
 // ** Third Party Components
 import {
@@ -14,7 +14,7 @@ import {
   CreditCard,
   HelpCircle,
   Power,
-} from 'react-feather';
+} from "react-feather";
 
 // ** Reactstrap Imports
 import {
@@ -22,22 +22,23 @@ import {
   DropdownMenu,
   DropdownToggle,
   DropdownItem,
-} from 'reactstrap';
+} from "reactstrap";
 
 // ** Default Avatar Image
-import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import { GetEmployeeById } from './../../../../services/api/GetEmployeeById.api';
+import defaultAvatar from "@src/assets/images/portrait/small/avatar-s-11.jpg";
+import { GetEmployeeById } from "./../../../../services/api/GetEmployeeById.api";
 import {
   getToken,
   logOut,
-} from '../../../../services/AuthServices/AuthServices';
-import { DecodeToken } from './../../../../utility/DecodeToken';
-import { useState, useEffect } from 'react';
+} from "../../../../services/AuthServices/AuthServices";
+import { DecodeToken } from "./../../../../utility/DecodeToken";
+import { useState, useEffect } from "react";
 
 const UserDropdown = () => {
   const userToken = getToken();
   const id = DecodeToken(userToken);
   const [userData, setUserData] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getAdminById = async () => {
@@ -46,7 +47,7 @@ const UserDropdown = () => {
     };
     getAdminById();
   }, []);
-
+  console.log(userData);
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle
@@ -56,16 +57,14 @@ const UserDropdown = () => {
         onClick={(e) => e.preventDefault()}
       >
         <div className="user-nav d-sm-flex d-none">
-          <span className="user-name fw-bold">
-            {userData?.fullName}
-          </span>
+          <span className="user-name fw-bold">{userData?.fullName}</span>
           <span className="user-status">{userData?.role}</span>
         </div>
         <Avatar
           img={userData?.profile}
           imgHeight="40"
           imgWidth="40"
-          status={userData?.isActive ? 'online' : 'offline'}
+          status={userData?.isActive ? "online" : "offline"}
         />
       </DropdownToggle>
       <DropdownMenu end>
@@ -75,12 +74,17 @@ const UserDropdown = () => {
           onClick={(e) => e.preventDefault()}
         >
           <User size={14} className="me-75" />
-          <span className="align-middle">Profile</span>
+          <span
+            className="align-middle"
+            onClick={() => navigate("/edit-profile")}
+          >
+            پروفایل
+          </span>
         </DropdownItem>
         <DropdownItem divider />
         <DropdownItem tag={Link} to="/login" onClick={() => logOut()}>
           <Power size={14} className="me-75" />
-          <span className="align-middle">Logout</span>
+          <span className="align-middle">خروج</span>
         </DropdownItem>
       </DropdownMenu>
     </UncontrolledDropdown>

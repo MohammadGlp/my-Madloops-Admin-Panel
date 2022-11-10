@@ -1,7 +1,7 @@
-import http from "../Interceptor/Interceptor";
-import { getCurrentUser } from "../AuthServices/AuthServices";
-import { setItem, sessionSetItem } from "../Storage/Storage";
-import { toast } from "react-toastify";
+import http from '../Interceptor/Interceptor';
+import { getCurrentUser } from '../AuthServices/AuthServices';
+import { setItem, sessionSetItem } from '../storage/storage';
+import { toast } from 'react-hot-toast';
 
 //Main Url Of Our Project Backend
 const MainURL = process.env.REACT_APP_PUBLIC_API_URL;
@@ -19,7 +19,7 @@ export const EditStudentInfo = async (object, refreshStudentInfo) => {
       object.nationalId === studentInfo.nationalId &&
       object.birthDate === studentInfo.birthDate
     ) {
-      toast.error("اطلاعات وارد شده تکراری است");
+      toast.error('اطلاعات وارد شده تکراری است');
     } else {
       const result = await http.put(
         `${MainURL}student/${studentInfo._id}`,
@@ -42,10 +42,10 @@ export const EditStudentInfo = async (object, refreshStudentInfo) => {
       // Set Our Object In Storage :: If The Key Is Same As A key That We Set Before In SetItem (Key = userInfo)
       // The Storage Will Be Updated Base On New Result Or New Object (New Result Or New Object = info)
       // ==> userInfo Is Updated Base On info
-      setItem("userInfo", JSON.stringify(info)) ||
-        sessionSetItem("userInfo", JSON.stringify(info));
+      setItem('userInfo', JSON.stringify(info)) ||
+        sessionSetItem('userInfo', JSON.stringify(info));
 
-      toast.success("تغییرات با موفقیت ثبت شد");
+      toast.success('تغییرات با موفقیت ثبت شد');
       setTimeout(() => {
         refreshStudentInfo((old) => !old);
       }, 5000);

@@ -1,13 +1,20 @@
-import { useEffect, useState } from "react";
-import { Edit, Trash, UserCheck, UserX } from "react-feather";
-import { Table, Button, Badge } from "reactstrap";
-import { Link } from "react-router-dom";
-import toast from "react-hot-toast";
-import { GetAllComments } from "./../../services/api/GetAllComments.api";
-import { VarifyComment } from "./../../services/api/VarifyComment.api";
-import { AnswerComment } from "./../../services/api/AnswerComment.api";
-import { Send } from "react-feather";
-import { dateConvert } from "../../utility/TimeAndDateConverter";
+import { useEffect, useState } from 'react';
+import {
+  CheckCircle,
+  Edit,
+  MessageCircle,
+  Trash,
+  UserCheck,
+  UserX,
+} from 'react-feather';
+import { Table, Button, Badge } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { GetAllComments } from './../../services/api/GetAllComments.api';
+import { VarifyComment } from './../../services/api/VarifyComment.api';
+import { AnswerComment } from './../../services/api/AnswerComment.api';
+import { Send } from 'react-feather';
+import { dateConvert } from '../../utility/TimeAndDateConverter';
 
 const CommentList = () => {
   const [comments, setComments] = useState([]);
@@ -16,7 +23,6 @@ const CommentList = () => {
     const getAll = async () => {
       try {
         const comment = await GetAllComments();
-        console.log(comment);
         setComments(comment?.data);
       } catch (error) {}
     };
@@ -24,17 +30,13 @@ const CommentList = () => {
   }, []);
 
   const handleVerify = async (commentId) => {
-    // const originalCourses = courses;
-    // const newCourse = courses.filter((m) => m._id !== courseId);
-    // setCourses(newCourse);
     try {
       await VarifyComment(commentId);
-      toast.warning(`وضعیت دانشجو به فعال تغییر کرد`);
+      toast.success(`کامنت تایید شد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
-      //   setCourses(originalCourses);
     }
   };
 
@@ -43,18 +45,21 @@ const CommentList = () => {
     // const newCourse = courses.filter((m) => m._id !== courseId);
     // setCourses(newCourse);
     try {
-      await AnswerComment("salam", commentId, true);
+      await AnswerComment('salam', commentId, true);
       toast.warning(`وضعیت دانشجو به فعال تغییر کرد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
       //   setCourses(originalCourses);
     }
   };
 
-  // const ISODate = newDate.toISOString();
-  // const xISO = dateConvert(ISODate);
+  const convertDate = (date) => {
+    const convertedDate = dateConvert(date);
+    const m = `${convertedDate.day} ${convertedDate.monthTitle} ${convertedDate.year}`;
+    return m;
+  };
 
   return comments ? (
     <Table responsive>
@@ -71,10 +76,13 @@ const CommentList = () => {
         {comments.map((course) => (
           <tr key={course._id}>
             <td>
-              <span className="align-middle fw-bold">{course.username}</span>
+              <span className="align-middle fw-bold d-block">
+                {course.username}
+              </span>
+              <small className="text-muted">{course.email}</small>
             </td>
             <td>{course.comment}</td>
-            <td>{course.createDate}</td>
+            <td>{convertDate(course?.createDate)}</td>
 
             <td>
               {course.verified ? (
@@ -88,25 +96,24 @@ const CommentList = () => {
               )}
             </td>
             <td>
-              <button onClick={() => handleAnswere(course._id)}>
-                <Send />
-              </button>
-            </td>
-            <td>
               <div className="d-inline-block me-1 mb-1">
-                <Link to={`/editStudent/${course._id}`}>
-                  <Button.Ripple color="primary" size="sm">
-                    <Edit size={16} />
-                  </Button.Ripple>
-                </Link>
+                <Button.Ripple
+                  color="primary"
+                  size="sm"
+                  onClick={() => handleAnswere(course._id)}
+                >
+                  {/* <Edit size={16} /> */}
+                  <MessageCircle size={16} />
+                </Button.Ripple>
               </div>
 
               <div className="d-inline-block me-1 mb-1">
-                <Button.Ripple color="danger" size="sm">
-                  <UserCheck
-                    size={16}
-                    onClick={() => handleVerify(course._id)}
-                  />
+                <Button.Ripple
+                  color="success"
+                  size="sm"
+                  onClick={() => handleVerify(course._id)}
+                >
+                  <CheckCircle size={16} />
                 </Button.Ripple>
               </div>
             </td>

@@ -31,12 +31,14 @@ import '@styles/react/libs/flatpickr/flatpickr.scss';
 
 import { GetAllTeachers } from '../../services/api/GetAllTeachers.api';
 import { GetAllLessons } from '../../services/api/getAllLessons.api';
-import { AddNewCourse } from '../../services/api/AddCourse.api';
+import { GetCourseById } from '../../services/api/GetCourseById.api';
+import { EditCourse } from '../../services/api/EditCourse.api';
 
-const AddCourse = ({ open, toggleSidebar }) => {
+const CourseEdit = ({ open, toggleSidebar, courseId }) => {
   const navigate = useNavigate();
   const [allTeachers, setAllTeachers] = useState([]);
   const [allLessons, setAllLessons] = useState([]);
+  const [course, setCourse] = useState({});
 
   const getTeachers = async () => {
     const teachers = await GetAllTeachers();
@@ -48,10 +50,23 @@ const AddCourse = ({ open, toggleSidebar }) => {
     setAllLessons(lessons.result);
   };
 
+  const getCourse = async () => {
+    const course = await GetCourseById(courseId);
+    setCourse(course.result);
+  };
+
   useEffect(() => {
     getTeachers();
     getLessons();
   }, []);
+
+  useEffect(() => {
+    getCourse();
+  }, [courseId]);
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [course]);
 
   const SignupSchema = yup.object().shape({
     title: yup.string().required('لطفا فیلد نام درس را پر کنید'),
@@ -84,13 +99,19 @@ const AddCourse = ({ open, toggleSidebar }) => {
   });
 
   const defaultValues = {
-    title: '',
-    cost: '',
-    endDate: '',
-    startDate: '',
-    capacity: '',
-    teacher: '',
-    lesson: '',
+    title: course?.title,
+    cost: course?.cost,
+    endDate: course?.endDate,
+    startDate: course?.startDate,
+    capacity: course?.capacity,
+    teacher: {
+      value: course?.teacher?._id,
+      label: course?.teacher?.fullName,
+    },
+    lesson: {
+      value: course?.lesson?._id,
+      label: course?.lesson?.lessonName,
+    },
   };
 
   const {
@@ -98,6 +119,7 @@ const AddCourse = ({ open, toggleSidebar }) => {
     handleSubmit,
     setValue,
     clearErrors,
+    reset,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -115,11 +137,11 @@ const AddCourse = ({ open, toggleSidebar }) => {
   const onSubmit = async (data) => {
     toggleSidebar();
     try {
-      await AddNewCourse(data);
+      await EditCourse(data, courseId);
+      toast.success('دوره با موفقیت ویرایش شد');
       navigate(0);
-      toast.success('دوره با موفقیت اضافه شد');
     } catch (error) {
-      toast.error('افزودن دوره با خطا مواجه شد');
+      toast.error('ویرایش دوره با خطا مواجه شد');
     }
   };
 
@@ -127,7 +149,7 @@ const AddCourse = ({ open, toggleSidebar }) => {
     <Sidebar
       size="lg"
       open={open}
-      title="دوره ی جدید"
+      title="ویرایش دوره "
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
@@ -144,12 +166,11 @@ const AddCourse = ({ open, toggleSidebar }) => {
                 id="title"
                 type="text"
                 name="title"
-                defaultValue=""
                 control={control}
                 render={({ field }) => (
                   <Input
                     {...field}
-                    placeholder="صفر تا صد ری اکت"
+                    placeholder={course?.title}
                     invalid={errors.title && true}
                   />
                 )}
@@ -167,7 +188,6 @@ const AddCourse = ({ open, toggleSidebar }) => {
               id="lesson"
               name="lesson"
               theme={selectThemeColors}
-              defaultValue={lessons[0]}
               control={control}
               render={({ field }) => (
                 <Select
@@ -188,7 +208,6 @@ const AddCourse = ({ open, toggleSidebar }) => {
               id="teacher"
               name="teacher"
               theme={selectThemeColors}
-              defaultValue={teachers[0]}
               control={control}
               render={({ field }) => (
                 <Select
@@ -209,13 +228,12 @@ const AddCourse = ({ open, toggleSidebar }) => {
               <Controller
                 id="cost"
                 name="cost"
-                defaultValue=""
                 control={control}
                 render={({ field }) => (
                   <Input
                     {...field}
                     type="number"
-                    placeholder="3000000"
+                    placeholder={course?.cost}
                     invalid={errors.cost && true}
                   />
                 )}
@@ -234,13 +252,12 @@ const AddCourse = ({ open, toggleSidebar }) => {
                 id="capacity"
                 name="capacity"
                 type="number"
-                defaultValue=""
                 control={control}
                 render={({ field }) => (
                   <Input
                     {...field}
                     type="number"
-                    placeholder="20"
+                    placeholder={course?.capacity}
                     invalid={errors.capacity && true}
                   />
                 )}
@@ -259,14 +276,13 @@ const AddCourse = ({ open, toggleSidebar }) => {
                 control={control}
                 id="startDate"
                 name="startDate"
-                defaultValue=""
                 render={({ field }) => (
                   <Cleave
                     {...field}
                     className={classnames('form-control', {
                       'is-invalid': errors.startDate && true,
                     })}
-                    placeholder="1300-01-01"
+                    placeholder={course?.startDate}
                     options={options1}
                   />
                 )}
@@ -287,14 +303,13 @@ const AddCourse = ({ open, toggleSidebar }) => {
                 control={control}
                 id="endDate"
                 name="endDate"
-                defaultValue=""
                 render={({ field }) => (
                   <Cleave
                     {...field}
                     className={classnames('form-control', {
                       'is-invalid': errors.endDate && true,
                     })}
-                    placeholder="1300-01-01"
+                    placeholder={course.endDate}
                     options={options1}
                   />
                 )}
@@ -308,7 +323,7 @@ const AddCourse = ({ open, toggleSidebar }) => {
           <Col sm="12">
             <div className="d-flex">
               <Button className="me-1" color="primary" type="submit">
-                افزودن
+                ویرایش
               </Button>
               <Button
                 outline
@@ -325,4 +340,4 @@ const AddCourse = ({ open, toggleSidebar }) => {
   );
 };
 
-export default AddCourse;
+export default CourseEdit;

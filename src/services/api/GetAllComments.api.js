@@ -4,7 +4,7 @@ const MainURL = process.env.REACT_APP_PUBLIC_API_URL;
 
 export const GetAllComments = async () => {
   try {
-    const result = await http.get(`${MainURL}comment`);
+    const result = await http.get(`${MainURL}comments`);
     return result;
   } catch (error) {
     return null;

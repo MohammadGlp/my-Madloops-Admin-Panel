@@ -1,7 +1,23 @@
 // ** Navigation imports
-import courses from './courses';
-import profile from './profile';
-import students from './students';
+import home from "./home";
+import courses from "./courses";
+import profile from "./profile";
+import students from "./students";
+import teachers from "./teachers";
+import employees from "./employees";
+import blogs from "./blogs";
+import comments from "./comments";
+import lessons from "./lessons";
 
 // ** Merge & Export
-export default [...courses, ...profile, ...students];
+export default [
+  ...home,
+  ...courses,
+  ...lessons,
+  ...blogs,
+  ...profile,
+  ...students,
+  ...teachers,
+  ...employees,
+  ...comments,
+];

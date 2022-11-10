@@ -1,5 +1,5 @@
 import http from "../Interceptor/Interceptor";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 //Main Url Of Our Project Backend
 const MainURL = process.env.REACT_APP_PUBLIC_API_URL;
@@ -11,9 +11,9 @@ export const DeleteArticle = async (articleId) => {
 
     //Condition For Displaying A Massage If The The Result Of Deleteing The Article Is True
     //And Reload The Page For Updating The Articles List ...
-    if ((result.data.success = true)) {
-      toast.warning(`آیتم مورد نظر حذف شد`);
-    }
+    // if ((result.data.success = true)) {
+    //   toast.warning(`آیتم مورد نظر حذف شد`);
+    // }
 
     return result.data;
   } catch (error) {

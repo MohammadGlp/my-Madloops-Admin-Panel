@@ -8,7 +8,7 @@ export const VarifyComment = async (commentId) => {
     const CommentId = { id: commentId };
 
     //Call The Api ::
-    const result = await http.post(`${MainURL}comment/verify`, CommentId);
+    const result = await http.post(`${MainURL}comments/verify`, CommentId);
     return result;
   } catch (error) {
     return null;

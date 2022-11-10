@@ -1,20 +1,19 @@
 // ** React Imports
-import { Fragment, lazy } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Fragment, lazy } from "react";
+import { Navigate } from "react-router-dom";
 // ** Layouts
-import BlankLayout from '@layouts/BlankLayout';
-import VerticalLayout from '@src/layouts/VerticalLayout';
-import HorizontalLayout from '@src/layouts/HorizontalLayout';
-import LayoutWrapper from '@src/@core/layouts/components/layout-wrapper';
+import BlankLayout from "@layouts/BlankLayout";
+import VerticalLayout from "@src/layouts/VerticalLayout";
+import HorizontalLayout from "@src/layouts/HorizontalLayout";
+import LayoutWrapper from "@src/@core/layouts/components/layout-wrapper";
 
 // ** Route Components
-import PublicRoute from '@components/routes/PublicRoute';
+import PublicRoute from "@components/routes/PublicRoute";
 
 // ** Utils
-import { isObjEmpty } from '@utils';
-import AddCourse from '../../views/Courses/AddCourse';
-import StudentsList from '../../views/Students/StudentsList';
-import StudentEdit from '../../views/Students/StudentEdit';
+import { isObjEmpty } from "@utils";
+import AddCourse from "../../views/Courses/AddCourse";
+import StudentEdit from "../../views/Students/StudentEdit";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -23,77 +22,99 @@ const getLayout = {
 };
 
 // ** Document title
-const TemplateTitle = '%s - Vuexy React Admin Template';
+const TemplateTitle = "%s - Vuexy React Admin Template";
 
 // ** Default Route
-const DefaultRoute = '/home';
+const DefaultRoute = "/home";
 
-const Home = lazy(() => import('../../views/Home'));
-const Courses = lazy(() => import('../../views/Courses/Courses'));
-const CourseEdit = lazy(() =>
-  import('../../views/Courses/CoursesEdit')
-);
-const AccountSettings = lazy(() =>
-  import('../../views/account-settings')
-);
-const Login = lazy(() => import('../../views/LoginBasic'));
-const Register = lazy(() => import('../../views/RegisterBasic'));
-const Error = lazy(() => import('../../views/Error'));
+const Home = lazy(() => import("../../views/Home"));
+const Courses = lazy(() => import("../../views/Courses/Courses"));
+const CourseEdit = lazy(() => import("../../views/Courses/CoursesEdit"));
+const Blogs = lazy(() => import("../../views/Blogs/Blogs"));
+const LessonList = lazy(() => import("./../../views/Lessons/Lessons"));
+const AccountSettings = lazy(() => import("../../views/account-settings"));
+const EmployeesList = lazy(() => import("./../../views/Employes/EmployeeList"));
+const TeachersList = lazy(() => import("./../../views/Teachers/TeachersList"));
+const StudentsList = lazy(() => import("./../../views/Students/StudentsList"));
+const Login = lazy(() => import("../../views/LoginBasic"));
+const Register = lazy(() => import("../../views/RegisterBasic"));
+const CommentList = lazy(() => import("./../../views/Comments/CommentList"));
+const Error = lazy(() => import("../../views/Error"));
 
 // ** Merge Routes
 const Routes = [
   {
-    path: '/',
+    path: "/",
     index: true,
     element: <Navigate replace to={DefaultRoute} />,
   },
   {
-    path: '/home',
+    path: "/home",
     element: <Home />,
   },
   {
-    path: '/courses',
+    path: "/courses",
     element: <Courses />,
   },
   {
-    path: '/editCourse/:courseId',
+    path: "/editCourse/:courseId",
     element: <CourseEdit />,
   },
   {
-    path: '/addCourse',
+    path: "/addCourse",
     element: <AddCourse />,
   },
   {
-    path: '/students',
+    path: "/lessons",
+    element: <LessonList />,
+  },
+  {
+    path: "/blogs",
+    element: <Blogs />,
+  },
+  {
+    path: "/students",
     element: <StudentsList />,
   },
   {
-    path: '/editStudent/:studentId',
+    path: "/editStudent/:studentId",
     element: <StudentEdit />,
   },
   {
-    path: '/edit-profile',
+    path: "/teachers",
+    element: <TeachersList />,
+  },
+  {
+    path: "/employees",
+    element: <EmployeesList />,
+  },
+  {
+    path: "/edit-profile",
     element: <AccountSettings />,
   },
   {
-    path: '/login',
+    path: "/comments",
+    element: <CommentList />,
+  },
+  {
+    path: "/login",
     element: <Login />,
     meta: {
-      layout: 'blank',
+      layout: "blank",
     },
   },
   {
-    path: '/register',
+    path: "/register",
     element: <Register />,
     meta: {
-      layout: 'blank',
+      layout: "blank",
     },
   },
   {
-    path: '*',
+    path: "*",
     element: <Error />,
     meta: {
-      layout: 'blank',
+      layout: "blank",
     },
   },
 ];
@@ -117,20 +138,15 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
       let isBlank = false;
       // ** Checks if Route layout or Default layout matches current layout
       if (
-        (route.meta &&
-          route.meta.layout &&
-          route.meta.layout === layout) ||
-        ((route.meta === undefined ||
-          route.meta.layout === undefined) &&
+        (route.meta && route.meta.layout && route.meta.layout === layout) ||
+        ((route.meta === undefined || route.meta.layout === undefined) &&
           defaultLayout === layout)
       ) {
         const RouteTag = PublicRoute;
 
         // ** Check for public or private route
         if (route.meta) {
-          route.meta.layout === 'blank'
-            ? (isBlank = true)
-            : (isBlank = false);
+          route.meta.layout === "blank" ? (isBlank = true) : (isBlank = false);
         }
         if (route.element) {
           const Wrapper =
@@ -141,9 +157,7 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
               : Fragment;
 
           route.element = (
-            <Wrapper
-              {...(isBlank === false ? getRouteMeta(route) : {})}
-            >
+            <Wrapper {...(isBlank === false ? getRouteMeta(route) : {})}>
               <RouteTag route={route}>{route.element}</RouteTag>
             </Wrapper>
           );
@@ -159,8 +173,8 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
 };
 
 const getRoutes = (layout) => {
-  const defaultLayout = layout || 'vertical';
-  const layouts = ['vertical', 'horizontal', 'blank'];
+  const defaultLayout = layout || "vertical";
+  const layouts = ["vertical", "horizontal", "blank"];
 
   const AllRoutes = [];
 
@@ -168,7 +182,7 @@ const getRoutes = (layout) => {
     const LayoutRoutes = MergeLayoutRoutes(layoutItem, defaultLayout);
 
     AllRoutes.push({
-      path: '/',
+      path: "/",
       element: getLayout[layoutItem] || getLayout[defaultLayout],
       children: LayoutRoutes,
     });

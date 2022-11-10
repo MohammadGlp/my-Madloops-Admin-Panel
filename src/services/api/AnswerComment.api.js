@@ -1,5 +1,5 @@
 import http from "../Interceptor/Interceptor";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const MainURL = process.env.REACT_APP_PUBLIC_API_URL;
 
@@ -13,7 +13,7 @@ export const AnswerComment = async (
     const CommentData = { id: commentId, answer: commentAnswer };
 
     //Call The Api ::
-    const result = await http.post(`${MainURL}comment/answer`, CommentData);
+    const result = await http.post(`${MainURL}comments/answer`, CommentData);
 
     //If We Have Seccess Result Of Answering Comment => Display A Toast Massage & Refresh Comments State
     if (result) {

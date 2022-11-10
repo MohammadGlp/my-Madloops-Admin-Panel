@@ -8,7 +8,8 @@ import NavbarUser from "./NavbarUser";
 import { Sun, Moon, Menu } from "react-feather";
 
 // ** Reactstrap Imports
-import { NavItem, NavLink } from "reactstrap";
+import { Button, NavItem, NavLink } from "reactstrap";
+import { getItem } from "../../../../services/storage/storage";
 
 const ThemeNavbar = (props) => {
   // ** Props
@@ -20,6 +21,15 @@ const ThemeNavbar = (props) => {
       return <Sun className="ficon" onClick={() => setSkin("light")} />;
     } else {
       return <Moon className="ficon" onClick={() => setSkin("dark")} />;
+    }
+  };
+
+  const handleLanding = () => {
+    const user = getItem("userInfo");
+    const x = JSON.parse(user);
+    if (x.role === "admin") {
+      const EmpToken = getItem("token");
+      window.location.href = `http://localhost:2000/adminAuth/${EmpToken}`;
     }
   };
 
@@ -39,6 +49,13 @@ const ThemeNavbar = (props) => {
         <NavItem className="d-none d-lg-block">
           <NavLink className="nav-link-style">
             <ThemeToggler />
+          </NavLink>
+        </NavItem>
+        <NavItem className="d-none d-lg-block">
+          <NavLink className="nav-link-style">
+            <Button.Ripple onClick={handleLanding} color="flat-primary">
+              سایت
+            </Button.Ripple>
           </NavLink>
         </NavItem>
       </div>

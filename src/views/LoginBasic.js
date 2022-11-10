@@ -55,6 +55,10 @@ const LoginBasic = () => {
     await LoginEmployee(data);
   };
 
+  const handleLanding = () => {
+    window.location.href = "http://localhost:2000";
+  };
+
   return (
     <div className="auth-wrapper auth-basic px-2" dir="rtl">
       <div className="auth-inner my-2">
@@ -121,10 +125,16 @@ const LoginBasic = () => {
               </Button>
             </Form>
 
-            <p className="text-center mt-2">
+            <p className="d-flex justify-content-evenly text-center mt-2">
               <Link to="/register">
-                <span>ثبت نام</span>
+                <Button.Ripple color="flat-primary">
+                  <span>ثبت نام</span>
+                </Button.Ripple>
               </Link>
+
+              <Button.Ripple onClick={handleLanding} color="flat-primary">
+                <span>بازگشت به سایت</span>
+              </Button.Ripple>
             </p>
           </CardBody>
         </Card>

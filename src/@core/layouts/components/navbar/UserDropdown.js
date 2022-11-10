@@ -43,11 +43,11 @@ const UserDropdown = () => {
   useEffect(() => {
     const getAdminById = async () => {
       const result = await GetEmployeeById(id._id);
-      setUserData(result.result);
+      setUserData(result?.result);
     };
     getAdminById();
   }, []);
-  console.log(userData);
+
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle

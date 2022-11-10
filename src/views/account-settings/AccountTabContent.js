@@ -60,16 +60,15 @@ const AccountTabs = ({ data }) => {
 
   // ** Hooks
   const defaultValues = {
-    fullName: "",
-    nationalId: "",
-    phoneNumber: "",
-    address: "",
-    email: "",
-    birthDate: "",
+    fullName: data?.fullName,
+    nationalId: data?.nationalId,
+    phoneNumber: data?.phoneNumber,
+    address: data?.address,
+    email: data?.email,
+    birthDate: data?.birthDate,
   };
   const {
     control,
-    setError,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -82,38 +81,20 @@ const AccountTabs = ({ data }) => {
   const [avatar, setAvatar] = useState(data?.profile ? data?.profile : "");
 
   const onChange = async (e) => {
-    const reader = new FileReader(),
-      files = e.target.files;
-    reader.onload = function () {
-      console.log(reader.result);
-      setAvatar(reader.result);
-    };
-    reader.readAsDataURL(files[0]);
-
-    const result = await UploadFile(avatar);
-    console.log(result);
+    const imagefile = document.querySelector("#prof");
+    let myFormData = new FormData();
+    myFormData.append("image", imagefile.files[0]);
+    const result = await UploadFile({ myFormData: myFormData });
+    setAvatar(result.data.result);
   };
-  const handleImgReset = async () => {
+  const handleImgReset = () => {
     setAvatar(
-      require("../../../src/assets/images/avatars/avatar-blank.png").default
+      "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png"
     );
-    const result = await UploadFile(avatar);
-    console.log(result);
   };
 
   const onSubmit = async (data) => {
-    const response = await EditEmployeeInfo(data);
-    console.log(response);
-  };
-
-  const handleReset = () => {
-    //  defaultValues.firstName = "",
-    //  defaultValues.lastName = "",
-    //  defaultValues.nationalId = "",
-    //  defaultValues.phoneNumber = "",
-    //  defaultValues.address = "",
-    //  defaultValues.email = "",
-    //  defaultValues.birthDate = "",
+    await EditEmployeeInfo(data, avatar);
   };
 
   const options1 = { date: true, delimiter: "-", datePattern: ["Y", "m", "d"] };
@@ -147,6 +128,7 @@ const AccountTabs = ({ data }) => {
                   <Input
                     type="file"
                     name="profile"
+                    id="prof"
                     onChange={onChange}
                     hidden
                     accept="image/*"
@@ -310,9 +292,6 @@ const AccountTabs = ({ data }) => {
               <Col className="mt-2" sm="12">
                 <Button type="submit" className="me-1" color="primary">
                   ثبت تغییرات
-                </Button>
-                <Button color="secondary" outline>
-                  حذف تغییرات
                 </Button>
               </Col>
             </Row>

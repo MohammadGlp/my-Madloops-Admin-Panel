@@ -1,5 +1,5 @@
 import http from "../Interceptor/Interceptor";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 //Main Url Of Our Project Backend
 const MainURL = process.env.REACT_APP_PUBLIC_API_URL;

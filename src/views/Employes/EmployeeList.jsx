@@ -1,49 +1,48 @@
 import { useEffect, useState } from "react";
 import { Edit, Trash, UserCheck, UserX } from "react-feather";
 import { Table, Button, Badge } from "reactstrap";
-import AvatarGroup from "@components/avatar-group";
-import { GetAllStudents } from "../../services/api/GetAllStudents.api";
 import { DeleteCourse } from "../../services/api/DeleteCourse.api";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
-import { ActiveStudent } from "../../services/api/ActiveStudent";
-import { DeactiveStudent } from "../../services/api/deactiveStudent";
-import { DeleteStudentById } from "../../services/api/DeleteStudentById";
+import { DeactiveEmployee } from "../../services/api/deactiveEmployee";
+import { ActiveEmployee } from "../../services/api/ActiveEmployee";
+import { GetAllEmployees } from "./../../services/api/GetAllEmployees.api";
+import { DeleteEmployee } from "../../services/api/DeleteEmployee.api";
 
-const StudentsList = () => {
-  const [students, setStudents] = useState([]);
+const EmployeesList = () => {
+  const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
     const getAll = async () => {
       try {
-        const students = await GetAllStudents();
-        setStudents(students?.result);
+        const employees = await GetAllEmployees();
+        setEmployees(employees?.result);
       } catch (error) {}
     };
     getAll();
   }, []);
 
-  const handleDelete = async (studentId) => {
-    const originalStudents = students;
-    const newStudents = students.filter((m) => m._id !== studentId);
-    setStudents(newStudents);
+  const handleDelete = async (employeeId, employeeName) => {
+    const originalStudents = employees;
+    const newStudents = employees.filter((m) => m._id !== employeeId);
+    setEmployees(newStudents);
     try {
-      await DeleteStudentById(studentId);
+      await DeleteEmployee(employeeId, employeeName);
       toast.warning(`دانشجو با موفقیت حذف شد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
         toast.error("خطایی رخ داده");
       }
-      setStudents(originalStudents);
+      setEmployees(originalStudents);
     }
   };
 
-  const handleActive = async (studentId) => {
+  const handleActive = async (employeeId) => {
     // const originalCourses = courses;
     // const newCourse = courses.filter((m) => m._id !== courseId);
     // setCourses(newCourse);
     try {
-      await ActiveStudent(studentId);
+      await ActiveEmployee(employeeId);
       toast.warning(`وضعیت دانشجو به فعال تغییر کرد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -53,12 +52,12 @@ const StudentsList = () => {
     }
   };
 
-  const handleDeactive = async (studentId) => {
+  const handleDeactive = async (employeeId) => {
     // const originalCourses = courses;
     // const newCourse = courses.filter((m) => m._id !== courseId);
     // setCourses(newCourse);
     try {
-      await DeactiveStudent(studentId);
+      await DeactiveEmployee(employeeId);
       toast.warning(`وضعیت دانشجو به فعال تغییر کرد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -68,7 +67,7 @@ const StudentsList = () => {
     }
   };
 
-  return students ? (
+  return employees ? (
     <Table responsive>
       <thead>
         <tr>
@@ -81,7 +80,7 @@ const StudentsList = () => {
         </tr>
       </thead>
       <tbody>
-        {students.map((course) => (
+        {employees.map((course) => (
           <tr key={course._id}>
             <td>
               <img
@@ -120,7 +119,10 @@ const StudentsList = () => {
               </div>
               <div className="d-inline-block me-1 mb-1">
                 <Button.Ripple color="danger" size="sm">
-                  <Trash size={16} onClick={() => handleDelete(course._id)} />
+                  <Trash
+                    size={16}
+                    onClick={() => handleDelete(course._id, course.fullName)}
+                  />
                 </Button.Ripple>
               </div>
               <div className="d-inline-block me-1 mb-1">
@@ -148,4 +150,4 @@ const StudentsList = () => {
   );
 };
 
-export default StudentsList;
+export default EmployeesList;

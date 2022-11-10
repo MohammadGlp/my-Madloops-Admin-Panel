@@ -69,7 +69,6 @@ const AccountTabs = ({ data }) => {
   };
   const {
     control,
-    setError,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -96,16 +95,6 @@ const AccountTabs = ({ data }) => {
 
   const onSubmit = async (data) => {
     await EditEmployeeInfo(data, avatar);
-  };
-
-  const handleReset = () => {
-    //  defaultValues.firstName = "",
-    //  defaultValues.lastName = "",
-    //  defaultValues.nationalId = "",
-    //  defaultValues.phoneNumber = "",
-    //  defaultValues.address = "",
-    //  defaultValues.email = "",
-    //  defaultValues.birthDate = "",
   };
 
   const options1 = { date: true, delimiter: "-", datePattern: ["Y", "m", "d"] };
@@ -303,9 +292,6 @@ const AccountTabs = ({ data }) => {
               <Col className="mt-2" sm="12">
                 <Button type="submit" className="me-1" color="primary">
                   ثبت تغییرات
-                </Button>
-                <Button color="secondary" outline>
-                  حذف تغییرات
                 </Button>
               </Col>
             </Row>

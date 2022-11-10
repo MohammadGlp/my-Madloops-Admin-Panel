@@ -47,7 +47,7 @@ const UserDropdown = () => {
     };
     getAdminById();
   }, []);
-  console.log(userData);
+
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle

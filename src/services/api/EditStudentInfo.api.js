@@ -1,7 +1,7 @@
 import http from "../Interceptor/Interceptor";
 import { getCurrentUser } from "../AuthServices/AuthServices";
-import { setItem, sessionSetItem } from "../Storage/Storage";
-import { toast } from "react-toastify";
+import { setItem, sessionSetItem } from "../storage/storage";
+import toast from "react-hot-toast";
 
 //Main Url Of Our Project Backend
 const MainURL = process.env.REACT_APP_PUBLIC_API_URL;

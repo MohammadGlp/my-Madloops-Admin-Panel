@@ -6,41 +6,40 @@ import toast from "react-hot-toast";
 const MainURL = process.env.REACT_APP_PUBLIC_API_URL;
 
 export const LoginEmployee = async (object) => {
-  try {
-    //Make An Object Base On What We Get From Our Login Form & What Api Need To Login The Employee
-    const employeeData = {
-      email: object.email,
-      password: object.password,
-    };
+  // try {
+  //Make An Object Base On What We Get From Our Login Form & What Api Need To Login The Employee
+  const employeeData = {
+    email: object.email,
+    password: object.password,
+  };
 
-    //Calling Api To Send The Information From Login Form
-    const result = await http.post(
-      `${MainURL}auth/employee/login`,
-      employeeData
-    );
+  //Calling Api To Send The Information From Login Form
 
-    //Access To Employee Token & Employee Information
-    const employeeToken = result.data.result.jwtToken;
-    const employeeInfo = result.data.result.employeeModel;
+  const result = await http.post(`${MainURL}auth/employee/login`, employeeData);
 
-    //Set The Employee Token & Employee Information In Local Storage Or Session Storage
+  //Access To Employee Token & Employee Information
+  const employeeToken = result.data.result.jwtToken;
+  const employeeInfo = result.data.result.employeeModel;
 
-    Storage.setItem("token", employeeToken);
-    Storage.setItem("userInfo", JSON.stringify(employeeInfo));
+  //Set The Employee Token & Employee Information In Local Storage Or Session Storage
 
-    Storage.sessionSetItem("token", employeeToken);
-    Storage.sessionSetItem("userInfo", JSON.stringify(employeeInfo));
+  Storage.setItem("token", employeeToken);
+  Storage.setItem("userInfo", JSON.stringify(employeeInfo));
 
-    //Condition For Displaying Toast Massage If The Login Is Seccessfull
-    if ((result.data.success = true))
-      toast.success(result.data.message[0].message);
+  Storage.sessionSetItem("token", employeeToken);
+  Storage.sessionSetItem("userInfo", JSON.stringify(employeeInfo));
 
-    //Redirect The Employee To Admin Pannel Page
-    setTimeout(() => {
-      window.location = "/home";
-    }, 2000);
-    return result.data;
-  } catch (error) {
-    return null;
+  //Condition For Displaying Toast Massage If The Login Is Seccessfull
+  if (result.data.success === true) {
+    toast.success(result.data.message[0].message);
   }
+
+  //Redirect The Employee To Admin Pannel Page
+  setTimeout(() => {
+    window.location = "/home";
+  }, 2000);
+  // return result.data;
+  // } catch (error) {
+  //   toast.error(error.data.message[0].message);
+  // }
 };

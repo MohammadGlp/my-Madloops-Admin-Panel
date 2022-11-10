@@ -88,7 +88,7 @@ const AccountTabs = ({ data }) => {
     const result = await UploadFile({ myFormData: myFormData });
     setAvatar(result.data.result);
   };
-  const handleImgReset = async () => {
+  const handleImgReset = () => {
     setAvatar(
       "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png"
     );

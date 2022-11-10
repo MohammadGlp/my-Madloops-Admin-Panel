@@ -13,6 +13,8 @@ import PublicRoute from '@components/routes/PublicRoute';
 // ** Utils
 import { isObjEmpty } from '@utils';
 import AddCourse from '../../views/Courses/AddCourse';
+import StudentsList from '../../views/Students/StudentsList';
+import StudentEdit from '../../views/Students/StudentEdit';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -60,6 +62,14 @@ const Routes = [
   {
     path: '/addCourse',
     element: <AddCourse />,
+  },
+  {
+    path: '/students',
+    element: <StudentsList />,
+  },
+  {
+    path: '/editStudent/:studentId',
+    element: <StudentEdit />,
   },
   {
     path: '/edit-profile',

@@ -64,7 +64,7 @@ const Courses = () => {
             <td>{course.capacity}</td>
             <td>
               ({course.students.length})
-              <AvatarGroup data={course.students} />
+              {/* <AvatarGroup data={course.students} /> */}
             </td>
             <td>{course.cost}</td>
             <td>

@@ -43,7 +43,7 @@ const UserDropdown = () => {
   useEffect(() => {
     const getAdminById = async () => {
       const result = await GetEmployeeById(id._id);
-      setUserData(result.result);
+      setUserData(result?.result);
     };
     getAdminById();
   }, []);

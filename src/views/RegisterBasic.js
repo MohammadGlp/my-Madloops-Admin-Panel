@@ -1,14 +1,14 @@
 // ** React Imports
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 
 // ** Custom Components
-import * as yup from 'yup';
-import toast from 'react-hot-toast';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import Cleave from 'cleave.js/react';
+import * as yup from "yup";
+import toast from "react-hot-toast";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Cleave from "cleave.js/react";
 // ** Custom Components
-import Avatar from '@components/avatar';
+import Avatar from "@components/avatar";
 // ** Reactstrap Imports
 import {
   Card,
@@ -22,62 +22,60 @@ import {
   FormFeedback,
   Row,
   Col,
-} from 'reactstrap';
-import { selectThemeColors } from '@utils';
-import Select from 'react-select';
+} from "reactstrap";
+import { selectThemeColors } from "@utils";
+import Select from "react-select";
 // ** Styless
-import classnames from 'classnames';
-import '@styles/react/pages/page-authentication.scss';
-import 'cleave.js/dist/addons/cleave-phone.ir';
-import '@styles/react/pages/page-form-validation.scss';
-import '@styles/react/libs/flatpickr/flatpickr.scss';
-import { RegisterEmployee } from '../services/api/employee/RegisterEmployee.api';
+import classnames from "classnames";
+import "@styles/react/pages/page-authentication.scss";
+import "cleave.js/dist/addons/cleave-phone.ir";
+import "@styles/react/pages/page-form-validation.scss";
+import "@styles/react/libs/flatpickr/flatpickr.scss";
+import { RegisterEmployee } from "../services/api/employee/RegisterEmployee.api";
 
 const RegisterBasic = () => {
   const colourOptions = [
-    { value: 'admin', label: 'اَدمین' },
-    { value: 'teacher', label: 'تیچر' },
+    { value: "admin", label: "اَدمین" },
+    { value: "teacher", label: "تیچر" },
   ];
 
   const SignupSchema = yup.object().shape({
-    fullName: yup
-      .string()
-      .required('لطفا فیلد نام خانوادگی را پر کنید'),
+    fullName: yup.string().required("لطفا فیلد نام خانوادگی را پر کنید"),
     email: yup
       .string()
-      .email('الگوی وارد شده صحیح نمی باشد')
-      .required('لطفا فیلد ایمیل را پر کنید'),
+      .email("الگوی وارد شده صحیح نمی باشد")
+      .required("لطفا فیلد ایمیل را پر کنید"),
     password: yup
       .string()
-      .required('لطفا رمز عبور خود را وارد کنید')
+      .required("لطفا رمز عبور خود را وارد کنید")
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-        'باید شامل 8 نویسه، یک حروف بزرگ، یک عدد و یک نویسه خاص باشد'
+        "باید شامل 8 نویسه، یک حروف بزرگ، یک عدد و یک نویسه خاص باشد"
       ),
     nationalId: yup
       .string()
-      .required('لطفا فیلد کد ملی را پر کنید')
-      .matches(/^[0-9]+$/, 'الگوی وارد شده صحیح نمی باشد')
-      .min(10, 'تعداد ارقام کد ملی صحیح نیست')
-      .max(10, 'تعداد ارقام کد ملی صحیح نیست'),
+      .required("لطفا فیلد کد ملی را پر کنید")
+      .matches(/^[0-9]+$/, "الگوی وارد شده صحیح نمی باشد")
+      .min(10, "تعداد ارقام کد ملی صحیح نیست")
+      .max(10, "تعداد ارقام کد ملی صحیح نیست"),
 
     phoneNumber: yup
       .string()
-      .required('شماره تماس را وارد کنید')
+      .required("شماره تماس را وارد کنید")
       .matches(
         /^(0|0098|\+98|98)9(0[1-5]|[1 3]\d|2[0-2]|98)\d{7}$/,
-        'شماره تلفن صحیح نیست'
+        "شماره تلفن صحیح نیست"
       ),
 
     birthDate: yup
       .string()
-      .required('لطفا فیلد تاریخ تولد را پر کنید')
+      .required("لطفا فیلد تاریخ تولد را پر کنید")
       .nullable(),
   });
   const options1 = {
     date: true,
-    delimiter: '-',
-    datePattern: ['Y', 'm', 'd'],
+    delimiter: "-",
+    datePattern: ["Y", "m", "d"],
   };
 
   // ** Hooks
@@ -86,7 +84,7 @@ const RegisterBasic = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    mode: 'onChange',
+    mode: "onChange",
     resolver: yupResolver(SignupSchema),
   });
 
@@ -100,15 +98,15 @@ const RegisterBasic = () => {
       birthDate: data.birthDate,
       password: data.password,
       role: `${data.role.value}`,
-      address: 'sari/darband/shahan',
+      address: "sari/darband/shahan",
       profile:
-        'https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png',
+        "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
     });
-    console.log(response);
+
     if (response) {
       toast.success(response.message[0].message);
     } else if (response === null) {
-      toast.error('مشکلی رخ داده است');
+      toast.error("مشکلی رخ داده است");
     } else {
       toast.error(response.message[0].message);
     }
@@ -126,9 +124,7 @@ const RegisterBasic = () => {
               to="/"
               onClick={(e) => e.preventDefault()}
             >
-              <h2 className="brand-text text-primary ms-1">
-                Mad Loops
-              </h2>
+              <h2 className="brand-text text-primary ms-1">Mad Loops</h2>
             </Link>
             <CardTitle tag="h4" className="mb-1">
               ثبت نام کارمندان
@@ -156,9 +152,7 @@ const RegisterBasic = () => {
                   )}
                 />
                 {errors.fullName && (
-                  <FormFeedback>
-                    {errors.fullName.message}
-                  </FormFeedback>
+                  <FormFeedback>{errors.fullName.message}</FormFeedback>
                 )}
               </div>
               <div className="mb-1">
@@ -196,8 +190,8 @@ const RegisterBasic = () => {
                   render={({ field }) => (
                     <Cleave
                       {...field}
-                      className={classnames('form-control', {
-                        'is-invalid': errors.birthDate && true,
+                      className={classnames("form-control", {
+                        "is-invalid": errors.birthDate && true,
                       })}
                       placeholder="1300-01-01"
                       options={options1}
@@ -205,9 +199,7 @@ const RegisterBasic = () => {
                   )}
                 />
                 {errors.birthDate && (
-                  <FormFeedback>
-                    {errors.birthDate.message}
-                  </FormFeedback>
+                  <FormFeedback>{errors.birthDate.message}</FormFeedback>
                 )}
               </div>
               <div className="mb-1">
@@ -230,9 +222,7 @@ const RegisterBasic = () => {
                   )}
                 />
                 {errors.phoneNumber && (
-                  <FormFeedback>
-                    {errors.phoneNumber.message}
-                  </FormFeedback>
+                  <FormFeedback>{errors.phoneNumber.message}</FormFeedback>
                 )}
               </div>
 
@@ -255,9 +245,7 @@ const RegisterBasic = () => {
                   )}
                 />
                 {errors.nationalId && (
-                  <FormFeedback>
-                    {errors.nationalId.message}
-                  </FormFeedback>
+                  <FormFeedback>{errors.nationalId.message}</FormFeedback>
                 )}
               </div>
               <div className="mb-1">
@@ -279,9 +267,7 @@ const RegisterBasic = () => {
                   )}
                 />
                 {errors.password && (
-                  <FormFeedback>
-                    {errors.password.message}
-                  </FormFeedback>
+                  <FormFeedback>{errors.password.message}</FormFeedback>
                 )}
               </div>
               <Row>

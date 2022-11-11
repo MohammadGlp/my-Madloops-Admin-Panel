@@ -30,6 +30,7 @@ export const EditEmployeeInfo = async (object, avatar) => {
         phoneNumber: object.phoneNumber,
         nationalId: object.nationalId,
         birthDate: object.birthDate,
+        role: object.role,
         profile: avatar,
       });
       console.log(result);

@@ -5,16 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Avatar from "@components/avatar";
 
 // ** Third Party Components
-import {
-  User,
-  Mail,
-  CheckSquare,
-  MessageSquare,
-  Settings,
-  CreditCard,
-  HelpCircle,
-  Power,
-} from "react-feather";
+import { User, Power } from "react-feather";
 
 // ** Reactstrap Imports
 import {
@@ -25,7 +16,6 @@ import {
 } from "reactstrap";
 
 // ** Default Avatar Image
-import defaultAvatar from "@src/assets/images/portrait/small/avatar-s-11.jpg";
 import { GetEmployeeById } from "./../../../../services/api/GetEmployeeById.api";
 import {
   getToken,
@@ -46,7 +36,7 @@ const UserDropdown = () => {
       setUserData(result?.result);
     };
     getAdminById();
-  }, []);
+  }, [id]);
 
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">

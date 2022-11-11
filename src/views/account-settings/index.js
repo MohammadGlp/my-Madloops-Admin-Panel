@@ -36,7 +36,7 @@ const AccountSettings = () => {
       setData(result.result);
     };
     getAdminById();
-  }, []);
+  }, [id]);
 
   return (
     <Fragment>

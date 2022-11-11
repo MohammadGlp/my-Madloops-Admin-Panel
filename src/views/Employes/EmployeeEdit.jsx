@@ -122,7 +122,9 @@ const AdminEdit = ({ open, toggleSidebar, adminId }) => {
           nationalId: data.nationalId,
           birthDate: data.birthDate,
           role: "admin",
-          profile: result?.data.result,
+          profile: result?.data.result
+            ? result?.data.result
+            : "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
         },
         teacherId
       );

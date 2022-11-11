@@ -1,308 +1,279 @@
-import { useParams } from 'react-router-dom';
-import Cleave from 'cleave.js/react';
-import { useForm, Controller } from 'react-hook-form';
-import 'cleave.js/dist/addons/cleave-phone.us';
+import { useState, useEffect, useRef } from "react";
 
-import {
-  Row,
-  Col,
-  Form,
-  Card,
-  Input,
-  Label,
-  Button,
-  CardBody,
-  CardTitle,
-  CardHeader,
-  FormFeedback,
-} from 'reactstrap';
+import Sidebar from "@components/sidebar";
 
-import classnames from 'classnames';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { UploadFile } from './../../services/api/UploadFile.api';
-import { EditEmployeeInfo } from './../../services/api/EditEmployeInfo.api';
-import avatar2 from '../../assets/images/portrait/small/avatar-s-11.jpg';
+import { selectThemeColors } from "@utils";
 
-import { EditStudentInfo } from '../../services/api/EditStudentInfo.api';
-import { useState } from 'react';
+import Select from "react-select";
+import classnames from "classnames";
+import { useForm, Controller } from "react-hook-form";
 
-const StudentEdit = ({ data }) => {
-  const { studentId } = useParams();
+import { Button, Label, Form, Input, Row, Col, FormFeedback } from "reactstrap";
+
+import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import toast from "react-hot-toast";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Cleave from "cleave.js/react";
+
+import "@styles/react/pages/page-authentication.scss";
+import "cleave.js/dist/addons/cleave-phone.ir";
+import "@styles/react/pages/page-form-validation.scss";
+import "@styles/react/libs/flatpickr/flatpickr.scss";
+
+import { UploadFile } from "./../../services/api/UploadFile.api";
+import { GetStudentById } from "./../../services/api/GetStudentById";
+
+const StudentEdit = ({ open, toggleSidebar, studentId }) => {
+  const navigate = useNavigate();
+  const [data, setData] = useState({});
+
+  useEffect(() => {
+    const getAdminById = async () => {
+      const result = await GetStudentById(studentId);
+      setData(result?.result);
+    };
+    getAdminById();
+  }, [studentId]);
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [data]);
 
   const SignupSchema = yup.object().shape({
-    fullName: yup
-      .string()
-      .required('لطفا فیلد نام و نام خانوادگی را پر کنید'),
+    fullName: yup.string().required("لطفا فیلد نام و نام خانوادگی را پر کنید"),
     email: yup
       .string()
-      .email('الگوی وارد شده صحیح نمی باشد')
-      .required('لطفا فیلد ایمیل را پر کنید'),
+      .email("الگوی وارد شده صحیح نمی باشد")
+      .required("لطفا فیلد ایمیل را پر کنید"),
 
     nationalId: yup
       .string()
-      .required('لطفا فیلد کد ملی را پر کنید')
-      .matches(/^[0-9]+$/, 'الگوی وارد شده صحیح نمی باشد')
-      .min(10, 'تعداد ارقام کد ملی صحیح نیست')
-      .max(10, 'تعداد ارقام کد ملی صحیح نیست'),
+      .required("لطفا فیلد کد ملی را پر کنید")
+      .matches(/^[0-9]+$/, "الگوی وارد شده صحیح نمی باشد")
+      .min(10, "تعداد ارقام کد ملی صحیح نیست")
+      .max(10, "تعداد ارقام کد ملی صحیح نیست"),
 
     phoneNumber: yup
       .string()
-      .required('شماره تماس را وارد کنید')
+      .required("شماره تماس را وارد کنید")
       .matches(
         /^(0|0098|\+98|98)9(0[1-5]|[1 3]\d|2[0-2]|98)\d{7}$/,
-        'شماره تلفن صحیح نیست'
+        "شماره تلفن صحیح نیست"
       ),
 
     birthDate: yup
       .string()
-      .required('لطفا فیلد تاریخ تولد را پر کنید')
+      .required("لطفا فیلد تاریخ تولد را پر کنید")
       .nullable(),
   });
 
-  // ** Hooks
+  const options1 = {
+    date: true,
+    delimiter: "/",
+    datePattern: ["Y", "m", "d"],
+  };
+
   const defaultValues = {
-    fullName: '',
-    nationalId: '',
-    phoneNumber: '',
-    address: '',
-    email: '',
-    birthDate: '',
+    fullName: data?.fullName,
+    nationalId: data?.nationalId,
+    phoneNumber: data?.phoneNumber,
+    email: data?.email,
+    birthDate: data?.birthDate,
   };
 
   const {
+    register,
     control,
-    setError,
     handleSubmit,
+    setValue,
+    clearErrors,
+    reset,
     formState: { errors },
   } = useForm({
-    defaultValues,
-    mode: 'onChange',
+    mode: "onChange",
     resolver: yupResolver(SignupSchema),
+    defaultValues,
   });
 
-  // ** States
-  const [avatar, setAvatar] = useState(
-    data?.profile ? data?.profile : ''
-  );
-
-  const onChange = async (e) => {
-    const reader = new FileReader(),
-      files = e.target.files;
-    reader.onload = function () {
-      console.log(reader.result);
-      setAvatar(reader.result);
-    };
-    reader.readAsDataURL(files[0]);
-
-    const result = await UploadFile(avatar);
-    console.log(result);
-  };
-
-  const handleImgReset = async () => {
-    setAvatar(
-      require('../../../src/assets/images/avatars/avatar-blank.png')
-        .default
-    );
-    const result = await UploadFile(avatar);
-    console.log(result);
+  const handleSidebarClosed = () => {
+    for (const key in defaultValues) {
+      setValue(key, "");
+    }
+    clearErrors();
   };
 
   const onSubmit = async (data) => {
-    const response = await EditStudentInfo(data, studentId);
-    console.log(response);
-    // console.log(data);
-  };
+    let myFormData = new FormData();
+    myFormData.append("image", data.files[0]);
 
-  const options1 = {
-    date: true,
-    delimiter: '/',
-    datePattern: ['Y', 'm', 'd'],
+    const result = await UploadFile({ myFormData: myFormData });
+    toggleSidebar();
+    try {
+      await EditStudentInfo(
+        {
+          fullName: data?.fullName,
+          email: data?.email,
+          address: data?.address,
+          phoneNumber: data?.phoneNumber,
+          nationalId: data?.nationalId,
+          birthDate: data?.birthDate,
+          role: "student",
+          profile: result?.data.result
+            ? result?.data.result
+            : "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
+        },
+        studentId
+      );
+      toast.success("دانشجو با موفقیت ویرایش شد");
+      navigate(0);
+    } catch (error) {
+      toast.error("ویرایش دانشجو با خطا مواجه شد");
+    }
   };
 
   return (
-    <Card>
-      <CardHeader className="border-bottom">
-        <CardTitle tag="h4">جزئیات دانشجو</CardTitle>
-      </CardHeader>
-      <CardBody className="py-2 my-25">
-        <div className="d-flex">
-          <div className="me-25">
-            <img
-              className="rounded me-50"
-              src={avatar2}
-              alt="بدون تصویر"
-              height="100"
-              width="100"
-            />
-          </div>
-          <div className="d-flex align-items-end mt-75 ms-1">
-            <div>
-              <Button
-                tag={Label}
-                className="mb-75 me-75"
-                size="sm"
-                color="primary"
-              >
-                آپلود
+    <Sidebar
+      size="lg"
+      open={open}
+      title="ویرایش دوره "
+      headerClassName="mb-1"
+      contentClassName="pt-0"
+      toggleSidebar={toggleSidebar}
+      onClosed={handleSidebarClosed}
+    >
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Row>
+          <Col md="12" sm="12" className="mb-1">
+            <Label className="form-label" for="fullName">
+              نام و نام خانوادگی :
+            </Label>
+            <Controller
+              name="fullName"
+              id="fullName"
+              control={control}
+              render={({ field }) => (
                 <Input
-                  type="file"
-                  name="profile"
-                  onChange={onChange}
-                  hidden
-                  accept="image/*"
+                  {...field}
+                  type="text"
+                  placeholder={data?.fullName}
+                  invalid={errors.fullName && true}
                 />
-              </Button>
-              <Button
-                className="mb-75"
-                color="secondary"
-                size="sm"
-                outline
-                onClick={handleImgReset}
-              >
-                حذف
-              </Button>
-              <p className="mb-0">
-                JPG، GIF یا PNG مجاز است. حداکثر اندازه 800 کیلوبایت
-              </p>
+              )}
+            />
+            {errors && errors.fullName && (
+              <FormFeedback>{errors.fullName.message}</FormFeedback>
+            )}
+          </Col>
+          <Col md="12" sm="12" className="mb-1">
+            <Label className="form-label" for="email">
+              ایمیل :
+            </Label>
+            <Controller
+              id="email"
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="email"
+                  placeholder={data?.email}
+                  invalid={errors.email && true}
+                />
+              )}
+            />
+            {errors.email && (
+              <FormFeedback>{errors.email.message}</FormFeedback>
+            )}
+          </Col>
+          <Col md="12" sm="12" className="mb-1">
+            <Label className="form-label" for="date">
+              تاریخ تولد:
+            </Label>
+            <Controller
+              id="date"
+              name="birthDate"
+              control={control}
+              render={({ field }) => (
+                <Cleave
+                  {...field}
+                  className={classnames("form-control", {
+                    "is-invalid": errors.birthDate && true,
+                  })}
+                  placeholder={data?.birthDate}
+                  options={options1}
+                />
+              )}
+            />
+            {errors.birthDate && (
+              <FormFeedback>{errors.birthDate.message}</FormFeedback>
+            )}
+          </Col>
+          <Col md="12" sm="12" className="mb-1">
+            <div className="mb-1">
+              <Label className="form-label" for="nationalId">
+                کد ملی:
+              </Label>
+              <Controller
+                id="nationalId"
+                name="nationalId"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="text"
+                    placeholder={data?.nationalId}
+                    invalid={errors.nationalId && true}
+                  />
+                )}
+              />
+              {errors.nationalId && (
+                <FormFeedback>{errors.nationalId.message}</FormFeedback>
+              )}
             </div>
-          </div>
-        </div>
-        <Form
-          className="mt-2 pt-50"
-          encType="multipart/form-data"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <Row>
-            <Col sm="6" className="mb-1">
-              <Label className="form-label" for="fullName">
-                نام و نام خانوادگی :
-              </Label>
-              <Controller
-                name="fullName"
-                id="fullName"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    type="text"
-                    placeholder={data?.fullName}
-                    invalid={errors.fullName && true}
-                  />
-                )}
-              />
-              {errors && errors.fullName && (
-                <FormFeedback>{errors.fullName.message}</FormFeedback>
-              )}
-            </Col>
-            <Col sm="6" className="mb-1">
-              <Label className="form-label" for="email">
-                ایمیل :
-              </Label>
-              <Controller
-                id="email"
-                name="email"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    type="email"
-                    placeholder={data?.email}
-                    invalid={errors.email && true}
-                  />
-                )}
-              />
-              {errors.email && (
-                <FormFeedback>{errors.email.message}</FormFeedback>
-              )}
-            </Col>
-            <Col sm="6" className="mb-1">
-              <Label className="form-label" for="date">
-                تاریخ تولد:
-              </Label>
-              <Controller
-                id="date"
-                name="birthDate"
-                control={control}
-                render={({ field }) => (
-                  <Cleave
-                    {...field}
-                    className={classnames('form-control', {
-                      'is-invalid': errors.birthDate && true,
-                    })}
-                    placeholder={data?.birthDate}
-                    options={options1}
-                  />
-                )}
-              />
-              {errors.birthDate && (
-                <FormFeedback>
-                  {errors.birthDate.message}
-                </FormFeedback>
-              )}
-            </Col>
-            <Col sm="6" className="mb-1">
-              <div className="mb-1">
-                <Label className="form-label" for="nationalId">
-                  کد ملی:
-                </Label>
-                <Controller
-                  id="nationalId"
-                  name="nationalId"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="text"
-                      placeholder={data?.nationalId}
-                      invalid={errors.nationalId && true}
-                    />
-                  )}
+          </Col>
+          <Col md="12" sm="12" className="mb-1">
+            <Label className="form-label" for="phoneNumber">
+              شماره همراه:
+            </Label>
+
+            <Controller
+              id="phoneNumber"
+              name="phoneNumber"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="text"
+                  placeholder={data?.phoneNumber}
+                  invalid={errors.phoneNumber && true}
                 />
-                {errors.nationalId && (
-                  <FormFeedback>
-                    {errors.nationalId.message}
-                  </FormFeedback>
-                )}
-              </div>
-            </Col>
-            <Col sm="6" className="mb-1">
-              <Label className="form-label" for="phoneNumber">
-                شماره همراه:
-              </Label>
-
-              <Controller
-                id="phoneNumber"
-                name="phoneNumber"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    type="text"
-                    placeholder={data?.phoneNumber}
-                    invalid={errors.phoneNumber && true}
-                  />
-                )}
-              />
-              {errors.phoneNumber && (
-                <FormFeedback>
-                  {errors.phoneNumber.message}
-                </FormFeedback>
               )}
-            </Col>
+            />
+            {errors.phoneNumber && (
+              <FormFeedback>{errors.phoneNumber.message}</FormFeedback>
+            )}
+          </Col>
+          <Col md="12" sm="12" className="mb-1">
+            <Label className="form-label" for="profile">
+              آپلود عکس :
+            </Label>
 
-            <Col className="mt-2" sm="12">
-              <Button type="submit" className="me-1" color="primary">
-                ثبت تغییرات
+            <input id="profile" type="file" {...register("files")} />
+          </Col>
+          <Col sm="12">
+            <div className="d-flex">
+              <Button className="me-1" color="primary" type="submit">
+                ویرایش
               </Button>
-              <Button color="secondary" outline>
-                حذف تغییرات
+              <Button outline color="secondary" onClick={toggleSidebar}>
+                انصراف
               </Button>
-            </Col>
-          </Row>
-        </Form>
-      </CardBody>
-    </Card>
+            </div>
+          </Col>
+        </Row>
+      </Form>
+    </Sidebar>
   );
 };
 

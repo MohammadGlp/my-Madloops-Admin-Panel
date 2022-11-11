@@ -4,7 +4,7 @@
 const themeConfig = {
   app: {
     appName: "Mad Loops",
-    appLogoImage: require("@src/assets/images/logo/logo.svg").default,
+    appLogoImage: require("./MadLoops.svg").default,
   },
   layout: {
     isRTL: true,

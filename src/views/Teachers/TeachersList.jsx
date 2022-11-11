@@ -43,11 +43,10 @@ const TeachersList = () => {
     setTeachers(newStudents);
     try {
       await DeleteEmployee(teacherId, teacherName);
-      toast.warning(`دانشجو با موفقیت حذف شد`);
+      toast.success(`دانشجو با موفقیت حذف شد`);
     } catch (error) {
-      if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
-      }
+      toast.error("خطایی رخ داده");
+
       setTeachers(originalStudents);
     }
   };
@@ -151,10 +150,7 @@ const TeachersList = () => {
               </td>
               <td>{course.nationalId}</td>
               <td>{course.phoneNumber}</td>
-              <td>
-                {course.birthDate}
-                {/* <AvatarGroup data={course.students} /> */}
-              </td>
+              <td>{course.birthDate}</td>
               <td>
                 {course.isActive ? (
                   <Badge className="px-1" pill color="light-success">

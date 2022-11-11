@@ -107,8 +107,6 @@ const TeacherEdit = ({ open, toggleSidebar, teacherId }) => {
     clearErrors();
   };
 
-  const [avatar, setAvatar] = useState("");
-
   // const convertBase64 = (file) => {
   //   const reader = new FileReader();
   //   reader.onload = () => {
@@ -120,10 +118,7 @@ const TeacherEdit = ({ open, toggleSidebar, teacherId }) => {
   const onSubmit = async (data) => {
     let myFormData = new FormData();
     myFormData.append("image", data.files[0]);
-
     const result = await UploadFile({ myFormData: myFormData });
-    setAvatar(result?.data.result);
-    console.log("myFormData", result.data.result);
     toggleSidebar();
     try {
       await EditEmployeeAll(
@@ -135,7 +130,9 @@ const TeacherEdit = ({ open, toggleSidebar, teacherId }) => {
           nationalId: data?.nationalId,
           birthDate: data?.birthDate,
           role: "teacher",
-          profile: result?.data.result ? result?.data.result : "",
+          profile: result?.data.result
+            ? result?.data.result
+            : "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
         },
         teacherId
       );

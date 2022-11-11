@@ -1,10 +1,27 @@
 import { useEffect, useState } from 'react';
-import { Edit, Trash } from 'react-feather';
-import { Table, Button } from 'reactstrap';
+import {
+  Edit,
+  Trash,
+  UserMinus,
+  UserPlus,
+  Users,
+} from 'react-feather';
+import {
+  Table,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Badge,
+} from 'reactstrap';
 import AvatarGroup from '@components/avatar-group';
+import Avatar from '@components/avatar';
+
 import { getAllCourses } from '../../services/api/GetAllCourses.api';
 import { DeleteCourse } from '../../services/api/DeleteCourse.api';
-import { Link } from 'react-router-dom';
+import { GetAllStudents } from '../../services/api/GetAllStudents.api';
+import { AddStudentToCourse } from '../../services/api/AddStudentToCourse.api';
+import { RemoveStudentFromCourse } from '../../services/api/RemoveStudentFromCourse.api';
 import toast from 'react-hot-toast';
 import AddCourse from './AddCourse';
 import EditCourse from './CourseEdit';
@@ -14,18 +31,32 @@ const Courses = () => {
   const [addCourseOpen, setAddCourseOpen] = useState(false);
   const [editCourseOpen, setEditCourseOpen] = useState(false);
   const [courseId, setCourseId] = useState(null);
+  const [show, setShow] = useState(false);
+  const [students, setStudents] = useState([]);
 
   const toggleAddSidebar = () => setAddCourseOpen(!addCourseOpen);
   const toggleEditSidebar = () => setEditCourseOpen(!editCourseOpen);
 
+  const getAll = async () => {
+    try {
+      const courses = await getAllCourses();
+      setCourses(courses?.data.result);
+    } catch (error) {}
+  };
+
+  const getAllStudents = async () => {
+    try {
+      const students = await GetAllStudents();
+      const activeStudents = students?.result.filter(
+        (student) => student.isActive === true
+      );
+      setStudents(activeStudents);
+    } catch (error) {}
+  };
+
   useEffect(() => {
-    const getAll = async () => {
-      try {
-        const courses = await getAllCourses();
-        setCourses(courses?.data.result);
-      } catch (error) {}
-    };
     getAll();
+    getAllStudents();
   }, []);
 
   const handleDelete = async (courseId) => {
@@ -48,6 +79,26 @@ const Courses = () => {
     setCourseId(courseId);
   };
 
+  const handleShowStudents = (courseId) => {
+    setShow(!show);
+    setCourseId(courseId);
+  };
+
+  const handleAddStudentToCourse = async (studentId) => {
+    setShow(!show);
+    try {
+      await AddStudentToCourse(courseId, studentId);
+      toast.success('دانشجو با موفقیت به دوره اضافه شد');
+    } catch (error) {}
+  };
+
+  const handleRemoveStudentFromCourse = async (studentId) => {
+    setShow(!show);
+    try {
+      await RemoveStudentFromCourse(courseId, studentId);
+      toast.error('دانشجو با موفقیت از دوره حذف شد');
+    } catch (error) {}
+  };
   return courses ? (
     <>
       <Button.Ripple
@@ -87,8 +138,12 @@ const Courses = () => {
               <td>{course.teacher.fullName}</td>
               <td>{course.capacity}</td>
               <td>
-                ({course.students.length})
-                {/* <AvatarGroup data={course.students} /> */}
+                <div className="d-flex align-items-center">
+                  <Badge pill color="light-success" className="me-1">
+                    {course.students.length}
+                  </Badge>
+                  <AvatarGroup data={course.students} />
+                </div>
               </td>
               <td>{course.cost}</td>
               <td>
@@ -109,6 +164,15 @@ const Courses = () => {
                     />
                   </Button.Ripple>
                 </div>
+                <div className="d-inline-block me-1 mb-1">
+                  <Button.Ripple
+                    color="success"
+                    size="sm"
+                    onClick={() => handleShowStudents(course._id)}
+                  >
+                    <Users size={16} />
+                  </Button.Ripple>
+                </div>
               </td>
             </tr>
           ))}
@@ -123,6 +187,69 @@ const Courses = () => {
         toggleSidebar={toggleEditSidebar}
         courseId={courseId}
       />
+      <Modal
+        isOpen={show}
+        toggle={() => setShow(!show)}
+        className="modal-dialog-centered"
+      >
+        <ModalHeader
+          className="bg-transparent"
+          toggle={() => setShow(!show)}
+        ></ModalHeader>
+        <ModalBody className="px-sm-5 mx-50 pb-5">
+          {students.map((student) => (
+            <div
+              key={student._id}
+              className="employee-task d-flex justify-content-between align-items-center mb-2"
+            >
+              <div className="d-flex">
+                <Avatar
+                  imgClassName="rounded"
+                  className="me-75"
+                  img={student.profile}
+                  imgHeight="42"
+                  imgWidth="42"
+                />
+                <div className="my-auto">
+                  <h6 className="mb-0">{student.fullName}</h6>
+                  <small className="text-muted">
+                    {student.email}
+                  </small>
+                </div>
+              </div>
+              <div className="d-flex align-items-center">
+                <Button.Ripple
+                  color="warning"
+                  className="me-1"
+                  size="sm"
+                  disabled={
+                    !student.courses.find(
+                      (course) => course._id === courseId
+                    )
+                  }
+                  onClick={() =>
+                    handleRemoveStudentFromCourse(student._id)
+                  }
+                >
+                  <UserMinus size={16} />
+                </Button.Ripple>
+                <Button.Ripple
+                  color="success"
+                  size="sm"
+                  disabled={student.courses.find(
+                    (course) => course._id === courseId
+                  )}
+                  onClick={() =>
+                    handleAddStudentToCourse(student._id)
+                  }
+                >
+                  <UserPlus size={16} />
+                </Button.Ripple>
+              </div>
+            </div>
+          ))}
+        </ModalBody>
+      </Modal>
     </>
   ) : (
     <p>Loading...</p>

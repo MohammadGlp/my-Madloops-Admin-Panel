@@ -21,9 +21,9 @@ import "cleave.js/dist/addons/cleave-phone.ir";
 import "@styles/react/pages/page-form-validation.scss";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 
-import { RegisterEmployee } from "./../../services/api/employee/RegisterEmployee.api";
+import { RegisterStudent } from "./../../services/api/RegisterStudent";
 
-const AddTeacher = ({ open, toggleSidebar }) => {
+const AddStudent = ({ open, toggleSidebar }) => {
   const navigate = useNavigate();
 
   const defaultValues = {
@@ -37,7 +37,6 @@ const AddTeacher = ({ open, toggleSidebar }) => {
 
   const SignupSchema = yup.object().shape({
     fullName: yup.string().required("لطفا فیلد نام خانوادگی را پر کنید"),
-    address: yup.string().required("لطفا فیلد آدرس را پر کنید"),
     email: yup
       .string()
       .email("الگوی وارد شده صحیح نمی باشد")
@@ -97,22 +96,21 @@ const AddTeacher = ({ open, toggleSidebar }) => {
   const onSubmit = async (data) => {
     toggleSidebar();
     try {
-      await RegisterEmployee({
+      console.log(data);
+      await RegisterStudent({
         fullName: data.fullName,
         email: data.email,
         phoneNumber: data.phoneNumber,
         nationalId: data.nationalId,
         birthDate: data.birthDate,
         password: data.password,
-        role: "teacher",
-        address: data.address,
         profile:
           "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
       });
-      navigate(0);
-      toast.success("استاد با موفقیت اضافه شد");
+      //   navigate(0);
+      toast.success("افزودن دانشجو با موفقیت اضافه شد");
     } catch (error) {
-      toast.error("افزودن استاد با خطا مواجه شد");
+      toast.error("افزودن دانشجو با خطا مواجه شد");
     }
   };
 
@@ -251,28 +249,6 @@ const AddTeacher = ({ open, toggleSidebar }) => {
             </div>
           </Col>
           <Col md="12" sm="12" className="mb-1">
-            <Label className="form-label" for="address">
-              آدرس :
-            </Label>
-            <Controller
-              id="address"
-              name="address"
-              control={control}
-              defaultValue=""
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  type="text"
-                  placeholder="شیکاگو منهتن"
-                  invalid={errors.address && true}
-                />
-              )}
-            />
-            {errors.address && (
-              <FormFeedback>{errors.address.message}</FormFeedback>
-            )}
-          </Col>
-          <Col md="12" sm="12" className="mb-1">
             <div className="mb-1">
               <Label className="form-label" for="password">
                 پسورد :
@@ -312,4 +288,4 @@ const AddTeacher = ({ open, toggleSidebar }) => {
   );
 };
 
-export default AddTeacher;
+export default AddStudent;

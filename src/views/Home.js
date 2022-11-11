@@ -1,49 +1,67 @@
-import { Card, CardHeader, CardBody, CardTitle, CardText, CardLink } from 'reactstrap'
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardTitle,
+  CardText,
+  CardLink,
+} from "reactstrap";
+// ** User List Component
+
+// ** Reactstrap Imports
+import { Row, Col } from "reactstrap";
+
+// ** Custom Components
+import StatsHorizontal from "@components/widgets/stats/StatsHorizontal";
+
+// ** Icons Imports
+import { User, UserPlus, UserCheck, UserX } from "react-feather";
+
+// ** Styles
+import "@styles/react/apps/app-users.scss";
 
 const Home = () => {
   return (
     <div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Kick start your project 🚀</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <CardText>All the best for your new project.</CardText>
-          <CardText>
-            Please make sure to read our{' '}
-            <CardLink
-              href='https://pixinvent.com/demo/vuexy-react-admin-dashboard-template/documentation/'
-              target='_blank'
-            >
-              Template Documentation
-            </CardLink>{' '}
-            to understand where to go from here and how to use our template.
-          </CardText>
-        </CardBody>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Want to integrate JWT? 🔒</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <CardText>
-            We carefully crafted JWT flow so you can implement JWT with ease and with minimum efforts.
-          </CardText>
-          <CardText>
-            Please read our{' '}
-            <CardLink
-              href='https://pixinvent.com/demo/vuexy-react-admin-dashboard-template/documentation/docs/development/auth'
-              target='_blank'
-            >
-              JWT Documentation
-            </CardLink>{' '}
-            to get more out of JWT authentication.
-          </CardText>
-        </CardBody>
-      </Card>
+      <div className="app-user-list">
+        <Row>
+          <Col lg="3" sm="6">
+            <StatsHorizontal
+              color="primary"
+              statTitle="کل دانشجویان"
+              icon={<User size={20} />}
+              renderStats={<h3 className="fw-bolder mb-75">21,459</h3>}
+            />
+          </Col>
+          <Col lg="3" sm="6">
+            <StatsHorizontal
+              color="danger"
+              statTitle="کل اساتید"
+              icon={<UserPlus size={20} />}
+              renderStats={<h3 className="fw-bolder mb-75">4,567</h3>}
+            />
+          </Col>
+          <Col lg="3" sm="6">
+            <StatsHorizontal
+              color="success"
+              statTitle="دانشجویان فعال"
+              icon={<UserCheck size={20} />}
+              renderStats={<h3 className="fw-bolder mb-75">19,860</h3>}
+            />
+          </Col>
+          <Col lg="3" sm="6">
+            <StatsHorizontal
+              color="warning"
+              statTitle="دانشجویان غیر فعال"
+              icon={<UserX size={20} />}
+              renderStats={<h3 className="fw-bolder mb-75">237</h3>}
+            />
+          </Col>
+        </Row>
+        {/* <Table /> */}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

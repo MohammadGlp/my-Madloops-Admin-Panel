@@ -36,7 +36,7 @@ const UserDropdown = () => {
       setUserData(result?.result);
     };
     getAdminById();
-  }, [id]);
+  }, []);
 
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">

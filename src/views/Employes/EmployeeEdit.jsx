@@ -129,7 +129,7 @@ const AdminEdit = ({ open, toggleSidebar, adminId }) => {
         teacherId
       );
       toast.success("ادمین با موفقیت ویرایش شد");
-      // navigate(0);
+      navigate(0);
     } catch (error) {
       toast.error("ویرایش ادمین با خطا مواجه شد");
     }

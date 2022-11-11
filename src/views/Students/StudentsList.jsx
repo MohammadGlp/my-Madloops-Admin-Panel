@@ -27,6 +27,7 @@ import StudentEdit from "./StudentEdit";
 import { RemoveStudentFromCourse } from "./../../services/api/RemoveStudentFromCourse.api";
 import { AddStudentToCourse } from "./../../services/api/AddStudentToCourse.api";
 import { getAllCourses } from "./../../services/api/GetAllCourses.api";
+import AddStudent from "./AddStudent";
 
 const StudentsList = () => {
   const [students, setStudents] = useState([]);
@@ -34,6 +35,7 @@ const StudentsList = () => {
   const [studentsId, setStudentsId] = useState();
   const [courses, setCourses] = useState();
   const [show, setShow] = useState(false);
+  const [addStudentOpen, setAddStudentOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -112,7 +114,7 @@ const StudentsList = () => {
   const handleAddStudentToCourse = async (courseId) => {
     setShow(!show);
     try {
-      await AddStudentToCourse(studentsId, courseId);
+      await AddStudentToCourse(courseId, studentsId);
       toast.success("دانشجو با موفقیت به دوره اضافه شد");
     } catch (error) {}
   };
@@ -120,11 +122,11 @@ const StudentsList = () => {
   const handleRemoveStudentFromCourse = async (courseId) => {
     setShow(!show);
     try {
-      await RemoveStudentFromCourse(studentsId, courseId);
-      toast.error("دانشجو با موفقیت از دوره حذف شد");
+      await RemoveStudentFromCourse(courseId, studentsId);
+      toast.success("دانشجو با موفقیت از دوره حذف شد");
     } catch (error) {}
   };
-
+  const toggleAddSidebar = () => setAddStudentOpen(!addStudentOpen);
   const toggleEditSidebar = () => setEditStudentOpen(!editStudentOpen);
 
   const handleEdit = (studentId) => {
@@ -134,6 +136,14 @@ const StudentsList = () => {
 
   return students ? (
     <>
+      <Button.Ripple
+        color="primary"
+        size="md"
+        className="mb-2"
+        onClick={toggleAddSidebar}
+      >
+        افزودن دانشجو
+      </Button.Ripple>
       <Table responsive>
         <thead>
           <tr>
@@ -220,6 +230,7 @@ const StudentsList = () => {
           ))}
         </tbody>
       </Table>
+      <AddStudent open={addStudentOpen} toggleSidebar={toggleAddSidebar} />
       <StudentEdit
         open={editStudentOpen}
         toggleSidebar={toggleEditSidebar}

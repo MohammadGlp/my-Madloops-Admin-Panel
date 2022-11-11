@@ -12,12 +12,12 @@ import lessons from "./lessons";
 // ** Merge & Export
 export default [
   ...home,
-  ...courses,
   ...lessons,
-  ...blogs,
-  ...profile,
-  ...students,
-  ...teachers,
+  ...courses,
   ...employees,
+  ...teachers,
+  ...students,
+  ...blogs,
   ...comments,
+  ...profile,
 ];

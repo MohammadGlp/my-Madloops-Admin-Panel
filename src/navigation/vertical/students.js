@@ -3,7 +3,7 @@ import { Users } from "react-feather";
 export default [
   {
     id: "students",
-    title: "لیست دانشجویان",
+    title: "مدیریت دانشجویان",
     icon: <Users size={20} />,
     navLink: "/students",
   },

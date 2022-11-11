@@ -23,9 +23,9 @@ const EmployeesList = () => {
   }, []);
 
   const handleDelete = async (employeeId, employeeName) => {
-    const originalStudents = employees;
-    const newStudents = employees.filter((m) => m._id !== employeeId);
-    setEmployees(newStudents);
+    const originalStudents = [...employees];
+    const newEmplo = employees.filter((m) => m._id !== employeeId);
+    setEmployees(newEmplo);
     try {
       await DeleteEmployee(employeeId, employeeName);
       toast.warning(`دانشجو با موفقیت حذف شد`);

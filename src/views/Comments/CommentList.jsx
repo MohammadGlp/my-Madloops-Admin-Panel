@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   CheckCircle,
   Edit,
@@ -6,15 +6,15 @@ import {
   Trash,
   UserCheck,
   UserX,
-} from 'react-feather';
-import { Table, Button, Badge } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { GetAllComments } from './../../services/api/GetAllComments.api';
-import { VarifyComment } from './../../services/api/VarifyComment.api';
-import { AnswerComment } from './../../services/api/AnswerComment.api';
-import { Send } from 'react-feather';
-import { dateConvert } from '../../utility/TimeAndDateConverter';
+} from "react-feather";
+import { Table, Button, Badge } from "reactstrap";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { GetAllComments } from "./../../services/api/GetAllComments.api";
+import { VarifyComment } from "./../../services/api/VarifyComment.api";
+import { AnswerComment } from "./../../services/api/AnswerComment.api";
+import { Send } from "react-feather";
+import { dateConvert } from "../../utility/TimeAndDateConverter";
 
 const CommentList = () => {
   const [comments, setComments] = useState([]);
@@ -35,7 +35,7 @@ const CommentList = () => {
       toast.success(`کامنت تایید شد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error('خطایی رخ داده');
+        toast.error("خطایی رخ داده");
       }
     }
   };
@@ -45,11 +45,11 @@ const CommentList = () => {
     // const newCourse = courses.filter((m) => m._id !== courseId);
     // setCourses(newCourse);
     try {
-      await AnswerComment('salam', commentId, true);
+      await AnswerComment("salam", commentId, true);
       toast.warning(`وضعیت دانشجو به فعال تغییر کرد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error('خطایی رخ داده');
+        toast.error("خطایی رخ داده");
       }
       //   setCourses(originalCourses);
     }
@@ -102,7 +102,6 @@ const CommentList = () => {
                   size="sm"
                   onClick={() => handleAnswere(course._id)}
                 >
-                  {/* <Edit size={16} /> */}
                   <MessageCircle size={16} />
                 </Button.Ripple>
               </div>

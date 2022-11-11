@@ -1,312 +1,287 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
+
+import Sidebar from '@components/sidebar';
+
+import { selectThemeColors } from '@utils';
+
+import Select from 'react-select';
+import classnames from 'classnames';
+import { useForm, Controller } from 'react-hook-form';
+import avatar from '../../assets/images/avatars/1.png';
+
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  Row,
-  Col,
-  Input,
-  Form,
   Button,
   Label,
+  Form,
+  Input,
+  Row,
+  Col,
   FormFeedback,
-} from "reactstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import * as yup from "yup";
-import toast from "react-hot-toast";
-import { useForm, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import Cleave from "cleave.js/react";
+} from 'reactstrap';
 
-import { selectThemeColors } from "@utils";
-import Select from "react-select";
-// ** Styles
-import classnames from "classnames";
-import "@styles/react/pages/page-authentication.scss";
-import "cleave.js/dist/addons/cleave-phone.ir";
-import "@styles/react/pages/page-form-validation.scss";
-import "@styles/react/libs/flatpickr/flatpickr.scss";
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import toast from 'react-hot-toast';
+import { yupResolver } from '@hookform/resolvers/yup';
+import Cleave from 'cleave.js/react';
 
-import { GetAllTeachers } from "../../services/api/GetAllTeachers.api";
-import { GetAllLessons } from "../../services/api/getAllLessons.api";
-import { EditCourse } from "../../services/api/EditCourse.api";
-import { GetCourseById } from "../../services/api/GetCourseById.api";
+import htmlToDraft from 'html-to-draftjs';
+import { Editor } from 'react-draft-wysiwyg';
+import { EditorState, ContentState, convertFromRaw } from 'draft-js';
+import '@styles/react/libs/editor/editor.scss';
+import '@styles/base/plugins/forms/form-quill-editor.scss';
 
-const CoursesEdit = () => {
-  const { courseId } = useParams();
-  const navigate = useNavigate();
+import '@styles/react/pages/page-authentication.scss';
+import 'cleave.js/dist/addons/cleave-phone.ir';
+import '@styles/react/pages/page-form-validation.scss';
+import '@styles/react/libs/flatpickr/flatpickr.scss';
 
-  const [allTeachers, setAllTeachers] = useState([]);
-  const [allLessons, setAllLessons] = useState([]);
-  const [course, setCourse] = useState({});
+import { GetAllNews_Articles } from '../../services/api/GetAllNews-Articles.api';
+import { EditArticle } from '../../services/api/EditArticle.api';
 
-  const getTeachers = async () => {
-    const teachers = await GetAllTeachers();
-    setAllTeachers(teachers.result);
-  };
+const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
+  const initialContent = `
+  <p>Cupcake ipsum dolor sit. Amet dessert donut candy chocolate bar cotton dessert candy chocolate. Candy muffin danish. Macaroon brownie jelly beans marzipan cheesecake oat cake. Carrot cake macaroon chocolate cake. Jelly brownie jelly. Marzipan pie sweet roll.</p>
+  <p>Liquorice dragée cake chupa chups pie cotton candy jujubes bear claw sesame snaps. Fruitcake chupa chups chocolate bonbon lemon drops croissant caramels lemon drops. Candy jelly cake marshmallow jelly beans dragée macaroon. Gummies sugar plum fruitcake. Candy canes candy cupcake caramels cotton candy jujubes fruitcake.</p>
+  `;
 
-  const getLessons = async () => {
-    const lessons = await GetAllLessons();
-    setAllLessons(lessons.result);
-  };
+  const contentBlock = htmlToDraft(initialContent);
+  const contentState = ContentState.createFromBlockArray(
+    contentBlock.contentBlocks
+  );
+  const editorState = EditorState.createWithContent(contentState);
 
-  const getCourse = async () => {
-    const course = await GetCourseById(courseId);
-    setCourse(course.result);
+  const [allBlogs, setAllBlogs] = useState([]);
+  const [blog, setBlog] = useState({});
+  const getBlogs = async () => {
+    const blogs = await GetAllNews_Articles();
+    setAllBlogs(blogs?.result);
   };
 
   useEffect(() => {
-    getTeachers();
-    getLessons();
-    getCourse();
+    getBlogs();
   }, []);
 
+  useEffect(() => {
+    const blog = allBlogs.find((blog) => blog._id === blogId);
+    setBlog(blog);
+    // setContent(editorContent(initialContent));
+  }, [blogId]);
+  const [content, setContent] = useState(editorState);
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [blog]);
+
   const SignupSchema = yup.object().shape({
-    title: yup.string().required("لطفا فیلد نام درس را پر کنید"),
-    cost: yup.string().required("لطفا فیلد قیمت درس را پر کنید"),
-    capacity: yup.string().required("لطفا فیلد ظرفیت درس را پر کنید"),
-    startDate: yup
-      .string()
-      .required("لطفا فیلد تاریخ شروع را پر کنید")
-      .nullable(),
-    endDate: yup
-      .string()
-      .required("لطفا فیلد تاریخ پایان را پر کنید")
-      .nullable(),
+    title: yup.string().required('لطفا فیلد نام درس را پر کنید'),
   });
 
-  const options1 = {
-    date: true,
-    delimiter: "/",
-    datePattern: ["Y", "m", "d"],
+  const category = [
+    { value: 'news', label: 'اخبار' },
+    { value: 'article', label: 'مقاله' },
+  ];
+
+  const defaultValues = {
+    title: blog?.title,
+    category: {
+      value: blog?.category,
+      label: blog?.category === 'news' ? 'اخبار' : 'مقاله',
+    },
+    text: '',
   };
 
-  const teachers = allTeachers.map((teacher) => {
-    const { _id, fullName } = teacher;
-    return { value: _id, label: fullName };
-  });
-
-  const lessons = allLessons.map((lesson) => {
-    const { _id, lessonName } = lesson;
-    return { value: _id, label: lessonName };
-  });
-
-  // ** Hooks
   const {
     control,
     handleSubmit,
+    setValue,
+    clearErrors,
+    reset,
     formState: { errors },
   } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     resolver: yupResolver(SignupSchema),
+    defaultValues,
   });
 
+  const handleSidebarClosed = () => {
+    for (const key in defaultValues) {
+      setValue(key, '');
+    }
+    clearErrors();
+  };
+
+  // content.getCurrentContent().getPlainText()
+
   const onSubmit = async (data) => {
+    const newData = {
+      ...data,
+      text: content.getCurrentContent().getPlainText(),
+    };
+    toggleSidebar();
     try {
-      await EditCourse(data, courseId);
-      navigate("/courses");
+      await EditArticle(newData, blogId);
+      toast.success('مقاله با موفقیت ویرایش شد');
     } catch (error) {
-      toast.error("ویرایش دوره با خطا مواجه شد");
+      toast.error('ویرایش دوره با خطا مواجه شد');
     }
   };
 
+  const onChange = async (e) => {
+    const imagefile = document.querySelector('#prof');
+    let myFormData = new FormData();
+    myFormData.append('image', imagefile.files[0]);
+    const result = await UploadFile({ myFormData: myFormData });
+    setAvatar(result.data.result);
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle tag="h4">ویرایش درس</CardTitle>
-      </CardHeader>
-
-      <CardBody>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Row>
-            <Col md="6" sm="12" className="mb-1">
-              <div className="mb-1">
-                <Label className="form-label" for="title">
-                  نام درس:
-                </Label>
-                <Controller
-                  id="title"
-                  type="text"
-                  name="title"
-                  defaultValue={course.title}
-                  control={control}
-                  render={({ field }) => (
+    <Sidebar
+      size="lg"
+      open={open}
+      title="ویرایش اخبار و مقالات "
+      headerClassName="mb-1"
+      contentClassName="pt-0"
+      toggleSidebar={toggleSidebar}
+      onClosed={handleSidebarClosed}
+    >
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Row>
+          <Col sm="12" className="mb-2">
+            <div className="d-flex">
+              <div className="me-25">
+                <img
+                  className="rounded me-50"
+                  src={avatar}
+                  alt="بدون تصویر"
+                  height="100"
+                  width="100"
+                />
+              </div>
+              <div className="d-flex align-items-end mt-75 ms-1">
+                <div>
+                  <Button
+                    tag={Label}
+                    className="mb-75 me-75"
+                    size="sm"
+                    color="primary"
+                  >
+                    آپلود
                     <Input
-                      {...field}
-                      placeholder="صفر تا صد ری اکت"
-                      invalid={errors.title && true}
+                      type="file"
+                      name="profile"
+                      id="prof"
+                      // onChange={onChange}
+                      hidden
+                      accept="image/*"
                     />
-                  )}
-                />
-                {errors.title && (
-                  <FormFeedback>{errors.title.message}</FormFeedback>
-                )}
+                  </Button>
+                  <Button
+                    className="mb-75"
+                    color="secondary"
+                    size="sm"
+                    outline
+                    // onClick={handleImgReset}
+                  >
+                    حذف
+                  </Button>
+                  {/* <p className="mb-0">
+                    JPG، GIF یا PNG مجاز است. حداکثر اندازه 800
+                    کیلوبایت
+                  </p> */}
+                </div>
               </div>
-            </Col>
-            <Col md="6" sm="12" className="mb-1">
-              <div className="mb-1">
-                <Label className="form-label" for="cost">
-                  قیمت درس:
-                </Label>
-                <Controller
-                  id="cost"
-                  name="cost"
-                  defaultValue={course.cost}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="3000000"
-                      invalid={errors.cost && true}
-                    />
-                  )}
-                />
-                {errors.cost && (
-                  <FormFeedback>{errors.cost.message}</FormFeedback>
-                )}
-              </div>
-            </Col>
-
-            <Col md="6" sm="12" className="mb-1">
-              <div className="mb-1">
-                <Label className="form-label" for="startDate">
-                  تاریخ شروع:
-                </Label>
-                <Controller
-                  control={control}
-                  id="startDate"
-                  name="startDate"
-                  defaultValue={course.startDate}
-                  render={({ field }) => (
-                    <Cleave
-                      {...field}
-                      className={classnames("form-control", {
-                        "is-invalid": errors.startDate && true,
-                      })}
-                      placeholder="1300-01-01"
-                      options={options1}
-                    />
-                  )}
-                />
-                {errors.startDate && (
-                  <FormFeedback>{errors.startDate.message}</FormFeedback>
-                )}
-              </div>
-            </Col>
-            <Col md="6" sm="12" className="mb-1">
-              <div className="mb-1">
-                <Label className="form-label" for="endDate">
-                  تاریخ پایان:
-                </Label>
-                <Controller
-                  control={control}
-                  id="endDate"
-                  name="endDate"
-                  defaultValue={course.endDate}
-                  render={({ field }) => (
-                    <Cleave
-                      {...field}
-                      className={classnames("form-control", {
-                        "is-invalid": errors.endDate && true,
-                      })}
-                      placeholder="1300-01-01"
-                      options={options1}
-                    />
-                  )}
-                />
-                {errors.endDate && (
-                  <FormFeedback>{errors.endDate.message}</FormFeedback>
-                )}
-              </div>
-            </Col>
-            <Col md="6" sm="12" className="mb-1">
-              <div className="mb-1">
-                <Label className="form-label" for="capacity">
-                  ظرفیت:
-                </Label>
-                <Controller
-                  id="capacity"
-                  name="capacity"
-                  type="number"
-                  defaultValue={course.capacity}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="20"
-                      invalid={errors.capacity && true}
-                    />
-                  )}
-                />
-                {errors.capacity && (
-                  <FormFeedback>{errors.capacity.message}</FormFeedback>
-                )}
-              </div>
-            </Col>
-            <Col md="6" sm="12" className="mb-1">
-              <Label className="form-label" htmlFor="teacher">
-                استاد
+            </div>
+            <small className="mt-1">
+              JPG، GIF یا PNG مجاز است. حداکثر اندازه 800 کیلوبایت
+            </small>
+          </Col>
+          <Col md="12" sm="12" className="mb-1">
+            <div className="mb-1">
+              <Label className="form-label" for="title">
+                عنوان محتوا
               </Label>
               <Controller
-                id="teacher"
-                name="teacher"
-                theme={selectThemeColors}
-                defaultValue={teachers[0]}
+                id="title"
+                name="title"
                 control={control}
                 render={({ field }) => (
-                  <Select
+                  <Input
                     {...field}
-                    options={teachers}
-                    isClearable={false}
-                    className="react-select"
-                    classNamePrefix="select"
+                    type="text"
+                    invalid={errors.title && true}
                   />
                 )}
               />
-            </Col>
-            <Col md="6" sm="12" className="mb-1">
-              <Label className="form-label" htmlFor="lesson">
-                دوره
-              </Label>
-              <Controller
-                id="lesson"
-                name="lesson"
-                theme={selectThemeColors}
-                defaultValue={lessons[0]}
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={lessons}
-                    isClearable={false}
-                    className="react-select"
-                    classNamePrefix="select"
-                  />
-                )}
-              />
-            </Col>
-            <Col sm="12">
-              <div className="d-flex">
-                <Button className="me-1" color="primary" type="submit">
-                  ویرایش
-                </Button>
-                <Button
-                  outline
-                  color="secondary"
-                  onClick={() => navigate("/courses")}
-                >
-                  انصراف
-                </Button>
-              </div>
-            </Col>
-          </Row>
-        </Form>
-      </CardBody>
-    </Card>
+              {errors.title && (
+                <FormFeedback>{errors.title.message}</FormFeedback>
+              )}
+            </div>
+          </Col>
+          <Col md="12" sm="12" className="mb-1">
+            <Label className="form-label" htmlFor="category">
+              دسته بندی
+            </Label>
+            <Controller
+              id="category"
+              name="category"
+              theme={selectThemeColors}
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={category}
+                  isClearable={false}
+                  className="react-select"
+                  classNamePrefix="select"
+                />
+              )}
+            />
+          </Col>
+          <Col sm="12" className="mb-2">
+            <Label className="form-label" htmlFor="text">
+              توضیحات
+            </Label>
+            <Controller
+              id="text"
+              name="text"
+              control={control}
+              render={({ field }) => (
+                // <Input
+                //   {...field}
+                //   type="text"
+                //   invalid={errors.text && true}
+                // />
+                <Editor
+                  {...field}
+                  editorState={content}
+                  onEditorStateChange={(data) => setContent(data)}
+                />
+              )}
+            />
+            {errors.text && (
+              <FormFeedback>{errors.text.message}</FormFeedback>
+            )}
+          </Col>
+
+          <Col sm="12">
+            <div className="d-flex">
+              <Button className="me-1" color="primary" type="submit">
+                ویرایش
+              </Button>
+              <Button
+                outline
+                color="secondary"
+                onClick={toggleSidebar}
+              >
+                انصراف
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </Form>
+    </Sidebar>
   );
 };
 
-export default CoursesEdit;
+export default BlogsEdit;

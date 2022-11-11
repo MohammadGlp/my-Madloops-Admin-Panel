@@ -36,7 +36,6 @@ const Courses = () => {
 
   const toggleAddSidebar = () => setAddCourseOpen(!addCourseOpen);
   const toggleEditSidebar = () => setEditCourseOpen(!editCourseOpen);
-
   const getAll = async () => {
     try {
       const courses = await getAllCourses();

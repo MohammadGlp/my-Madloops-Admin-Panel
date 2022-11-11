@@ -1,12 +1,12 @@
 // ** Third Party Components
-import { X } from 'react-feather'
-import Proptypes from 'prop-types'
-import classnames from 'classnames'
-import PerfectScrollbar from 'react-perfect-scrollbar'
+import { X } from 'react-feather';
+import Proptypes from 'prop-types';
+import classnames from 'classnames';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
-import { Modal, ModalHeader, ModalBody } from 'reactstrap'
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-const Sidebar = props => {
+const Sidebar = (props) => {
   // ** Props
   const {
     open,
@@ -22,30 +22,34 @@ const Sidebar = props => {
     wrapperClassName,
     headerClassName,
     ...rest
-  } = props
+  } = props;
 
   // ** If user passes custom close btn render that else default close btn
-  const renderCloseBtn = closeBtn ? closeBtn : <X className='cursor-pointer' size={15} onClick={toggleSidebar} />
+  const renderCloseBtn = closeBtn ? (
+    closeBtn
+  ) : (
+    <X className="cursor-pointer" size={15} onClick={toggleSidebar} />
+  );
 
   return (
     <Modal
       isOpen={open}
       toggle={toggleSidebar}
       contentClassName={classnames('overflow-hidden', {
-        [contentClassName]: contentClassName
+        [contentClassName]: contentClassName,
       })}
       modalClassName={classnames('modal-slide-in', {
-        [wrapperClassName]: wrapperClassName
+        [wrapperClassName]: wrapperClassName,
       })}
       className={classnames({
         [className]: className,
         'sidebar-lg': size === 'lg',
-        'sidebar-sm': size === 'sm'
+        'sidebar-sm': size === 'sm',
       })}
       /*eslint-disable */
       {...(width !== undefined
         ? {
-            style: { width: String(width) + 'px' }
+            style: { width: String(width) + 'px' },
           }
         : {})}
       /*eslint-enable */
@@ -53,30 +57,30 @@ const Sidebar = props => {
     >
       <ModalHeader
         className={classnames({
-          [headerClassName]: headerClassName
+          [headerClassName]: headerClassName,
         })}
         toggle={toggleSidebar}
         close={renderCloseBtn}
-        tag='div'
+        tag="div"
       >
-        <h5 className='modal-title'>
-          <span className='align-middle'>{title}</span>
+        <h5 className="modal-title">
+          <span className="align-middle">{title}</span>
         </h5>
       </ModalHeader>
       <PerfectScrollbar options={{ wheelPropagation: false }}>
         <ModalBody
           className={classnames('flex-grow-1', {
-            [bodyClassName]: bodyClassName
+            [bodyClassName]: bodyClassName,
           })}
         >
           {children}
         </ModalBody>
       </PerfectScrollbar>
     </Modal>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;
 
 // ** PropTypes
 Sidebar.propTypes = {
@@ -89,5 +93,5 @@ Sidebar.propTypes = {
   children: Proptypes.any.isRequired,
   size: Proptypes.oneOf(['sm', 'lg']),
   toggleSidebar: Proptypes.func.isRequired,
-  width: Proptypes.oneOfType([Proptypes.number, Proptypes.string])
-}
+  width: Proptypes.oneOfType([Proptypes.number, Proptypes.string]),
+};

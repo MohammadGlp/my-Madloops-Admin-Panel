@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { CheckCircle, MessageCircle } from 'react-feather';
+import { useEffect, useState } from "react";
+import { CheckCircle, MessageCircle } from "react-feather";
 import {
   Table,
   Button,
@@ -11,29 +11,29 @@ import {
   Label,
   Form,
   FormFeedback,
-} from 'reactstrap';
-import toast from 'react-hot-toast';
-import { GetAllComments } from './../../services/api/GetAllComments.api';
-import { VarifyComment } from './../../services/api/VarifyComment.api';
-import { AnswerComment } from './../../services/api/AnswerComment.api';
+} from "reactstrap";
+import toast from "react-hot-toast";
+import { GetAllComments } from "./../../services/api/GetAllComments.api";
+import { VarifyComment } from "./../../services/api/VarifyComment.api";
+import { AnswerComment } from "./../../services/api/AnswerComment.api";
 import {
   dateConvert,
   timeConvert,
   toFarsiNumber,
-} from '../../utility/TimeAndDateConverter';
+} from "../../utility/TimeAndDateConverter";
 
-import Avatar from '@components/avatar';
-import profileImg from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import Avatar from "@components/avatar";
+import profileImg from "@src/assets/images/portrait/small/avatar-s-11.jpg";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 const CommentList = () => {
   const [comments, setComments] = useState([]);
   const [show, setShow] = useState(false);
   const [comment, setComment] = useState({});
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
 
   useEffect(() => {
     reset(defaultValues);
@@ -55,7 +55,7 @@ const CommentList = () => {
       toast.success(`کامنت تایید شد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error('خطایی رخ داده');
+        toast.error("خطایی رخ داده");
       }
     }
   };
@@ -70,9 +70,7 @@ const CommentList = () => {
   const handleModalActive = (commentId) => {
     setShow(!show);
 
-    const comment = comments.find(
-      (comment) => comment._id === commentId
-    );
+    const comment = comments.find((comment) => comment._id === commentId);
     setComment(comment);
 
     setDate(convertDate(comment?.createDate));
@@ -80,9 +78,7 @@ const CommentList = () => {
   };
 
   const SignupSchema = yup.object().shape({
-    answer: yup
-      .string()
-      .required('لطفا جوابی برای کامنت در نظر بگیرید'),
+    answer: yup.string().required("لطفا جوابی برای کامنت در نظر بگیرید"),
   });
 
   const {
@@ -93,7 +89,7 @@ const CommentList = () => {
     reset,
     formState: { errors },
   } = useForm({
-    mode: 'onChange',
+    mode: "onChange",
     resolver: yupResolver(SignupSchema),
     defaultValues,
   });
@@ -105,7 +101,7 @@ const CommentList = () => {
       toast.warning(`وضعیت دانشجو به فعال تغییر کرد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error('خطایی رخ داده');
+        toast.error("خطایی رخ داده");
       }
     }
     setShow(!show);
@@ -128,12 +124,9 @@ const CommentList = () => {
             <tr key={comment._id}>
               <td>
                 <div className="d-flex align-items-center">
-                  <div style={{ width: '30px' }}>
+                  <div style={{ width: "30px" }}>
                     {comment.answer ? (
-                      <CheckCircle
-                        className="text-success"
-                        size={14}
-                      />
+                      <CheckCircle className="text-success" size={14} />
                     ) : null}
                   </div>
 
@@ -141,9 +134,7 @@ const CommentList = () => {
                     <span className="align-middle fw-bold d-block">
                       {comment.username}
                     </span>
-                    <small className="text-muted">
-                      {comment.email}
-                    </small>
+                    <small className="text-muted">{comment.email}</small>
                   </div>
                 </div>
               </td>
@@ -206,7 +197,7 @@ const CommentList = () => {
               />
               <div>
                 <h6 className="mb-0">{comment.username}</h6>
-                <small className="text-muted">{date}</small>{' '}
+                <small className="text-muted">{date}</small>{" "}
                 <small className="text-muted">{time}</small>
               </div>
             </div>

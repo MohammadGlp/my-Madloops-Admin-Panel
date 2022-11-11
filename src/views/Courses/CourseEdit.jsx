@@ -39,7 +39,6 @@ const CourseEdit = ({ open, toggleSidebar, courseId }) => {
   const [allTeachers, setAllTeachers] = useState([]);
   const [allLessons, setAllLessons] = useState([]);
   const [course, setCourse] = useState({});
-
   const getTeachers = async () => {
     const teachers = await GetAllTeachers();
     setAllTeachers(teachers.result);

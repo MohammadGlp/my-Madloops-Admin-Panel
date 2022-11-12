@@ -47,13 +47,6 @@ const StudentEdit = ({ open, toggleSidebar, studentId }) => {
       .email("الگوی وارد شده صحیح نمی باشد")
       .required("لطفا فیلد ایمیل را پر کنید"),
 
-    nationalId: yup
-      .string()
-      .required("لطفا فیلد کد ملی را پر کنید")
-      .matches(/^[0-9]+$/, "الگوی وارد شده صحیح نمی باشد")
-      .min(10, "تعداد ارقام کد ملی صحیح نیست")
-      .max(10, "تعداد ارقام کد ملی صحیح نیست"),
-
     phoneNumber: yup
       .string()
       .required("شماره تماس را وارد کنید")
@@ -116,9 +109,7 @@ const StudentEdit = ({ open, toggleSidebar, studentId }) => {
           email: data?.email,
           address: data?.address,
           phoneNumber: data?.phoneNumber,
-          nationalId: data?.nationalId,
           birthDate: data?.birthDate,
-          role: "student",
           profile: result?.data.result
             ? result?.data.result
             : "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
@@ -224,6 +215,7 @@ const StudentEdit = ({ open, toggleSidebar, studentId }) => {
                     type="text"
                     placeholder={data?.nationalId}
                     invalid={errors.nationalId && true}
+                    disabled
                   />
                 )}
               />

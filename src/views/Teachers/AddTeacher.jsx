@@ -104,7 +104,6 @@ const AddTeacher = ({ open, toggleSidebar }) => {
         nationalId: data.nationalId,
         birthDate: data.birthDate,
         password: data.password,
-        role: "teacher",
         address: data.address,
         profile:
           "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",

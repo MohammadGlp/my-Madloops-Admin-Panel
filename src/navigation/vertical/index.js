@@ -8,16 +8,29 @@ import employees from "./employees";
 import blogs from "./blogs";
 import comments from "./comments";
 import lessons from "./lessons";
+import { getItem } from "../../services/storage/storage";
+
+const currentUser = getItem("userInfo");
+const x = JSON.parse(currentUser);
 
 // ** Merge & Export
-export default [
-  ...home,
-  ...lessons,
-  ...courses,
-  ...employees,
-  ...teachers,
-  ...students,
-  ...blogs,
-  ...comments,
-  ...profile,
-];
+export default x.role === "admin"
+  ? [
+      ...home,
+      ...lessons,
+      ...courses,
+      ...employees,
+      ...teachers,
+      ...students,
+      ...blogs,
+      ...comments,
+      ...profile,
+    ]
+  : x.role === "teacher" && [
+      ...home,
+      ...lessons,
+      ...courses,
+      ...blogs,
+      ...comments,
+      ...profile,
+    ];

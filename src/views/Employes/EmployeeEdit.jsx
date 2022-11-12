@@ -35,7 +35,7 @@ const AdminEdit = ({ open, toggleSidebar, adminId }) => {
       setData(result?.result);
     };
     getAdminById();
-  }, []);
+  }, [adminId]);
 
   useEffect(() => {
     reset(defaultValues);
@@ -111,6 +111,7 @@ const AdminEdit = ({ open, toggleSidebar, adminId }) => {
     myFormData.append("image", data.files[0]);
 
     const result = await UploadFile({ myFormData: myFormData });
+
     toggleSidebar();
     try {
       await EditEmployeeAll(

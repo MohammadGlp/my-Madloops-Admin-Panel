@@ -34,6 +34,8 @@ import "@styles/react/libs/flatpickr/flatpickr.scss";
 import { RegisterEmployee } from "../services/api/employee/RegisterEmployee.api";
 
 const RegisterBasic = () => {
+  const navigate = useNavigate();
+
   const colourOptions = [
     { value: "admin", label: "اَدمین" },
     { value: "teacher", label: "تیچر" },
@@ -105,6 +107,7 @@ const RegisterBasic = () => {
 
     if (response) {
       toast.success(response.message[0].message);
+      navigate("/login");
     } else if (response === null) {
       toast.error("مشکلی رخ داده است");
     } else {

@@ -50,12 +50,12 @@ const TeacherEdit = ({ open, toggleSidebar, teacherId }) => {
       .email("الگوی وارد شده صحیح نمی باشد")
       .required("لطفا فیلد ایمیل را پر کنید"),
 
-    nationalId: yup
-      .string()
-      .required("لطفا فیلد کد ملی را پر کنید")
-      .matches(/^[0-9]+$/, "الگوی وارد شده صحیح نمی باشد")
-      .min(10, "تعداد ارقام کد ملی صحیح نیست")
-      .max(10, "تعداد ارقام کد ملی صحیح نیست"),
+    // nationalId: yup
+    //   .string()
+    //   .required("لطفا فیلد کد ملی را پر کنید")
+    //   .matches(/^[0-9]+$/, "الگوی وارد شده صحیح نمی باشد")
+    //   .min(10, "تعداد ارقام کد ملی صحیح نیست")
+    //   .max(10, "تعداد ارقام کد ملی صحیح نیست"),
 
     phoneNumber: yup
       .string()
@@ -235,6 +235,7 @@ const TeacherEdit = ({ open, toggleSidebar, teacherId }) => {
                     type="text"
                     placeholder={data?.nationalId}
                     invalid={errors.nationalId && true}
+                    disabled
                   />
                 )}
               />

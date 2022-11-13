@@ -101,7 +101,7 @@ const LessonList = () => {
   return lessons ? (
     <>
       <Breadcrumbs
-        title="مدریت درس"
+        title="مدیریت درس"
         data={[{ title: 'مدیریت درس' }]}
       />
       <Card>

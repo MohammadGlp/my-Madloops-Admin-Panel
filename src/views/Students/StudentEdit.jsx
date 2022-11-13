@@ -1,29 +1,37 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from 'react';
 
-import Sidebar from "@components/sidebar";
+import Sidebar from '@components/sidebar';
 
-import { selectThemeColors } from "@utils";
+import { selectThemeColors } from '@utils';
 
-import Select from "react-select";
-import classnames from "classnames";
-import { useForm, Controller } from "react-hook-form";
+import Select from 'react-select';
+import classnames from 'classnames';
+import { useForm, Controller } from 'react-hook-form';
 
-import { Button, Label, Form, Input, Row, Col, FormFeedback } from "reactstrap";
+import {
+  Button,
+  Label,
+  Form,
+  Input,
+  Row,
+  Col,
+  FormFeedback,
+} from 'reactstrap';
 
-import { useNavigate } from "react-router-dom";
-import * as yup from "yup";
-import toast from "react-hot-toast";
-import { yupResolver } from "@hookform/resolvers/yup";
-import Cleave from "cleave.js/react";
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import toast from 'react-hot-toast';
+import { yupResolver } from '@hookform/resolvers/yup';
+import Cleave from 'cleave.js/react';
 
-import "@styles/react/pages/page-authentication.scss";
-import "cleave.js/dist/addons/cleave-phone.ir";
-import "@styles/react/pages/page-form-validation.scss";
-import "@styles/react/libs/flatpickr/flatpickr.scss";
+import '@styles/react/pages/page-authentication.scss';
+import 'cleave.js/dist/addons/cleave-phone.ir';
+import '@styles/react/pages/page-form-validation.scss';
+import '@styles/react/libs/flatpickr/flatpickr.scss';
 
-import { UploadFile } from "./../../services/api/UploadFile.api";
-import { GetStudentById } from "./../../services/api/GetStudentById";
-import { EditStudentInfo } from "./../../services/api/EditStudentInfo.api";
+import { UploadFile } from './../../services/api/UploadFile.api';
+import { GetStudentById } from './../../services/api/GetStudentById';
+import { EditStudentInfo } from './../../services/api/EditStudentInfo.api';
 
 const StudentEdit = ({
   open,
@@ -33,6 +41,7 @@ const StudentEdit = ({
 }) => {
   const [data, setData] = useState({});
   const [refreshStudentData, setRefreshStudentData] = useState(false);
+  const fileInput = useRef();
 
   useEffect(() => {
     if (studentId) {
@@ -46,33 +55,36 @@ const StudentEdit = ({
 
   useEffect(() => {
     reset(defaultValues);
+    setAvatar(data?.profile);
   }, [data]);
 
   const SignupSchema = yup.object().shape({
-    fullName: yup.string().required("لطفا فیلد نام و نام خانوادگی را پر کنید"),
+    fullName: yup
+      .string()
+      .required('لطفا فیلد نام و نام خانوادگی را پر کنید'),
     email: yup
       .string()
-      .email("الگوی وارد شده صحیح نمی باشد")
-      .required("لطفا فیلد ایمیل را پر کنید"),
+      .email('الگوی وارد شده صحیح نمی باشد')
+      .required('لطفا فیلد ایمیل را پر کنید'),
 
     phoneNumber: yup
       .string()
-      .required("شماره تماس را وارد کنید")
+      .required('شماره تماس را وارد کنید')
       .matches(
         /^(0|0098|\+98|98)9(0[1-5]|[1 3]\d|2[0-2]|98)\d{7}$/,
-        "شماره تلفن صحیح نیست"
+        'شماره تلفن صحیح نیست'
       ),
 
     birthDate: yup
       .string()
-      .required("لطفا فیلد تاریخ تولد را پر کنید")
+      .required('لطفا فیلد تاریخ تولد را پر کنید')
       .nullable(),
   });
 
   const options1 = {
     date: true,
-    delimiter: "/",
-    datePattern: ["Y", "m", "d"],
+    delimiter: '/',
+    datePattern: ['Y', 'm', 'd'],
   };
 
   const defaultValues = {
@@ -90,16 +102,26 @@ const StudentEdit = ({
     reset,
     formState: { errors },
   } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     resolver: yupResolver(SignupSchema),
     defaultValues,
   });
+  const [avatar, setAvatar] = useState();
+  const handleImgReset = () => {
+    setAvatar(
+      'https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png'
+    );
+  };
 
-  const onSubmit = async (values) => {
+  const handleImgChange = async (e) => {
     let myFormData = new FormData();
-    myFormData.append("image", values.files[0]);
+    myFormData.append('image', e.target.files[0]);
 
     const result = await UploadFile({ myFormData: myFormData });
+    setAvatar(result?.data.result);
+  };
+
+  const onSubmit = async (values) => {
     toggleSidebar();
     try {
       await EditStudentInfo(
@@ -109,15 +131,15 @@ const StudentEdit = ({
           phoneNumber: values?.phoneNumber,
           nationalId: values?.nationalId,
           birthDate: values?.birthDate,
-          profile: result?.data.result ? result?.data.result : data?.profile,
+          profile: avatar ? avatar : data?.profile,
         },
         studentId
       );
-      toast.success("دانشجو با موفقیت ویرایش شد");
+      toast.success('دانشجو با موفقیت ویرایش شد');
       setRefreshStudentInfo((old) => !old);
       setRefreshStudentData((old) => !old);
     } catch (error) {
-      toast.error("ویرایش دانشجو با خطا مواجه شد");
+      toast.error('ویرایش دانشجو با خطا مواجه شد');
     }
   };
 
@@ -130,6 +152,51 @@ const StudentEdit = ({
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
     >
+      <Row>
+        <Col sm="12" className="mb-1">
+          <div className="d-flex">
+            <div className="me-25">
+              <img
+                className="rounded-circle me-50"
+                src={avatar}
+                // alt="بدون تصویر"
+                height="100"
+                width="100"
+              />
+            </div>
+            <div className="d-flex align-items-end mt-75 ms-1">
+              <div>
+                <Button
+                  tag={Label}
+                  className="mb-75 me-75"
+                  size="sm"
+                  color="primary"
+                >
+                  آپلود
+                  <input
+                    id="profile"
+                    type="file"
+                    hidden
+                    onChange={handleImgChange}
+                  />
+                </Button>
+                <Button
+                  className="mb-75"
+                  color="secondary"
+                  size="sm"
+                  outline
+                  onClick={handleImgReset}
+                >
+                  حذف
+                </Button>
+                <p className="mb-0">
+                  JPG، GIF یا PNG مجاز است. حداکثر اندازه 800 کیلوبایت
+                </p>
+              </div>
+            </div>
+          </div>
+        </Col>
+      </Row>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
           <Col md="12" sm="12" className="mb-1">
@@ -185,8 +252,8 @@ const StudentEdit = ({
               render={({ field }) => (
                 <Cleave
                   {...field}
-                  className={classnames("form-control", {
-                    "is-invalid": errors.birthDate && true,
+                  className={classnames('form-control', {
+                    'is-invalid': errors.birthDate && true,
                   })}
                   placeholder={data?.birthDate}
                   options={options1}
@@ -217,7 +284,9 @@ const StudentEdit = ({
                 )}
               />
               {errors.nationalId && (
-                <FormFeedback>{errors.nationalId.message}</FormFeedback>
+                <FormFeedback>
+                  {errors.nationalId.message}
+                </FormFeedback>
               )}
             </div>
           </Col>
@@ -240,22 +309,21 @@ const StudentEdit = ({
               )}
             />
             {errors.phoneNumber && (
-              <FormFeedback>{errors.phoneNumber.message}</FormFeedback>
+              <FormFeedback>
+                {errors.phoneNumber.message}
+              </FormFeedback>
             )}
-          </Col>
-          <Col md="12" sm="12" className="mb-1">
-            <Label className="form-label" for="profile">
-              آپلود عکس :
-            </Label>
-
-            <input id="profile" type="file" {...register("files")} />
           </Col>
           <Col sm="12">
             <div className="d-flex">
               <Button className="me-1" color="primary" type="submit">
                 ویرایش
               </Button>
-              <Button outline color="secondary" onClick={toggleSidebar}>
+              <Button
+                outline
+                color="secondary"
+                onClick={toggleSidebar}
+              >
                 انصراف
               </Button>
             </div>

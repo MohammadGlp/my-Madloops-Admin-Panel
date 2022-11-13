@@ -70,7 +70,7 @@ const Blogs = () => {
   return blogs ? (
     <>
       <Breadcrumbs
-        title="مدریت اخبار و مقالات"
+        title="مدیریت اخبار و مقالات"
         data={[{ title: 'مدیریت اخبار و مقالات' }]}
       />
       <Card>

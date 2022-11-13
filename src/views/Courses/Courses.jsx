@@ -115,7 +115,7 @@ const Courses = () => {
   return courses ? (
     <>
       <Breadcrumbs
-        title="مدریت دوره"
+        title="مدیریت دوره"
         data={[{ title: 'مدیریت دوره' }]}
       />
       <Card>

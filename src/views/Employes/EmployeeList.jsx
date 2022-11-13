@@ -1,15 +1,26 @@
-import { useEffect, useState } from "react";
-import { Edit, Trash, UserCheck, UserX } from "react-feather";
-import { Table, Button, Badge } from "reactstrap";
-import toast from "react-hot-toast";
-import { DeactiveEmployee } from "../../services/api/deactiveEmployee";
-import { ActiveEmployee } from "../../services/api/ActiveEmployee";
-import { GetAllEmployees } from "./../../services/api/GetAllEmployees.api";
-import { DeleteEmployee } from "../../services/api/DeleteEmployee.api";
-import AdminEdit from "./EmployeeEdit";
-import { GetEmployeeById } from "./../../services/api/GetEmployeeById.api";
-import { getToken } from "../../services/AuthServices/AuthServices";
-import { DecodeToken } from "../../utility/DecodeToken";
+import { useEffect, useState } from 'react';
+import { Edit, Search, Trash, UserCheck, UserX } from 'react-feather';
+import {
+  Table,
+  Button,
+  Badge,
+  Card,
+  CardBody,
+  CardHeader,
+  InputGroup,
+  InputGroupText,
+  Input,
+} from 'reactstrap';
+import toast from 'react-hot-toast';
+import { DeactiveEmployee } from '../../services/api/deactiveEmployee';
+import { ActiveEmployee } from '../../services/api/ActiveEmployee';
+import { GetAllEmployees } from './../../services/api/GetAllEmployees.api';
+import { DeleteEmployee } from '../../services/api/DeleteEmployee.api';
+import AdminEdit from './EmployeeEdit';
+import { GetEmployeeById } from './../../services/api/GetEmployeeById.api';
+import { getToken } from '../../services/AuthServices/AuthServices';
+import { DecodeToken } from '../../utility/DecodeToken';
+import Breadcrumbs from '@components/breadcrumbs';
 
 const EmployeesList = () => {
   const [employees, setEmployees] = useState([]);
@@ -42,13 +53,15 @@ const EmployeesList = () => {
       setStudents((old) => {
         let newData = [...old];
         let newAdminData = newData;
-        newAdminData = newAdminData.filter((item) => item._id !== employeeId);
+        newAdminData = newAdminData.filter(
+          (item) => item._id !== employeeId
+        );
         newData = newAdminData;
         return newData;
       });
       toast.success(`ادمین با موفقیت حذف شد`);
     } else {
-      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
+      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
     }
   };
 
@@ -59,7 +72,7 @@ const EmployeesList = () => {
       setRefreshAdminData((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
   };
@@ -67,11 +80,11 @@ const EmployeesList = () => {
   const handleDeactive = async (employeeId) => {
     try {
       await DeactiveEmployee(employeeId);
-      toast.success(`وضعیت ادمین به فعال تغییر کرد`);
+      toast.success(`وضعیت ادمین به غیرفعال تغییر کرد`);
       setRefreshAdminData((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
   };
@@ -86,94 +99,122 @@ const EmployeesList = () => {
 
   return employees ? (
     <>
-      <Table responsive>
-        <thead>
-          <tr>
-            <th>نام دانشجو</th>
-            <th>کد ملی</th>
-            <th>شماره تماس</th>
-            <th>تاریخ تولد</th>
-            <th>وضعیت</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {employees
-            .filter(
-              (em) => em.role === "admin" && em.fullName !== userData?.fullName
-            )
-            .map((course) => (
-              <tr key={course._id}>
-                <td>
-                  <img
-                    className="me-75"
-                    src={course.profile}
-                    alt="angular"
-                    height="20"
-                    width="20"
-                  />
-                  <span className="align-middle fw-bold">
-                    {course.fullName}
-                  </span>
-                </td>
-                <td>{course.nationalId}</td>
-                <td>{course.phoneNumber}</td>
-                <td>{course.birthDate}</td>
-                <td>
-                  {course.isActive ? (
-                    <Badge className="px-1" pill color="light-success">
-                      فعال
-                    </Badge>
-                  ) : (
-                    <Badge className="px-2" color="light-danger">
-                      غیرفعال
-                    </Badge>
-                  )}
-                </td>
-                <td>
-                  <div className="d-inline-block me-1 mb-1">
-                    <Button.Ripple
-                      color="primary"
-                      size="sm"
-                      onClick={() => handleEdit(course?._id)}
-                    >
-                      <Edit size={16} />
-                    </Button.Ripple>
-                  </div>
-                  <div className="d-inline-block me-1 mb-1">
-                    <Button.Ripple color="danger" size="sm">
-                      <Trash
-                        size={16}
-                        onClick={() =>
-                          handleDelete(course._id, course.fullName)
-                        }
-                      />
-                    </Button.Ripple>
-                  </div>
-                  <div className="d-inline-block me-1 mb-1">
-                    {course.isActive === true ? (
-                      <Button.Ripple
-                        color="danger"
-                        size="sm"
-                        onClick={() => handleDeactive(course._id)}
-                      >
-                        <UserX size={16} />
-                      </Button.Ripple>
-                    ) : (
-                      <Button.Ripple
-                        color="success"
-                        size="sm"
-                        onClick={() => handleActive(course._id)}
-                      >
-                        <UserCheck size={16} />
-                      </Button.Ripple>
-                    )}
-                  </div>
-                </td>
+      <Breadcrumbs
+        title="مدیریت کارمندان"
+        data={[{ title: 'مدیریت کارمندان' }]}
+      />
+      <Card>
+        <CardHeader className="d-flex justify-content-between align-items-center">
+          <div>
+            <InputGroup className="input-group-merge">
+              <InputGroupText>
+                <Search size={14} />
+              </InputGroupText>
+              <Input placeholder="search..." />
+            </InputGroup>
+          </div>
+        </CardHeader>
+        <CardBody>
+          <Table responsive>
+            <thead>
+              <tr>
+                <th>نام دانشجو</th>
+                <th>کد ملی</th>
+                <th>شماره تماس</th>
+                <th>تاریخ تولد</th>
+                <th>وضعیت</th>
+                <th></th>
               </tr>
-            ))}
-        </tbody>
-      </Table>
+            </thead>
+            <tbody>
+              {employees
+                .filter(
+                  (em) =>
+                    em.role === 'admin' &&
+                    em.fullName !== userData?.fullName
+                )
+                .map((course) => (
+                  <tr key={course._id}>
+                    <td>
+                      <img
+                        className="me-75 rounded-circle"
+                        src={course.profile}
+                        alt="angular"
+                        height="40"
+                        width="40"
+                      />
+                      <span className="align-middle fw-bold">
+                        {course.fullName}
+                      </span>
+                    </td>
+                    <td>{course.nationalId}</td>
+                    <td>{course.phoneNumber}</td>
+                    <td>{course.birthDate}</td>
+                    <td>
+                      {course.isActive ? (
+                        <Badge
+                          className="px-1"
+                          pill
+                          color="light-success"
+                        >
+                          فعال
+                        </Badge>
+                      ) : (
+                        <Badge className="px-2" color="light-danger">
+                          غیرفعال
+                        </Badge>
+                      )}
+                    </td>
+                    <td>
+                      <div className="d-inline-block me-1 mb-1">
+                        <Button.Ripple
+                          color="primary"
+                          size="sm"
+                          onClick={() => handleEdit(course?._id)}
+                        >
+                          <Edit size={16} />
+                        </Button.Ripple>
+                      </div>
+                      <div className="d-inline-block me-1 mb-1">
+                        <Button.Ripple color="danger" size="sm">
+                          <Trash
+                            size={16}
+                            onClick={() =>
+                              handleDelete(
+                                course._id,
+                                course.fullName
+                              )
+                            }
+                          />
+                        </Button.Ripple>
+                      </div>
+                      <div className="d-inline-block me-1 mb-1">
+                        {course.isActive === true ? (
+                          <Button.Ripple
+                            color="danger"
+                            size="sm"
+                            onClick={() => handleDeactive(course._id)}
+                          >
+                            <UserX size={16} />
+                          </Button.Ripple>
+                        ) : (
+                          <Button.Ripple
+                            color="success"
+                            size="sm"
+                            onClick={() => handleActive(course._id)}
+                          >
+                            <UserCheck size={16} />
+                          </Button.Ripple>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+        </CardBody>
+      </Card>
+
       <AdminEdit
         open={editAdminOpen}
         toggleSidebar={toggleEditSidebar}

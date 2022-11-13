@@ -179,22 +179,21 @@ const CommentList = () => {
                   <td>
                     <div className="d-inline-block me-1">
                       <Button.Ripple
-                        color="primary"
-                        size="sm"
-                        onClick={() => handleModalActive(comment._id)}
-                      >
-                        <MessageCircle size={16} />
-                      </Button.Ripple>
-                    </div>
-
-                    <div className="d-inline-block me-1">
-                      <Button.Ripple
                         color="success"
                         size="sm"
                         onClick={() => handleVerify(comment._id)}
                         disabled={comment.verified}
                       >
                         <CheckCircle size={16} />
+                      </Button.Ripple>
+                    </div>
+                    <div className="d-inline-block me-1">
+                      <Button.Ripple
+                        color="primary"
+                        size="sm"
+                        onClick={() => handleModalActive(comment._id)}
+                      >
+                        <MessageCircle size={16} />
                       </Button.Ripple>
                     </div>
                   </td>

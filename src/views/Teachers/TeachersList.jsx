@@ -1,5 +1,12 @@
-import { useEffect, useState } from "react";
-import { Edit, Trash, UserCheck, UserX, Inbox } from "react-feather";
+import { useEffect, useState } from 'react';
+import {
+  Edit,
+  Trash,
+  UserCheck,
+  UserX,
+  Inbox,
+  Search,
+} from 'react-feather';
 import {
   Table,
   Button,
@@ -7,17 +14,24 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-} from "reactstrap";
-import toast from "react-hot-toast";
-import { DeactiveEmployee } from "../../services/api/deactiveEmployee";
-import { ActiveEmployee } from "../../services/api/ActiveEmployee";
-import { GetAllTeachers } from "./../../services/api/GetAllTeachers.api";
-import { DeleteEmployee } from "./../../services/api/DeleteEmployee.api";
-import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
-import AddTeacher from "./AddTeacher";
-import TeacherEdit from "./TeacherEdit";
-import { GetCourseById } from "./../../services/api/GetCourseById.api";
-import { getAllCourses } from "./../../services/api/GetAllCourses.api";
+  Card,
+  CardBody,
+  CardHeader,
+  InputGroup,
+  InputGroupText,
+  Input,
+} from 'reactstrap';
+import toast from 'react-hot-toast';
+import { DeactiveEmployee } from '../../services/api/deactiveEmployee';
+import { ActiveEmployee } from '../../services/api/ActiveEmployee';
+import { GetAllTeachers } from './../../services/api/GetAllTeachers.api';
+import { DeleteEmployee } from './../../services/api/DeleteEmployee.api';
+import { DeleteCourse } from './../../services/api/DeleteCourse.api';
+import AddTeacher from './AddTeacher';
+import TeacherEdit from './TeacherEdit';
+import { GetCourseById } from './../../services/api/GetCourseById.api';
+import { getAllCourses } from './../../services/api/GetAllCourses.api';
+import Breadcrumbs from '@components/breadcrumbs';
 
 const TeachersList = () => {
   const [teachers, setTeachers] = useState([]);
@@ -54,7 +68,7 @@ const TeachersList = () => {
       });
       toast.success(`استاد با موفقیت حذف شد`);
     } else {
-      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
+      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
     }
   };
 
@@ -73,7 +87,7 @@ const TeachersList = () => {
       setRtc((old) => !old);
       toast.success(`دوره ${courseName} با موفقیت از استاد حذف شد`);
     } else {
-      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
+      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
     }
   };
 
@@ -84,7 +98,7 @@ const TeachersList = () => {
       setRefreshTeacherInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
   };
@@ -96,7 +110,7 @@ const TeachersList = () => {
       setRefreshTeacherInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
   };
@@ -116,7 +130,8 @@ const TeachersList = () => {
   };
 
   const toggleAddSidebar = () => setAddTeacherOpen(!addTeacherOpen);
-  const toggleEditSidebar = () => setEditTeacherOpen(!editTeacherOpen);
+  const toggleEditSidebar = () =>
+    setEditTeacherOpen(!editTeacherOpen);
 
   const handleEdit = (teacherId) => {
     toggleEditSidebar();
@@ -125,106 +140,136 @@ const TeachersList = () => {
 
   return teachers ? (
     <>
-      <Button.Ripple
-        color="primary"
-        size="md"
-        className="mb-2"
-        onClick={toggleAddSidebar}
-      >
-        افزودن استاد
-      </Button.Ripple>
-      <Table responsive>
-        <thead>
-          <tr>
-            <th>نام دانشجو</th>
-            <th>کد ملی</th>
-            <th>شماره تماس</th>
-            <th>تاریخ تولد</th>
-            <th>وضعیت</th>
-            <th>عملیات</th>
-          </tr>
-        </thead>
-        <tbody>
-          {teachers?.map((course) => (
-            <tr key={course._id}>
-              <td>
-                <img
-                  className="me-75"
-                  src={course.profile}
-                  alt="angular"
-                  height="20"
-                  width="20"
-                />
-                <span className="align-middle fw-bold">{course.fullName}</span>
-              </td>
-              <td>{course.nationalId}</td>
-              <td>{course.phoneNumber}</td>
-              <td>{course.birthDate}</td>
-              <td>
-                {course.isActive ? (
-                  <Badge className="px-1" pill color="light-success">
-                    فعال
-                  </Badge>
-                ) : (
-                  <Badge className="px-2" color="light-danger">
-                    غیرفعال
-                  </Badge>
-                )}
-              </td>
-              <td>
-                <div className="d-inline-block me-1 mb-1">
-                  <Button.Ripple
-                    color="primary"
-                    size="sm"
-                    onClick={() => handleEdit(course?._id)}
-                  >
-                    <Edit size={16} />
-                  </Button.Ripple>
-                </div>
-                <div className="d-inline-block me-1 mb-1">
-                  <Button.Ripple
-                    color="warning"
-                    size="sm"
-                    onClick={() =>
-                      handleShowTeacherCourse(course._id, course.fullName)
-                    }
-                  >
-                    <Inbox size={16} />
-                  </Button.Ripple>
-                </div>
-
-                <div className="d-inline-block me-1 mb-1">
-                  <Button.Ripple color="danger" size="sm">
-                    <Trash
-                      size={16}
-                      onClick={() => handleDelete(course._id, course.fullName)}
+      <Breadcrumbs
+        title="مدیریت اساتید"
+        data={[{ title: 'مدیریت اساتید' }]}
+      />
+      <Card>
+        <CardHeader className="d-flex justify-content-between align-items-center">
+          <div>
+            <InputGroup className="input-group-merge">
+              <InputGroupText>
+                <Search size={14} />
+              </InputGroupText>
+              <Input placeholder="search..." />
+            </InputGroup>
+          </div>
+          <Button.Ripple
+            color="primary"
+            size="md"
+            className="mb-2"
+            onClick={toggleAddSidebar}
+          >
+            افزودن استاد
+          </Button.Ripple>
+        </CardHeader>
+        <CardBody>
+          <Table responsive>
+            <thead>
+              <tr>
+                <th>نام دانشجو</th>
+                <th>کد ملی</th>
+                <th>شماره تماس</th>
+                <th>تاریخ تولد</th>
+                <th>وضعیت</th>
+                <th>عملیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              {teachers?.map((course) => (
+                <tr key={course._id}>
+                  <td>
+                    <img
+                      className="me-75 rounded-circle"
+                      src={course.profile}
+                      alt="angular"
+                      height="40"
+                      width="40"
                     />
-                  </Button.Ripple>
-                </div>
-                <div className="d-inline-block me-1 mb-1">
-                  {course.isActive === true ? (
-                    <Button.Ripple
-                      color="danger"
-                      size="sm"
-                      onClick={() => handleDeactive(course._id)}
-                    >
-                      <UserX size={16} />
-                    </Button.Ripple>
-                  ) : (
-                    <Button.Ripple
-                      color="success"
-                      size="sm"
-                      onClick={() => handleActive(course._id)}
-                    >
-                      <UserCheck size={16} />
-                    </Button.Ripple>
-                  )}
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+                    <span className="align-middle fw-bold">
+                      {course.fullName}
+                    </span>
+                  </td>
+                  <td>{course.nationalId}</td>
+                  <td>{course.phoneNumber}</td>
+                  <td>{course.birthDate}</td>
+                  <td>
+                    {course.isActive ? (
+                      <Badge
+                        className="px-1"
+                        pill
+                        color="light-success"
+                      >
+                        فعال
+                      </Badge>
+                    ) : (
+                      <Badge className="px-2" color="light-danger">
+                        غیرفعال
+                      </Badge>
+                    )}
+                  </td>
+                  <td>
+                    <div className="d-inline-block me-1 mb-1">
+                      <Button.Ripple
+                        color="primary"
+                        size="sm"
+                        onClick={() => handleEdit(course?._id)}
+                      >
+                        <Edit size={16} />
+                      </Button.Ripple>
+                    </div>
+                    <div className="d-inline-block me-1 mb-1">
+                      <Button.Ripple
+                        color="warning"
+                        size="sm"
+                        onClick={() =>
+                          handleShowTeacherCourse(
+                            course._id,
+                            course.fullName
+                          )
+                        }
+                      >
+                        <Inbox size={16} />
+                      </Button.Ripple>
+                    </div>
+
+                    <div className="d-inline-block me-1 mb-1">
+                      <Button.Ripple color="danger" size="sm">
+                        <Trash
+                          size={16}
+                          onClick={() =>
+                            handleDelete(course._id, course.fullName)
+                          }
+                        />
+                      </Button.Ripple>
+                    </div>
+                    <div className="d-inline-block me-1 mb-1">
+                      {course.isActive === true ? (
+                        <Button.Ripple
+                          color="danger"
+                          size="sm"
+                          onClick={() => handleDeactive(course._id)}
+                        >
+                          <UserX size={16} />
+                        </Button.Ripple>
+                      ) : (
+                        <Button.Ripple
+                          color="success"
+                          size="sm"
+                          onClick={() => handleActive(course._id)}
+                        >
+                          <UserCheck size={16} />
+                        </Button.Ripple>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </CardBody>
+      </Card>
+
       <AddTeacher
         open={addTeacherOpen}
         toggleSidebar={toggleAddSidebar}
@@ -243,7 +288,9 @@ const TeachersList = () => {
       >
         <ModalHeader toggle={() => setModal(!modal)}>
           درس های استاد :
-          {teachers.map((name) => name.fullName).find((m) => m === teacherName)}
+          {teachers
+            .map((name) => name.fullName)
+            .find((m) => m === teacherName)}
         </ModalHeader>
         <ModalBody>
           <Table responsive>
@@ -271,7 +318,10 @@ const TeachersList = () => {
                           color="danger"
                           size="sm"
                           onClick={() =>
-                            handleDeleteTeacherCourse(course._id, course.title)
+                            handleDeleteTeacherCourse(
+                              course._id,
+                              course.title
+                            )
                           }
                         >
                           <Trash size={16} />

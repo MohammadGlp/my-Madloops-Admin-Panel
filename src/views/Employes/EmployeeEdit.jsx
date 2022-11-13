@@ -1,27 +1,40 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import Sidebar from "@components/sidebar";
+import Sidebar from '@components/sidebar';
 
-import classnames from "classnames";
-import { useForm, Controller } from "react-hook-form";
+import classnames from 'classnames';
+import { useForm, Controller } from 'react-hook-form';
 
-import { Button, Label, Form, Input, Row, Col, FormFeedback } from "reactstrap";
+import {
+  Button,
+  Label,
+  Form,
+  Input,
+  Row,
+  Col,
+  FormFeedback,
+} from 'reactstrap';
 
-import * as yup from "yup";
-import toast from "react-hot-toast";
-import { yupResolver } from "@hookform/resolvers/yup";
-import Cleave from "cleave.js/react";
+import * as yup from 'yup';
+import toast from 'react-hot-toast';
+import { yupResolver } from '@hookform/resolvers/yup';
+import Cleave from 'cleave.js/react';
 
-import "@styles/react/pages/page-authentication.scss";
-import "cleave.js/dist/addons/cleave-phone.ir";
-import "@styles/react/pages/page-form-validation.scss";
-import "@styles/react/libs/flatpickr/flatpickr.scss";
+import '@styles/react/pages/page-authentication.scss';
+import 'cleave.js/dist/addons/cleave-phone.ir';
+import '@styles/react/pages/page-form-validation.scss';
+import '@styles/react/libs/flatpickr/flatpickr.scss';
 
-import { GetEmployeeById } from "./../../services/api/GetEmployeeById.api";
-import { UploadFile } from "./../../services/api/UploadFile.api";
-import { EditEmployeeAll } from "./../../services/api/EditEmployeeKok";
+import { GetEmployeeById } from './../../services/api/GetEmployeeById.api';
+import { UploadFile } from './../../services/api/UploadFile.api';
+import { EditEmployeeAll } from './../../services/api/EditEmployeeKok';
 
-const AdminEdit = ({ open, toggleSidebar, adminId, setRefreshAdminData }) => {
+const AdminEdit = ({
+  open,
+  toggleSidebar,
+  adminId,
+  setRefreshAdminData,
+}) => {
   const [data, setData] = useState({});
   const [refreshAdminInfo, setRefreshAdminInfo] = useState(false);
 
@@ -36,42 +49,45 @@ const AdminEdit = ({ open, toggleSidebar, adminId, setRefreshAdminData }) => {
   }, [adminId, refreshAdminInfo]);
 
   useEffect(() => {
+    setAvatar(data?.profile);
     reset(defaultValues);
   }, [data]);
 
   const SignupSchema = yup.object().shape({
-    fullName: yup.string().required("لطفا فیلد نام و نام خانوادگی را پر کنید"),
-    address: yup.string().required("لطفا فیلد آدرس را پر کنید"),
+    fullName: yup
+      .string()
+      .required('لطفا فیلد نام و نام خانوادگی را پر کنید'),
+    address: yup.string().required('لطفا فیلد آدرس را پر کنید'),
     email: yup
       .string()
-      .email("الگوی وارد شده صحیح نمی باشد")
-      .required("لطفا فیلد ایمیل را پر کنید"),
+      .email('الگوی وارد شده صحیح نمی باشد')
+      .required('لطفا فیلد ایمیل را پر کنید'),
 
     nationalId: yup
       .string()
-      .required("لطفا فیلد کد ملی را پر کنید")
-      .matches(/^[0-9]+$/, "الگوی وارد شده صحیح نمی باشد")
-      .min(10, "تعداد ارقام کد ملی صحیح نیست")
-      .max(10, "تعداد ارقام کد ملی صحیح نیست"),
+      .required('لطفا فیلد کد ملی را پر کنید')
+      .matches(/^[0-9]+$/, 'الگوی وارد شده صحیح نمی باشد')
+      .min(10, 'تعداد ارقام کد ملی صحیح نیست')
+      .max(10, 'تعداد ارقام کد ملی صحیح نیست'),
 
     phoneNumber: yup
       .string()
-      .required("شماره تماس را وارد کنید")
+      .required('شماره تماس را وارد کنید')
       .matches(
         /^(0|0098|\+98|98)9(0[1-5]|[1 3]\d|2[0-2]|98)\d{7}$/,
-        "شماره تلفن صحیح نیست"
+        'شماره تلفن صحیح نیست'
       ),
 
     birthDate: yup
       .string()
-      .required("لطفا فیلد تاریخ تولد را پر کنید")
+      .required('لطفا فیلد تاریخ تولد را پر کنید')
       .nullable(),
   });
 
   const options1 = {
     date: true,
-    delimiter: "/",
-    datePattern: ["Y", "m", "d"],
+    delimiter: '/',
+    datePattern: ['Y', 'm', 'd'],
   };
 
   const defaultValues = {
@@ -90,17 +106,28 @@ const AdminEdit = ({ open, toggleSidebar, adminId, setRefreshAdminData }) => {
     reset,
     formState: { errors },
   } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     resolver: yupResolver(SignupSchema),
     defaultValues,
   });
 
-  const onSubmit = async (values) => {
+  const [avatar, setAvatar] = useState('');
+
+  const handleImgChange = async (e) => {
     let myFormData = new FormData();
-    myFormData.append("image", values.files[0]);
+    myFormData.append('image', e.target.files[0]);
 
     const result = await UploadFile({ myFormData: myFormData });
+    setAvatar(result?.data.result);
+  };
 
+  const handleImgReset = () => {
+    setAvatar(
+      'https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png'
+    );
+  };
+
+  const onSubmit = async (values) => {
     toggleSidebar();
     try {
       await EditEmployeeAll(
@@ -111,15 +138,17 @@ const AdminEdit = ({ open, toggleSidebar, adminId, setRefreshAdminData }) => {
           phoneNumber: values.phoneNumber,
           nationalId: values.nationalId,
           birthDate: values.birthDate,
-          profile: result?.data.result ? result?.data.result : data?.profile,
+          profile: result?.data.result
+            ? result?.data.result
+            : data?.profile,
         },
         adminId
       );
       setRefreshAdminInfo((old) => !old);
-      toast.success("ادمین با موفقیت ویرایش شد");
+      toast.success('ادمین با موفقیت ویرایش شد');
       setRefreshAdminData((old) => !old);
     } catch (error) {
-      toast.error("ویرایش ادمین با خطا مواجه شد");
+      toast.error('ویرایش ادمین با خطا مواجه شد');
     }
   };
 
@@ -132,6 +161,51 @@ const AdminEdit = ({ open, toggleSidebar, adminId, setRefreshAdminData }) => {
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
     >
+      <Row>
+        <Col sm="12" className="mb-1">
+          <div className="d-flex">
+            <div className="me-25">
+              <img
+                className="rounded-circle me-50"
+                src={avatar}
+                // alt="بدون تصویر"
+                height="100"
+                width="100"
+              />
+            </div>
+            <div className="d-flex align-items-end mt-75 ms-1">
+              <div>
+                <Button
+                  tag={Label}
+                  className="mb-75 me-75"
+                  size="sm"
+                  color="primary"
+                >
+                  آپلود
+                  <input
+                    id="profile"
+                    type="file"
+                    hidden
+                    onChange={handleImgChange}
+                  />
+                </Button>
+                <Button
+                  className="mb-75"
+                  color="secondary"
+                  size="sm"
+                  outline
+                  onClick={handleImgReset}
+                >
+                  حذف
+                </Button>
+                <p className="mb-0">
+                  JPG، GIF یا PNG مجاز است. حداکثر اندازه 800 کیلوبایت
+                </p>
+              </div>
+            </div>
+          </div>
+        </Col>
+      </Row>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
           <Col md="12" sm="12" className="mb-1">
@@ -187,8 +261,8 @@ const AdminEdit = ({ open, toggleSidebar, adminId, setRefreshAdminData }) => {
               render={({ field }) => (
                 <Cleave
                   {...field}
-                  className={classnames("form-control", {
-                    "is-invalid": errors.birthDate && true,
+                  className={classnames('form-control', {
+                    'is-invalid': errors.birthDate && true,
                   })}
                   placeholder={data?.birthDate}
                   options={options1}
@@ -218,7 +292,9 @@ const AdminEdit = ({ open, toggleSidebar, adminId, setRefreshAdminData }) => {
                 )}
               />
               {errors.nationalId && (
-                <FormFeedback>{errors.nationalId.message}</FormFeedback>
+                <FormFeedback>
+                  {errors.nationalId.message}
+                </FormFeedback>
               )}
             </div>
           </Col>
@@ -241,7 +317,9 @@ const AdminEdit = ({ open, toggleSidebar, adminId, setRefreshAdminData }) => {
               )}
             />
             {errors.phoneNumber && (
-              <FormFeedback>{errors.phoneNumber.message}</FormFeedback>
+              <FormFeedback>
+                {errors.phoneNumber.message}
+              </FormFeedback>
             )}
           </Col>
 
@@ -266,19 +344,16 @@ const AdminEdit = ({ open, toggleSidebar, adminId, setRefreshAdminData }) => {
               <FormFeedback>{errors.address.message}</FormFeedback>
             )}
           </Col>
-          <Col md="12" sm="12" className="mb-1">
-            <Label className="form-label" for="profile">
-              آپلود عکس :
-            </Label>
-
-            <input id="profile" type="file" {...register("files")} />
-          </Col>
           <Col sm="12">
             <div className="d-flex">
               <Button className="me-1" color="primary" type="submit">
                 ویرایش
               </Button>
-              <Button outline color="secondary" onClick={toggleSidebar}>
+              <Button
+                outline
+                color="secondary"
+                onClick={toggleSidebar}
+              >
                 انصراف
               </Button>
             </div>

@@ -90,13 +90,14 @@ const AddLesson = ({ open, toggleSidebar, setRefreshLessons }) => {
     clearErrors();
   };
 
-  const onChange = async (e) => {
-    const imagefile = document.querySelector('#prof');
+  const handleImgChange = async (e) => {
     let myFormData = new FormData();
-    myFormData.append('image', imagefile.files[0]);
+    myFormData.append('image', e.target.files[0]);
+
     const result = await UploadFile({ myFormData: myFormData });
-    setAvatar(result.data.result);
+    setAvatar(result?.data.result);
   };
+
   const handleImgReset = () => {
     setAvatar(
       'https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png'
@@ -105,8 +106,6 @@ const AddLesson = ({ open, toggleSidebar, setRefreshLessons }) => {
 
   const onSubmit = async (data) => {
     toggleSidebar();
-    // console.log(data.topics.map((topic) => topic.value));
-    // console.log(data);
     try {
       await LessonAdd({
         lessonName: data?.lessonName,
@@ -195,54 +194,53 @@ const AddLesson = ({ open, toggleSidebar, setRefreshLessons }) => {
       toggleSidebar={toggleSidebar}
       onClosed={handleSidebarClosed}
     >
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Row>
-          <Col sm="12" className="mb-1">
-            <div className="d-flex">
-              <div className="me-25">
-                <img
-                  className="rounded me-50"
-                  src={avatar}
-                  alt="بدون تصویر"
-                  height="100"
-                  width="100"
-                />
-              </div>
-              <div className="d-flex align-items-end mt-75 ms-1">
-                <div>
-                  <Button
-                    tag={Label}
-                    className="mb-75 me-75"
-                    size="sm"
-                    color="primary"
-                  >
-                    آپلود
-                    <Input
-                      type="file"
-                      name="profile"
-                      id="prof"
-                      onChange={onChange}
-                      hidden
-                      accept="image/*"
-                    />
-                  </Button>
-                  <Button
-                    className="mb-75"
-                    color="secondary"
-                    size="sm"
-                    outline
-                    onClick={handleImgReset}
-                  >
-                    حذف
-                  </Button>
-                  <p className="mb-0">
-                    JPG، GIF یا PNG مجاز است. حداکثر اندازه 800
-                    کیلوبایت
-                  </p>
-                </div>
+      <Row>
+        <Col sm="12" className="mb-1">
+          <div className="d-flex">
+            <div className="me-25">
+              <img
+                className="rounded-circle me-50"
+                src={avatar}
+                // alt="بدون تصویر"
+                height="100"
+                width="100"
+              />
+            </div>
+            <div className="d-flex align-items-end mt-75 ms-1">
+              <div>
+                <Button
+                  tag={Label}
+                  className="mb-75 me-75"
+                  size="sm"
+                  color="primary"
+                >
+                  آپلود
+                  <input
+                    id="profile"
+                    type="file"
+                    hidden
+                    onChange={handleImgChange}
+                  />
+                </Button>
+                <Button
+                  className="mb-75"
+                  color="secondary"
+                  size="sm"
+                  outline
+                  onClick={handleImgReset}
+                >
+                  حذف
+                </Button>
+                <p className="mb-0">
+                  JPG، GIF یا PNG مجاز است. حداکثر اندازه 800 کیلوبایت
+                </p>
               </div>
             </div>
-          </Col>
+          </div>
+        </Col>
+      </Row>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Row>
           <Col sm="12" className="mb-1">
             <div className="mb-1">
               <Label className="form-label" for="lessonName">

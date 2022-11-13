@@ -23,7 +23,7 @@ import "@styles/react/libs/flatpickr/flatpickr.scss";
 
 import { RegisterEmployee } from "./../../services/api/employee/RegisterEmployee.api";
 
-const AddTeacher = ({ open, toggleSidebar }) => {
+const AddTeacher = ({ open, toggleSidebar, setRefreshTeacherInfo }) => {
   const navigate = useNavigate();
 
   const defaultValues = {
@@ -97,7 +97,7 @@ const AddTeacher = ({ open, toggleSidebar }) => {
   const onSubmit = async (data) => {
     toggleSidebar();
     try {
-      await RegisterEmployee({
+      const result = await RegisterEmployee({
         fullName: data.fullName,
         email: data.email,
         phoneNumber: data.phoneNumber,
@@ -105,13 +105,15 @@ const AddTeacher = ({ open, toggleSidebar }) => {
         birthDate: data.birthDate,
         password: data.password,
         address: data.address,
+        role: "teacher",
         profile:
           "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
       });
-      navigate(0);
       toast.success("استاد با موفقیت اضافه شد");
+      console.log(result);
+      setRefreshTeacherInfo((old) => !old);
     } catch (error) {
-      toast.error("افزودن استاد با خطا مواجه شد");
+      return toast.error("افزودن استاد با خطا مواجه شد");
     }
   };
 

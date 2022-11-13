@@ -18,7 +18,6 @@ import {
 } from "reactstrap";
 import Avatar from "@components/avatar";
 import { GetAllStudents } from "../../services/api/GetAllStudents.api";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { ActiveStudent } from "../../services/api/ActiveStudent";
 import { DeactiveStudent } from "../../services/api/deactiveStudent";
@@ -36,7 +35,8 @@ const StudentsList = () => {
   const [courses, setCourses] = useState();
   const [show, setShow] = useState(false);
   const [addStudentOpen, setAddStudentOpen] = useState(false);
-  const navigate = useNavigate();
+  const [RefreshStudentInfo, setRefreshStudentInfo] = useState(false);
+  const [refStudentModal, setRefStudentModal] = useState(false);
 
   useEffect(() => {
     const getAll = async () => {
@@ -46,63 +46,57 @@ const StudentsList = () => {
       } catch (error) {}
     };
     getAll();
-  }, []);
+  }, [RefreshStudentInfo]);
 
   useEffect(() => {
     const getAllCourse = async () => {
       try {
         const courses = await getAllCourses();
-        console.log(courses?.data);
         setCourses(courses?.data.result);
       } catch (error) {}
     };
     getAllCourse();
-  }, []);
+  }, [refStudentModal]);
 
   const handleDelete = async (studentId) => {
-    const originalStudents = students;
-    const newStudents = students.filter((m) => m._id !== studentId);
-    setStudents(newStudents);
-    try {
-      await DeleteStudentById(studentId);
-      toast.warning(`دانشجو با موفقیت حذف شد`);
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
-      }
-      setStudents(originalStudents);
+    const res = await DeleteStudentById(studentId);
+    if (res.success === true) {
+      setStudents((old) => {
+        let newData = [...old];
+        let newStudentData = newData;
+        newStudentData = newStudentData.filter(
+          (item) => item._id !== studentId
+        );
+        newData = newStudentData;
+        return newData;
+      });
+      toast.success(`دانشجو با موفقیت حذف شد`);
+    } else {
+      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
     }
   };
 
   const handleActive = async (studentId) => {
-    // const originalCourses = courses;
-    // const newCourse = courses.filter((m) => m._id !== courseId);
-    // setCourses(newCourse);
     try {
       await ActiveStudent(studentId);
       toast.success(`وضعیت دانشجو به فعال تغییر کرد`);
-      navigate(0);
+      setRefreshStudentInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
         toast.error("خطایی رخ داده");
       }
-      //   setCourses(originalCourses);
     }
   };
 
   const handleDeactive = async (studentId) => {
-    // const originalCourses = courses;
-    // const newCourse = courses.filter((m) => m._id !== courseId);
-    // setCourses(newCourse);
     try {
       await DeactiveStudent(studentId);
       toast.success(`وضعیت دانشجو به فعال تغییر کرد`);
-      navigate(0);
+      setRefreshStudentInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
         toast.error("خطایی رخ داده");
       }
-      //   setCourses(originalCourses);
     }
   };
 
@@ -115,16 +109,22 @@ const StudentsList = () => {
     setShow(!show);
     try {
       await AddStudentToCourse(courseId, studentsId);
+      setRefStudentModal((old) => !old);
       toast.success("دانشجو با موفقیت به دوره اضافه شد");
-    } catch (error) {}
+    } catch (error) {
+      toast.error("افزودن دانشجو با مشکل مواجه شد");
+    }
   };
 
   const handleRemoveStudentFromCourse = async (courseId) => {
     setShow(!show);
     try {
       await RemoveStudentFromCourse(courseId, studentsId);
+      setRefStudentModal((old) => !old);
       toast.success("دانشجو با موفقیت از دوره حذف شد");
-    } catch (error) {}
+    } catch (error) {
+      toast.error("حذف دانشجو با مشکل مواجه شد");
+    }
   };
   const toggleAddSidebar = () => setAddStudentOpen(!addStudentOpen);
   const toggleEditSidebar = () => setEditStudentOpen(!editStudentOpen);
@@ -230,11 +230,16 @@ const StudentsList = () => {
           ))}
         </tbody>
       </Table>
-      <AddStudent open={addStudentOpen} toggleSidebar={toggleAddSidebar} />
+      <AddStudent
+        open={addStudentOpen}
+        toggleSidebar={toggleAddSidebar}
+        setRefreshStudentInfo={setRefreshStudentInfo}
+      />
       <StudentEdit
         open={editStudentOpen}
         toggleSidebar={toggleEditSidebar}
         studentId={studentsId}
+        setRefreshStudentInfo={setRefreshStudentInfo}
       />
       <Modal
         isOpen={show}

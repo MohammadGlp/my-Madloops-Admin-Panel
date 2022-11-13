@@ -24,6 +24,7 @@ const Blogs = () => {
   const [editBlogOpen, setEditBlogOpen] = useState(false);
   const [addBlogOpen, setAddBlogOpen] = useState(false);
   const [blogId, setBlogId] = useState();
+  const [RefreshBlogs, setRefreshBlogs] = useState(false);
 
   const toggleEditSidebar = () => setEditBlogOpen(!editBlogOpen);
   const toggleAddSidebar = () => setAddBlogOpen(!addBlogOpen);
@@ -36,7 +37,7 @@ const Blogs = () => {
       } catch (error) {}
     };
     getAll();
-  }, []);
+  }, [RefreshBlogs]);
 
   const handleDelete = async (blogsId) => {
     const originalBlogs = [...blogs];
@@ -44,6 +45,7 @@ const Blogs = () => {
     setBlogs(newBlogs);
     try {
       await DeleteArticle(blogsId);
+      setRefreshBlogs((old) => !old);
       toast.success(`آیتم مورد نظر حذف شد`);
     } catch (error) {
       toast.error('خطایی رخ داده');
@@ -159,8 +161,13 @@ const Blogs = () => {
         open={editBlogOpen}
         toggleSidebar={toggleEditSidebar}
         blogId={blogId}
+        setRefreshBlogs={setRefreshBlogs}
       />
-      <AddBlog open={addBlogOpen} toggleSidebar={toggleAddSidebar} />
+      <AddBlog
+        open={addBlogOpen}
+        toggleSidebar={toggleAddSidebar}
+        setRefreshBlogs={setRefreshBlogs}
+      />
     </>
   ) : (
     <p>Loading...</p>

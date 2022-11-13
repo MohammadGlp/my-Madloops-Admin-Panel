@@ -36,7 +36,12 @@ import { GetAllLessons } from '../../services/api/getAllLessons.api';
 import { GetCourseById } from '../../services/api/GetCourseById.api';
 import { EditCourse } from '../../services/api/EditCourse.api';
 
-const CourseEdit = ({ open, toggleSidebar, courseId }) => {
+const CourseEdit = ({
+  open,
+  toggleSidebar,
+  courseId,
+  setRefreshCourses,
+}) => {
   const navigate = useNavigate();
   const [allTeachers, setAllTeachers] = useState([]);
   const [allLessons, setAllLessons] = useState([]);
@@ -135,7 +140,8 @@ const CourseEdit = ({ open, toggleSidebar, courseId }) => {
     };
     toggleSidebar();
     try {
-      await EditCourse(newData, courseId);
+      await EditCourse(data, courseId);
+      setRefreshCourses((old) => !old);
       toast.success('دوره با موفقیت ویرایش شد');
     } catch (error) {
       toast.error('ویرایش دوره با خطا مواجه شد');

@@ -38,6 +38,7 @@ const CommentList = () => {
   const [comment, setComment] = useState({});
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const [RefreshComments, setRefreshComments] = useState(false);
 
   useEffect(() => {
     reset(defaultValues);
@@ -51,11 +52,12 @@ const CommentList = () => {
       } catch (error) {}
     };
     getAll();
-  }, []);
+  }, [RefreshComments]);
 
   const handleVerify = async (commentId) => {
     try {
       await VarifyComment(commentId);
+      setRefreshComments((old) => !old);
       toast.success(`کامنت تایید شد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -92,8 +94,6 @@ const CommentList = () => {
   const {
     control,
     handleSubmit,
-    setValue,
-    clearErrors,
     reset,
     formState: { errors },
   } = useForm({

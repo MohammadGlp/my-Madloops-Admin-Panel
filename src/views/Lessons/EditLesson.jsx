@@ -40,7 +40,12 @@ import { GetAllLessons } from '../../services/api/getAllLessons.api';
 import { LessonEdit } from '../../services/api/LessonEdit.api';
 import { UploadFile } from '../../services/api/UploadFile.api';
 
-const EditLesson = ({ open, toggleSidebar, lessonId }) => {
+const EditLesson = ({
+  open,
+  toggleSidebar,
+  lessonId,
+  setRefreshLessons,
+}) => {
   const [allLessons, setAllLessons] = useState([]);
   const [lesson, setLesson] = useState({});
   const [content, setContent] = useState();
@@ -191,6 +196,7 @@ const EditLesson = ({ open, toggleSidebar, lessonId }) => {
         },
         lessonId
       );
+      setRefreshLessons((old) => !old);
       toast.success('درس با موفقیت ویرایش شد');
     } catch (error) {
       toast.error('ویرایش درس با خطا مواجه شد');

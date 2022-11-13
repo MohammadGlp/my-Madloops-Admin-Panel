@@ -43,7 +43,7 @@ import { Minus, Plus } from 'react-feather';
 import '@styles/react/libs/input-number/input-number.scss';
 import { LessonAdd } from '../../services/api/AddLesson.api';
 
-const AddLesson = ({ open, toggleSidebar }) => {
+const AddLesson = ({ open, toggleSidebar, setRefreshLessons }) => {
   const [content, setContent] = useState();
 
   const [avatar, setAvatar] = useState(
@@ -115,6 +115,7 @@ const AddLesson = ({ open, toggleSidebar }) => {
         image: avatar,
         topics: data?.topics?.map((topic) => topic.value),
       });
+      setRefreshLessons((old) => !old);
       toast.success('درس با موفقیت افزوده شد');
     } catch (error) {
       toast.error('افزودن درس با خطا مواجه شد');

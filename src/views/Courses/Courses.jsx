@@ -42,6 +42,7 @@ const Courses = () => {
   const [courseId, setCourseId] = useState(null);
   const [show, setShow] = useState(false);
   const [students, setStudents] = useState([]);
+  const [RefreshCourses, setRefreshCourses] = useState(false);
 
   const toggleAddSidebar = () => setAddCourseOpen(!addCourseOpen);
   const toggleEditSidebar = () => setEditCourseOpen(!editCourseOpen);
@@ -66,7 +67,7 @@ const Courses = () => {
   useEffect(() => {
     getAll();
     getAllStudents();
-  }, []);
+  }, [RefreshCourses]);
 
   const handleDelete = async (courseId) => {
     const originalCourses = [...courses];
@@ -74,6 +75,7 @@ const Courses = () => {
     setCourses(newCourse);
     try {
       await DeleteCourse(courseId);
+      setRefreshCourses((old) => !old);
       toast(`آیتم مورد نظر حذف شد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -97,6 +99,7 @@ const Courses = () => {
     setShow(!show);
     try {
       await AddStudentToCourse(courseId, studentId);
+      setRefreshCourses((old) => !old);
       toast.success('دانشجو با موفقیت به دوره اضافه شد');
     } catch (error) {}
   };
@@ -105,7 +108,8 @@ const Courses = () => {
     setShow(!show);
     try {
       await RemoveStudentFromCourse(courseId, studentId);
-      toast.error('دانشجو با موفقیت از دوره حذف شد');
+      setRefreshCourses((old) => !old);
+      toast.success('دانشجو با موفقیت از دوره حذف شد');
     } catch (error) {}
   };
   return courses ? (
@@ -213,11 +217,13 @@ const Courses = () => {
       <AddCourse
         open={addCourseOpen}
         toggleSidebar={toggleAddSidebar}
+        setRefreshCourses={setRefreshCourses}
       />
       <EditCourse
         open={editCourseOpen}
         toggleSidebar={toggleEditSidebar}
         courseId={courseId}
+        setRefreshCourses={setRefreshCourses}
       />
       <Modal
         isOpen={show}

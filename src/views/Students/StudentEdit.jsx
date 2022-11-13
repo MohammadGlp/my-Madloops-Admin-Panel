@@ -87,8 +87,6 @@ const StudentEdit = ({
     register,
     control,
     handleSubmit,
-    setValue,
-    clearErrors,
     reset,
     formState: { errors },
   } = useForm({
@@ -97,30 +95,21 @@ const StudentEdit = ({
     defaultValues,
   });
 
-  const handleSidebarClosed = () => {
-    for (const key in defaultValues) {
-      setValue(key, "");
-    }
-    clearErrors();
-  };
-
-  const onSubmit = async (data) => {
+  const onSubmit = async (values) => {
     let myFormData = new FormData();
-    myFormData.append("image", data.files[0]);
+    myFormData.append("image", values.files[0]);
 
     const result = await UploadFile({ myFormData: myFormData });
     toggleSidebar();
     try {
       await EditStudentInfo(
         {
-          fullName: data?.fullName,
-          email: data?.email,
-          phoneNumber: data?.phoneNumber,
-          nationalId: data?.nationalId,
-          birthDate: data?.birthDate,
-          profile: result?.data.result
-            ? result?.data.result
-            : "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
+          fullName: values?.fullName,
+          email: values?.email,
+          phoneNumber: values?.phoneNumber,
+          nationalId: values?.nationalId,
+          birthDate: values?.birthDate,
+          profile: result?.data.result ? result?.data.result : data?.profile,
         },
         studentId
       );
@@ -140,7 +129,6 @@ const StudentEdit = ({
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
-      onClosed={handleSidebarClosed}
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>

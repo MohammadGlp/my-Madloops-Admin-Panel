@@ -35,7 +35,7 @@ import { GetAllTeachers } from '../../services/api/GetAllTeachers.api';
 import { GetAllLessons } from '../../services/api/getAllLessons.api';
 import { AddNewCourse } from '../../services/api/AddCourse.api';
 
-const AddCourse = ({ open, toggleSidebar }) => {
+const AddCourse = ({ open, toggleSidebar, setRefreshCourses }) => {
   const navigate = useNavigate();
   const [allTeachers, setAllTeachers] = useState([]);
   const [allLessons, setAllLessons] = useState([]);
@@ -122,8 +122,8 @@ const AddCourse = ({ open, toggleSidebar }) => {
     };
     toggleSidebar();
     try {
-      await AddNewCourse(newData);
-      navigate(0);
+      await AddNewCourse(data);
+      setRefreshCourses((old) => !old);
       toast.success('دوره با موفقیت اضافه شد');
     } catch (error) {
       toast.error('افزودن دوره با خطا مواجه شد');

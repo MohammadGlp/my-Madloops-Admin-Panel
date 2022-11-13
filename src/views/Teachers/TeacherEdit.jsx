@@ -1,8 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 import Sidebar from "@components/sidebar";
-
-import { selectThemeColors } from "@utils";
 
 import Select from "react-select";
 import classnames from "classnames";
@@ -10,7 +8,6 @@ import { useForm, Controller } from "react-hook-form";
 
 import { Button, Label, Form, Input, Row, Col, FormFeedback } from "reactstrap";
 
-import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -88,8 +85,6 @@ const TeacherEdit = ({
     register,
     control,
     handleSubmit,
-    setValue,
-    clearErrors,
     reset,
     formState: { errors },
   } = useForm({
@@ -98,38 +93,21 @@ const TeacherEdit = ({
     defaultValues,
   });
 
-  const handleSidebarClosed = () => {
-    for (const key in defaultValues) {
-      setValue(key, "");
-    }
-    clearErrors();
-  };
-
-  // const convertBase64 = (file) => {
-  //   const reader = new FileReader();
-  //   reader.onload = () => {
-  //     setAvatar(reader.result.toString());
-  //   };
-  //   reader.readAsDataURL(file);
-  // };
-
-  const onSubmit = async (data) => {
+  const onSubmit = async (values) => {
     let myFormData = new FormData();
-    myFormData.append("image", data.files[0]);
+    myFormData.append("image", values.files[0]);
     const result = await UploadFile({ myFormData: myFormData });
     toggleSidebar();
     try {
       await EditEmployeeAll(
         {
-          fullName: data?.fullName,
-          email: data?.email,
-          address: data?.address,
-          phoneNumber: data?.phoneNumber,
-          nationalId: data?.nationalId,
-          birthDate: data?.birthDate,
-          profile: result?.data.result
-            ? result?.data.result
-            : "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
+          fullName: values?.fullName,
+          email: values?.email,
+          address: values?.address,
+          phoneNumber: values?.phoneNumber,
+          nationalId: values?.nationalId,
+          birthDate: values?.birthDate,
+          profile: result?.data.result ? result?.data.result : data?.profile,
         },
         teacherId
       );
@@ -148,7 +126,6 @@ const TeacherEdit = ({
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
-      onClosed={handleSidebarClosed}
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>

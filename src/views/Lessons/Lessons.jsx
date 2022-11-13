@@ -32,6 +32,7 @@ const LessonList = () => {
   const [lessonId, setLessonId] = useState();
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [editLessonOpen, setEditLessonOpen] = useState(false);
+  const [refreshLessons, setRefreshLessons] = useState(false);
   const [modal, setModal] = useState(false);
   const [lesson, setLesson] = useState();
 
@@ -47,7 +48,7 @@ const LessonList = () => {
 
   useEffect(() => {
     getAll();
-  }, []);
+  }, [refreshLessons]);
 
   useEffect(() => {
     const lesson = lessons?.find((lesson) => lesson._id === lessonId);
@@ -60,6 +61,7 @@ const LessonList = () => {
     setLessons(newLessons);
     try {
       await DeleteLessonById(lessonId);
+      setRefreshLessons((old) => !old);
       toast.success(`آیتم مورد نظر حذف شد`);
     } catch (error) {
       toast.error('خطایی رخ داده');
@@ -193,11 +195,13 @@ const LessonList = () => {
       <AddLesson
         open={addLessonOpen}
         toggleSidebar={toggleAddSidebar}
+        setRefreshLessons={setRefreshLessons}
       />
       <EditLesson
         open={editLessonOpen}
         toggleSidebar={toggleEditSidebar}
         lessonId={lessonId}
+        setRefreshLessons={setRefreshLessons}
       />
       <Modal
         isOpen={modal}

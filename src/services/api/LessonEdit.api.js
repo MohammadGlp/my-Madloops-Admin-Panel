@@ -1,9 +1,10 @@
 import http from '../Interceptor/Interceptor';
 const MainURL = process.env.REACT_APP_PUBLIC_API_URL;
 
-export const EditArticle = async (object, articleId) => {
+export const LessonEdit = async (object, lessonId) => {
+  console.log(object, lessonId);
   const result = await http.put(
-    `${MainURL}news/${articleId}`,
+    `${MainURL}lesson/${lessonId}`,
     object
   );
 

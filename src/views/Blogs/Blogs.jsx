@@ -6,13 +6,16 @@ import toast from 'react-hot-toast';
 import { DeleteArticle } from '../../services/api/DeleteNews-Articles.api';
 import { GetAllNews_Articles } from '../../services/api/GetAllNews-Articles.api';
 import BlogsEdit from './BlogsEdit';
+import AddBlog from './AddBlog';
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState();
   const [editBlogOpen, setEditBlogOpen] = useState(false);
+  const [addBlogOpen, setAddBlogOpen] = useState(false);
   const [blogId, setBlogId] = useState();
 
   const toggleEditSidebar = () => setEditBlogOpen(!editBlogOpen);
+  const toggleAddSidebar = () => setAddBlogOpen(!addBlogOpen);
 
   useEffect(() => {
     const getAll = async () => {
@@ -53,6 +56,14 @@ const Blogs = () => {
 
   return blogs ? (
     <>
+      <Button.Ripple
+        color="primary"
+        size="md"
+        className="mb-2"
+        onClick={toggleAddSidebar}
+      >
+        افزودن اخبار و مقاله
+      </Button.Ripple>
       <Table responsive>
         <thead>
           <tr>
@@ -70,8 +81,8 @@ const Blogs = () => {
                 <img
                   src={blog?.image}
                   alt="angular"
-                  height="100"
-                  width="110"
+                  height="40"
+                  width="40"
                   className="rounded-circle"
                 />
               </td>
@@ -115,6 +126,7 @@ const Blogs = () => {
         toggleSidebar={toggleEditSidebar}
         blogId={blogId}
       />
+      <AddBlog open={addBlogOpen} toggleSidebar={toggleAddSidebar} />
     </>
   ) : (
     <p>Loading...</p>

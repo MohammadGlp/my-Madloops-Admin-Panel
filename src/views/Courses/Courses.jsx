@@ -1,5 +1,11 @@
-import { useEffect, useState } from "react";
-import { Edit, Trash, UserMinus, UserPlus, Users } from "react-feather";
+import { useEffect, useState } from 'react';
+import {
+  Edit,
+  Trash,
+  UserMinus,
+  UserPlus,
+  Users,
+} from 'react-feather';
 import {
   Table,
   Button,
@@ -7,18 +13,18 @@ import {
   ModalHeader,
   ModalBody,
   Badge,
-} from "reactstrap";
-import AvatarGroup from "@components/avatar-group";
-import Avatar from "@components/avatar";
+} from 'reactstrap';
+import AvatarGroup from '@components/avatar-group';
+import Avatar from '@components/avatar';
 
-import { getAllCourses } from "../../services/api/GetAllCourses.api";
-import { DeleteCourse } from "../../services/api/DeleteCourse.api";
-import { GetAllStudents } from "../../services/api/GetAllStudents.api";
-import { AddStudentToCourse } from "../../services/api/AddStudentToCourse.api";
-import { RemoveStudentFromCourse } from "../../services/api/RemoveStudentFromCourse.api";
-import toast from "react-hot-toast";
-import AddCourse from "./AddCourse";
-import EditCourse from "./CourseEdit";
+import { getAllCourses } from '../../services/api/GetAllCourses.api';
+import { DeleteCourse } from '../../services/api/DeleteCourse.api';
+import { GetAllStudents } from '../../services/api/GetAllStudents.api';
+import { AddStudentToCourse } from '../../services/api/AddStudentToCourse.api';
+import { RemoveStudentFromCourse } from '../../services/api/RemoveStudentFromCourse.api';
+import toast from 'react-hot-toast';
+import AddCourse from './AddCourse';
+import EditCourse from './CourseEdit';
 
 const Courses = () => {
   const [courses, setCourses] = useState();
@@ -62,7 +68,7 @@ const Courses = () => {
       toast(`آیتم مورد نظر حذف شد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
       setCourses(originalCourses);
     }
@@ -82,7 +88,7 @@ const Courses = () => {
     setShow(!show);
     try {
       await AddStudentToCourse(courseId, studentId);
-      toast.success("دانشجو با موفقیت به دوره اضافه شد");
+      toast.success('دانشجو با موفقیت به دوره اضافه شد');
     } catch (error) {}
   };
 
@@ -90,7 +96,7 @@ const Courses = () => {
     setShow(!show);
     try {
       await RemoveStudentFromCourse(courseId, studentId);
-      toast.error("دانشجو با موفقیت از دوره حذف شد");
+      toast.error('دانشجو با موفقیت از دوره حذف شد');
     } catch (error) {}
   };
   return courses ? (
@@ -121,11 +127,13 @@ const Courses = () => {
                 <img
                   className="me-75 rounded-circle"
                   src={course.lesson.image}
-                  alt="angular"
+                  alt={course.title}
                   height="40"
                   width="40"
                 />
-                <span className="align-middle fw-bold">{course.title}</span>
+                <span className="align-middle fw-bold">
+                  {course.title}
+                </span>
               </td>
               <td>{course.teacher.fullName}</td>
               <td>{course.capacity}</td>
@@ -150,7 +158,10 @@ const Courses = () => {
                 </div>
                 <div className="d-inline-block me-1 mb-1">
                   <Button.Ripple color="danger" size="sm">
-                    <Trash size={16} onClick={() => handleDelete(course._id)} />
+                    <Trash
+                      size={16}
+                      onClick={() => handleDelete(course._id)}
+                    />
                   </Button.Ripple>
                 </div>
                 <div className="d-inline-block me-1 mb-1">
@@ -167,7 +178,10 @@ const Courses = () => {
           ))}
         </tbody>
       </Table>
-      <AddCourse open={addCourseOpen} toggleSidebar={toggleAddSidebar} />
+      <AddCourse
+        open={addCourseOpen}
+        toggleSidebar={toggleAddSidebar}
+      />
       <EditCourse
         open={editCourseOpen}
         toggleSidebar={toggleEditSidebar}
@@ -198,7 +212,9 @@ const Courses = () => {
                 />
                 <div className="my-auto">
                   <h6 className="mb-0">{student.fullName}</h6>
-                  <small className="text-muted">{student.email}</small>
+                  <small className="text-muted">
+                    {student.email}
+                  </small>
                 </div>
               </div>
               <div className="d-flex align-items-center">
@@ -207,9 +223,13 @@ const Courses = () => {
                   className="me-1"
                   size="sm"
                   disabled={
-                    !student.courses.find((course) => course._id === courseId)
+                    !student.courses.find(
+                      (course) => course._id === courseId
+                    )
                   }
-                  onClick={() => handleRemoveStudentFromCourse(student._id)}
+                  onClick={() =>
+                    handleRemoveStudentFromCourse(student._id)
+                  }
                 >
                   <UserMinus size={16} />
                 </Button.Ripple>
@@ -219,7 +239,9 @@ const Courses = () => {
                   disabled={student.courses.find(
                     (course) => course._id === courseId
                   )}
-                  onClick={() => handleAddStudentToCourse(student._id)}
+                  onClick={() =>
+                    handleAddStudentToCourse(student._id)
+                  }
                 >
                   <UserPlus size={16} />
                 </Button.Ripple>

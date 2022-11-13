@@ -5,9 +5,7 @@ import Sidebar from '@components/sidebar';
 import { selectThemeColors } from '@utils';
 
 import Select from 'react-select';
-import classnames from 'classnames';
 import { useForm, Controller } from 'react-hook-form';
-import avatar from '../../assets/images/avatars/1.png';
 
 import {
   Button,
@@ -39,55 +37,36 @@ import '@styles/react/libs/flatpickr/flatpickr.scss';
 import { GetAllNews_Articles } from '../../services/api/GetAllNews-Articles.api';
 import { EditArticle } from '../../services/api/EditArticle.api';
 import { UploadFile } from '../../services/api/UploadFile.api';
+import { AddArticle } from '../../services/api/AddArticle.api';
+import InputNumber from 'rc-input-number';
+import { Minus, Plus } from 'react-feather';
+import '@styles/react/libs/input-number/input-number.scss';
+import { LessonAdd } from '../../services/api/AddLesson.api';
 
-const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
-  const [allBlogs, setAllBlogs] = useState([]);
-  const [blog, setBlog] = useState({});
+const AddLesson = ({ open, toggleSidebar }) => {
   const [content, setContent] = useState();
 
-  const getBlogs = async () => {
-    const blogs = await GetAllNews_Articles();
-    setAllBlogs(blogs?.result);
-  };
-
-  useEffect(() => {
-    getBlogs();
-  }, []);
-
-  useEffect(() => {
-    const blog = allBlogs.find((blog) => blog._id === blogId);
-    setBlog(blog);
-  }, [blogId]);
-
-  const [avatar, setAvatar] = useState('');
-
-  useEffect(() => {
-    const initialContent = blog?.text ? blog?.text : '';
-    const contentBlock = htmlToDraft(initialContent);
-    const contentState = ContentState.createFromBlockArray(
-      contentBlock.contentBlocks
-    );
-    const editorState = EditorState.createWithContent(contentState);
-    setContent(editorState);
-    setAvatar(blog?.image ? blog?.image : '');
-    reset(defaultValues);
-  }, [blog]);
+  const [avatar, setAvatar] = useState(
+    'https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png'
+  );
 
   const SignupSchema = yup.object().shape({
-    title: yup.string().required('لطفا فیلد نام درس را پر کنید'),
+    lessonName: yup.string().required('لطفا فیلد نام درس را پر کنید'),
   });
 
   const category = [
-    { value: 'news', label: 'اخبار' },
-    { value: 'article', label: 'مقاله' },
+    { value: 1, label: '1' },
+    { value: 2, label: '2' },
+    { value: 3, label: '3' },
+    { value: 4, label: '4' },
+    { value: 5, label: '5' },
+    { value: 6, label: '6' },
+    { value: 7, label: '7' },
+    { value: 8, label: '8' },
   ];
 
   const defaultValues = {
-    title: blog?.title,
-    category: {
-      value: blog?.category,
-      label: blog?.category === 'news' ? 'اخبار' : 'مقاله',
-    },
+    lessonName: '',
   };
 
   const {
@@ -104,12 +83,18 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
     defaultValues,
   });
 
+  const handleSidebarClosed = () => {
+    for (const key in defaultValues) {
+      setValue(key, '');
+    }
+    clearErrors();
+  };
+
   const onChange = async (e) => {
     const imagefile = document.querySelector('#prof');
     let myFormData = new FormData();
     myFormData.append('image', imagefile.files[0]);
     const result = await UploadFile({ myFormData: myFormData });
-    console.log(result);
     setAvatar(result.data.result);
   };
   const handleImgReset = () => {
@@ -120,30 +105,51 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
 
   const onSubmit = async (data) => {
     toggleSidebar();
+    // console.log(data.topics.map((topic) => topic.value));
+    // console.log(data);
     try {
-      await EditArticle(
-        {
-          title: data?.title,
-          category: data?.category?.value,
-          text: content.getCurrentContent().getPlainText(),
-          image: avatar,
-        },
-        blogId
-      );
-      toast.success('مقاله با موفقیت ویرایش شد');
+      await LessonAdd({
+        lessonName: data?.lessonName,
+        category: 2,
+        description: content.getCurrentContent().getPlainText(),
+        image: avatar,
+        topics: data?.topics?.map((topic) => topic.value),
+      });
+      toast.success('درس با موفقیت افزوده شد');
     } catch (error) {
-      toast.error('ویرایش مقاله با خطا مواجه شد');
+      toast.error('افزودن درس با خطا مواجه شد');
     }
   };
+
+  const colorOptions = [
+    {
+      value: 'react',
+      label: 'react',
+    },
+    {
+      value: 'javascript',
+      label: 'javascript',
+    },
+    { value: 'typescript', label: 'typescript' },
+    {
+      value: 'angular',
+      label: 'angular',
+    },
+    {
+      value: 'front',
+      label: 'front',
+    },
+  ];
 
   return (
     <Sidebar
       size="lg"
       open={open}
-      title="ویرایش اخبار و مقالات "
+      title="افزودن درس "
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
+      onClosed={handleSidebarClosed}
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
@@ -153,7 +159,7 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
                 <img
                   className="rounded me-50"
                   src={avatar}
-                  // alt="بدون تصویر"
+                  alt="بدون تصویر"
                   height="100"
                   width="100"
                 />
@@ -195,27 +201,54 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
           </Col>
           <Col sm="12" className="mb-1">
             <div className="mb-1">
-              <Label className="form-label" for="title">
-                عنوان محتوا
+              <Label className="form-label" for="lessonName">
+                عنوان درس
               </Label>
               <Controller
-                id="title"
-                name="title"
+                id="lessonName"
+                name="lessonName"
                 control={control}
                 render={({ field }) => (
                   <Input
                     {...field}
                     type="text"
-                    invalid={errors.title && true}
+                    invalid={errors.lessonName && true}
                   />
                 )}
               />
-              {errors.title && (
-                <FormFeedback>{errors.title.message}</FormFeedback>
+              {errors.lessonName && (
+                <FormFeedback>
+                  {errors.lessonName.message}
+                </FormFeedback>
               )}
             </div>
           </Col>
-          <Col md="12" sm="12" className="mb-1">
+          <Col sm="12" className="mb-1">
+            <Label className="form-label" for="topics">
+              عنوان درس
+            </Label>
+            <Controller
+              id="topics"
+              name="topics"
+              //   theme={selectThemeColors}
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  isClearable={false}
+                  theme={selectThemeColors}
+                  //   defaultValue={[colorOptions[2], colorOptions[3]]}
+                  isMulti
+                  name="colors"
+                  options={colorOptions}
+                  className="react-select"
+                  classNamePrefix="select"
+                />
+              )}
+            />
+          </Col>
+
+          {/* <Col md="12" sm="12" className="mb-1">
             <Label className="form-label" htmlFor="category">
               دسته بندی
             </Label>
@@ -232,30 +265,39 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
                   className="react-select"
                   classNamePrefix="select"
                 />
+                <InputNumber
+                  // defaultValue={10}
+                  {...field}
+                  min={0}
+                  max={10}
+                  defaultValue={5}
+                  upHandler={<Plus />}
+                  downHandler={<Minus />}
+                  id="min-max-number-input"
+                />
               )}
             />
-          </Col>
+          </Col> */}
           <Col sm="12" className="mb-2">
-            <Label className="form-label" htmlFor="text">
+            <Label className="form-label" htmlFor="description">
               توضیحات
             </Label>
-            {content ? (
-              <Controller
-                id="text"
-                name="text"
-                control={control}
-                render={({ field }) => (
-                  <Editor
-                    {...field}
-                    editorState={content}
-                    onEditorStateChange={(data) => setContent(data)}
-                  />
-                )}
-              />
-            ) : null}
-
-            {errors.text && (
-              <FormFeedback>{errors.text.message}</FormFeedback>
+            <Controller
+              id="description"
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <Editor
+                  {...field}
+                  editorState={content}
+                  onEditorStateChange={(data) => setContent(data)}
+                />
+              )}
+            />
+            {errors.description && (
+              <FormFeedback>
+                {errors.description.message}
+              </FormFeedback>
             )}
           </Col>
 
@@ -279,4 +321,4 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
   );
 };
 
-export default BlogsEdit;
+export default AddLesson;

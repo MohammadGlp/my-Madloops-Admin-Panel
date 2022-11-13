@@ -12,7 +12,6 @@ import PublicRoute from "@components/routes/PublicRoute";
 
 // ** Utils
 import { isObjEmpty } from "@utils";
-import StudentEdit from "../../views/Students/StudentEdit";
 import { getItem } from "../../services/storage/storage";
 
 const getLayout = {
@@ -44,140 +43,72 @@ const currentUser = getItem("userInfo");
 const x = JSON.parse(currentUser);
 
 // ** Merge Routes
-const Routes =
-  x.role === "admin"
-    ? [
-        {
-          path: "/",
-          index: true,
-          element: <Navigate replace to={DefaultRoute} />,
-        },
-        {
-          path: "/home",
-          element: <Home />,
-        },
-        {
-          path: "/courses",
-          element: <Courses />,
-        },
-        {
-          path: "/lessons",
-          element: <LessonList />,
-        },
-        {
-          path: "/blogs",
-          element: <Blogs />,
-        },
-        {
-          path: "/students",
-          element: <StudentsList />,
-        },
-        {
-          path: "/teachers",
-          element: <TeachersList />,
-        },
-        {
-          path: "/employees",
-          element: <EmployeesList />,
-        },
-        {
-          path: "/edit-profile",
-          element: <AccountSettings />,
-        },
-        {
-          path: "/comments",
-          element: <CommentList />,
-        },
-        // {
-        //   path: "/login",
-        //   element: <Login />,
-        //   meta: {
-        //     layout: "blank",
-        //   },
-        // },
-        // {
-        //   path: "/register",
-        //   element: <Register />,
-        //   meta: {
-        //     layout: "blank",
-        //   },
-        // },
-        {
-          path: "*",
-          element: <Error />,
-          meta: {
-            layout: "blank",
-          },
-        },
-      ]
-    : x.role === "teacher"
-    ? [
-        {
-          path: "/",
-          index: true,
-          element: <Navigate replace to={DefaultRoute} />,
-        },
-        {
-          path: "/home",
-          element: <Home />,
-        },
-        {
-          path: "/courses",
-          element: <Courses />,
-        },
-        {
-          path: "/blogs",
-          element: <Blogs />,
-        },
-        {
-          path: "/lessons",
-          element: <LessonList />,
-        },
-        {
-          path: "/edit-profile",
-          element: <AccountSettings />,
-        },
-        {
-          path: "/comments",
-          element: <CommentList />,
-        },
-        {
-          path: "*",
-          element: <Error />,
-          meta: {
-            layout: "blank",
-          },
-        },
-      ]
-    : [
-        {
-          path: "/",
-          index: true,
-          element: <Navigate replace to={DefaultRoute} />,
-          auth: false,
-        },
-        {
-          path: "/login",
-          element: <Login />,
-          meta: {
-            layout: "blank",
-          },
-        },
-        {
-          path: "/register",
-          element: <Register />,
-          meta: {
-            layout: "blank",
-          },
-        },
-        {
-          path: "*",
-          element: <Error />,
-          meta: {
-            layout: "blank",
-          },
-        },
-      ];
+
+const Routes = [
+  {
+    path: "/",
+    index: true,
+    element: <Navigate replace to={DefaultRoute} />,
+  },
+  {
+    path: "/home",
+    element: <Home />,
+  },
+  {
+    path: "/courses",
+    element: <Courses />,
+  },
+  {
+    path: "/lessons",
+    element: <LessonList />,
+  },
+  {
+    path: "/blogs",
+    element: <Blogs />,
+  },
+  {
+    path: "/students",
+    element: <StudentsList />,
+  },
+  {
+    path: "/teachers",
+    element: <TeachersList />,
+  },
+  {
+    path: "/employees",
+    element: <EmployeesList />,
+  },
+  {
+    path: "/edit-profile",
+    element: <AccountSettings />,
+  },
+  {
+    path: "/comments",
+    element: <CommentList />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+    meta: {
+      layout: "blank",
+    },
+    redirect: "/home",
+  },
+  {
+    path: "/register",
+    element: <Register />,
+    meta: {
+      layout: "blank",
+    },
+  },
+  {
+    path: "*",
+    element: <Error />,
+    meta: {
+      layout: "blank",
+    },
+  },
+];
 
 const getRouteMeta = (route) => {
   if (isObjEmpty(route.element.props)) {

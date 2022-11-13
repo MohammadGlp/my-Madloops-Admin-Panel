@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Avatar from "@components/avatar";
 
 // ** Third Party Components
-import { User, Power } from "react-feather";
+import { User, Power, Home } from "react-feather";
 
 // ** Reactstrap Imports
 import {
@@ -23,6 +23,7 @@ import {
 } from "../../../../services/AuthServices/AuthServices";
 import { DecodeToken } from "./../../../../utility/DecodeToken";
 import { useState, useEffect } from "react";
+import { getItem } from "../../../../services/storage/storage";
 
 const UserDropdown = () => {
   const userToken = getToken();
@@ -37,6 +38,15 @@ const UserDropdown = () => {
     };
     getAdminById();
   }, []);
+
+  const handleLanding = () => {
+    const user = getItem("userInfo");
+    const x = JSON.parse(user);
+    if (x.role === "admin" || x.role === "teacher") {
+      const EmpToken = getItem("token");
+      window.location.href = `http://localhost:2000/adminAuth/${EmpToken}`;
+    }
+  };
 
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
@@ -57,6 +67,7 @@ const UserDropdown = () => {
           status={userData?.isActive ? "online" : "offline"}
         />
       </DropdownToggle>
+
       <DropdownMenu end>
         <DropdownItem
           tag={Link}
@@ -69,6 +80,16 @@ const UserDropdown = () => {
             onClick={() => navigate("/edit-profile")}
           >
             پروفایل
+          </span>
+        </DropdownItem>
+        <DropdownItem
+          tag={Link}
+          to="/edit-profile"
+          onClick={(e) => e.preventDefault()}
+        >
+          <Home size={14} className="me-75" />
+          <span className="align-middle" onClick={handleLanding}>
+            سایت
           </span>
         </DropdownItem>
         <DropdownItem divider />

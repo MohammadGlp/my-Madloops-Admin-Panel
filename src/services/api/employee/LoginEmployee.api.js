@@ -1,6 +1,5 @@
 import http from "../../Interceptor/Interceptor";
 import * as Storage from "../../storage/storage";
-import toast from "react-hot-toast";
 
 //Main Url Of Our Project Backend
 const MainURL = process.env.REACT_APP_PUBLIC_API_URL;
@@ -30,15 +29,10 @@ export const LoginEmployee = async (object) => {
   Storage.sessionSetItem("userInfo", JSON.stringify(employeeInfo));
 
   //Condition For Displaying Toast Massage If The Login Is Seccessfull
-  if (result.data.success === true) {
-    toast.success(result.data.message[0].message);
-  }
 
   //Redirect The Employee To Admin Pannel Page
-  setTimeout(() => {
-    window.location = "/home";
-  }, 2000);
-  // return result.data;
+
+  return result.data;
   // } catch (error) {
   //   toast.error(error.data.message[0].message);
   // }

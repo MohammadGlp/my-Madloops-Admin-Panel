@@ -87,8 +87,6 @@ const AdminEdit = ({ open, toggleSidebar, adminId, setRefreshAdminData }) => {
     register,
     control,
     handleSubmit,
-    setValue,
-    clearErrors,
     reset,
     formState: { errors },
   } = useForm({
@@ -96,13 +94,6 @@ const AdminEdit = ({ open, toggleSidebar, adminId, setRefreshAdminData }) => {
     resolver: yupResolver(SignupSchema),
     defaultValues,
   });
-
-  const handleSidebarClosed = () => {
-    for (const key in defaultValues) {
-      setValue(key, "");
-    }
-    clearErrors();
-  };
 
   const onSubmit = async (values) => {
     let myFormData = new FormData();
@@ -140,7 +131,6 @@ const AdminEdit = ({ open, toggleSidebar, adminId, setRefreshAdminData }) => {
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
-      onClosed={handleSidebarClosed}
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>

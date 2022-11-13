@@ -106,7 +106,6 @@ const AddStudent = ({ open, toggleSidebar, setRefreshStudentInfo }) => {
       setRefreshStudentInfo((old) => !old);
       toast.success("افزودن دانشجو با موفقیت اضافه شد");
     } catch (error) {
-      console.log(error);
       toast.error(error.data.message[0].message);
     }
   };

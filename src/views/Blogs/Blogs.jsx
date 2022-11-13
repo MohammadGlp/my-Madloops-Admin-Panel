@@ -1,18 +1,19 @@
-import { useEffect, useState } from 'react';
-import { Edit, Trash } from 'react-feather';
-import { Table, Button, Badge } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { DeleteArticle } from '../../services/api/DeleteNews-Articles.api';
-import { GetAllNews_Articles } from '../../services/api/GetAllNews-Articles.api';
-import BlogsEdit from './BlogsEdit';
-import AddBlog from './AddBlog';
+import { useEffect, useState } from "react";
+import { Edit, Trash } from "react-feather";
+import { Table, Button, Badge } from "reactstrap";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { DeleteArticle } from "../../services/api/DeleteNews-Articles.api";
+import { GetAllNews_Articles } from "../../services/api/GetAllNews-Articles.api";
+import BlogsEdit from "./BlogsEdit";
+import AddBlog from "./AddBlog";
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState();
   const [editBlogOpen, setEditBlogOpen] = useState(false);
   const [addBlogOpen, setAddBlogOpen] = useState(false);
   const [blogId, setBlogId] = useState();
+  const [RefreshBlogs, setRefreshBlogs] = useState(false);
 
   const toggleEditSidebar = () => setEditBlogOpen(!editBlogOpen);
   const toggleAddSidebar = () => setAddBlogOpen(!addBlogOpen);
@@ -25,7 +26,7 @@ const Blogs = () => {
       } catch (error) {}
     };
     getAll();
-  }, []);
+  }, [RefreshBlogs]);
 
   const handleDelete = async (blogsId) => {
     const originalBlogs = [...blogs];
@@ -33,9 +34,10 @@ const Blogs = () => {
     setBlogs(newBlogs);
     try {
       await DeleteArticle(blogsId);
+      setRefreshBlogs((old) => !old);
       toast.success(`آیتم مورد نظر حذف شد`);
     } catch (error) {
-      toast.error('خطایی رخ داده');
+      toast.error("خطایی رخ داده");
       setBlogs(originalBlogs);
     }
   };
@@ -44,8 +46,7 @@ const Blogs = () => {
     const trimmedLead =
       value
         .substring(0, num)
-        .substring(0, value.substring(0, 200).lastIndexOf(' ')) +
-      '...';
+        .substring(0, value.substring(0, 200).lastIndexOf(" ")) + "...";
     return trimmedLead;
   };
 
@@ -109,11 +110,12 @@ const Blogs = () => {
                   </Button.Ripple>
                 </div>
                 <div className="d-inline-block me-1 mb-1">
-                  <Button.Ripple color="danger" size="sm">
-                    <Trash
-                      size={16}
-                      onClick={() => handleDelete(blog?._id)}
-                    />
+                  <Button.Ripple
+                    color="danger"
+                    size="sm"
+                    onClick={() => handleDelete(blog?._id)}
+                  >
+                    <Trash size={16} />
                   </Button.Ripple>
                 </div>
               </td>
@@ -125,8 +127,13 @@ const Blogs = () => {
         open={editBlogOpen}
         toggleSidebar={toggleEditSidebar}
         blogId={blogId}
+        setRefreshBlogs={setRefreshBlogs}
       />
-      <AddBlog open={addBlogOpen} toggleSidebar={toggleAddSidebar} />
+      <AddBlog
+        open={addBlogOpen}
+        toggleSidebar={toggleAddSidebar}
+        setRefreshBlogs={setRefreshBlogs}
+      />
     </>
   ) : (
     <p>Loading...</p>

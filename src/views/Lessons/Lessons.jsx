@@ -1,18 +1,19 @@
-import { useEffect, useState } from 'react';
-import { Edit, Trash } from 'react-feather';
-import { Table, Button } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { GetAllLessons } from './../../services/api/getAllLessons.api';
-import { DeleteLessonById } from './../../services/api/DeleteLessonById';
-import AddLesson from './AddLesson';
-import EditLesson from './EditLesson';
+import { useEffect, useState } from "react";
+import { Edit, Trash } from "react-feather";
+import { Table, Button } from "reactstrap";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { GetAllLessons } from "./../../services/api/getAllLessons.api";
+import { DeleteLessonById } from "./../../services/api/DeleteLessonById";
+import AddLesson from "./AddLesson";
+import EditLesson from "./EditLesson";
 
 const LessonList = () => {
   const [lessons, setLessons] = useState();
   const [lessonId, setLessonId] = useState();
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [editLessonOpen, setEditLessonOpen] = useState(false);
+  const [refreshLessons, setRefreshLessons] = useState(false);
 
   const toggleAddSidebar = () => setAddLessonOpen(!addLessonOpen);
   const toggleEditSidebar = () => setEditLessonOpen(!editLessonOpen);
@@ -26,7 +27,7 @@ const LessonList = () => {
 
   useEffect(() => {
     getAll();
-  }, []);
+  }, [refreshLessons]);
 
   const handleDelete = async (lessonId) => {
     const originalLessons = [...lessons];
@@ -34,9 +35,10 @@ const LessonList = () => {
     setLessons(newLessons);
     try {
       await DeleteLessonById(lessonId);
+      setRefreshLessons((old) => !old);
       toast.success(`آیتم مورد نظر حذف شد`);
     } catch (error) {
-      toast.error('خطایی رخ داده');
+      toast.error("خطایی رخ داده");
       setLessons(originalLessons);
     }
   };
@@ -45,8 +47,7 @@ const LessonList = () => {
     const trimmedLead =
       value
         .substring(0, 60)
-        .substring(0, value.substring(0, 200).lastIndexOf(' ')) +
-      '...';
+        .substring(0, value.substring(0, 200).lastIndexOf(" ")) + "...";
     return trimmedLead;
   };
 
@@ -102,11 +103,12 @@ const LessonList = () => {
                   </Button.Ripple>
                 </div>
                 <div className="d-inline-block me-1 mb-1">
-                  <Button.Ripple color="danger" size="sm">
-                    <Trash
-                      size={16}
-                      onClick={() => handleDelete(lesson._id)}
-                    />
+                  <Button.Ripple
+                    color="danger"
+                    size="sm"
+                    onClick={() => handleDelete(lesson._id)}
+                  >
+                    <Trash size={16} />
                   </Button.Ripple>
                 </div>
               </td>
@@ -117,11 +119,13 @@ const LessonList = () => {
       <AddLesson
         open={addLessonOpen}
         toggleSidebar={toggleAddSidebar}
+        setRefreshLessons={setRefreshLessons}
       />
       <EditLesson
         open={editLessonOpen}
         toggleSidebar={toggleEditSidebar}
         lessonId={lessonId}
+        setRefreshLessons={setRefreshLessons}
       />
     </>
   ) : (

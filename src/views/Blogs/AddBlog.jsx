@@ -1,65 +1,55 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-import Sidebar from '@components/sidebar';
+import Sidebar from "@components/sidebar";
 
-import { selectThemeColors } from '@utils';
+import { selectThemeColors } from "@utils";
 
-import Select from 'react-select';
-import { useForm, Controller } from 'react-hook-form';
+import Select from "react-select";
+import { useForm, Controller } from "react-hook-form";
 
-import {
-  Button,
-  Label,
-  Form,
-  Input,
-  Row,
-  Col,
-  FormFeedback,
-} from 'reactstrap';
+import { Button, Label, Form, Input, Row, Col, FormFeedback } from "reactstrap";
 
-import { useNavigate } from 'react-router-dom';
-import * as yup from 'yup';
-import toast from 'react-hot-toast';
-import { yupResolver } from '@hookform/resolvers/yup';
-import Cleave from 'cleave.js/react';
+import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import toast from "react-hot-toast";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Cleave from "cleave.js/react";
 
-import htmlToDraft from 'html-to-draftjs';
-import { Editor } from 'react-draft-wysiwyg';
-import { EditorState, ContentState, convertFromRaw } from 'draft-js';
-import '@styles/react/libs/editor/editor.scss';
-import '@styles/base/plugins/forms/form-quill-editor.scss';
+import htmlToDraft from "html-to-draftjs";
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState, ContentState, convertFromRaw } from "draft-js";
+import "@styles/react/libs/editor/editor.scss";
+import "@styles/base/plugins/forms/form-quill-editor.scss";
 
-import '@styles/react/pages/page-authentication.scss';
-import 'cleave.js/dist/addons/cleave-phone.ir';
-import '@styles/react/pages/page-form-validation.scss';
-import '@styles/react/libs/flatpickr/flatpickr.scss';
+import "@styles/react/pages/page-authentication.scss";
+import "cleave.js/dist/addons/cleave-phone.ir";
+import "@styles/react/pages/page-form-validation.scss";
+import "@styles/react/libs/flatpickr/flatpickr.scss";
 
-import { GetAllNews_Articles } from '../../services/api/GetAllNews-Articles.api';
-import { EditArticle } from '../../services/api/EditArticle.api';
-import { UploadFile } from '../../services/api/UploadFile.api';
-import { AddArticle } from '../../services/api/AddArticle.api';
+import { UploadFile } from "../../services/api/UploadFile.api";
+import { AddArticle } from "../../services/api/AddArticle.api";
 
-const AddBlog = ({ open, toggleSidebar }) => {
+const AddBlog = ({ open, toggleSidebar, setRefreshBlogs }) => {
   const [content, setContent] = useState();
 
   const [avatar, setAvatar] = useState(
-    'https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png'
+    "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png"
   );
 
   const SignupSchema = yup.object().shape({
-    title: yup.string().required('لطفا فیلد نام درس را پر کنید'),
+    title: yup.string().required("لطفا فیلد نام درس را پر کنید"),
   });
 
   const category = [
-    { value: 'news', label: 'اخبار' },
-    { value: 'article', label: 'مقاله' },
+    { value: "news", label: "اخبار" },
+    { value: "article", label: "مقاله" },
   ];
 
   const defaultValues = {
-    title: '',
+    title: "",
     category: {
-      value: '',
-      label: '',
+      value: "",
+      label: "",
     },
   };
 
@@ -72,28 +62,28 @@ const AddBlog = ({ open, toggleSidebar }) => {
     reset,
     formState: { errors },
   } = useForm({
-    mode: 'onChange',
+    mode: "onChange",
     resolver: yupResolver(SignupSchema),
     defaultValues,
   });
 
   const handleSidebarClosed = () => {
     for (const key in defaultValues) {
-      setValue(key, '');
+      setValue(key, "");
     }
     clearErrors();
   };
 
   const onChange = async (e) => {
-    const imagefile = document.querySelector('#prof');
+    const imagefile = document.querySelector("#prof");
     let myFormData = new FormData();
-    myFormData.append('image', imagefile.files[0]);
+    myFormData.append("image", imagefile.files[0]);
     const result = await UploadFile({ myFormData: myFormData });
     setAvatar(result.data.result);
   };
   const handleImgReset = () => {
     setAvatar(
-      'https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png'
+      "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png"
     );
   };
 
@@ -106,9 +96,10 @@ const AddBlog = ({ open, toggleSidebar }) => {
         text: content.getCurrentContent().getPlainText(),
         image: avatar,
       });
-      toast.success('مقاله با موفقیت افزوده شد');
+      setRefreshBlogs((old) => !old);
+      toast.success("مقاله با موفقیت افزوده شد");
     } catch (error) {
-      toast.error('افزودن مقاله با خطا مواجه شد');
+      toast.error("افزودن مقاله با خطا مواجه شد");
     }
   };
 
@@ -163,8 +154,7 @@ const AddBlog = ({ open, toggleSidebar }) => {
                     حذف
                   </Button>
                   <p className="mb-0">
-                    JPG، GIF یا PNG مجاز است. حداکثر اندازه 800
-                    کیلوبایت
+                    JPG، GIF یا PNG مجاز است. حداکثر اندازه 800 کیلوبایت
                   </p>
                 </div>
               </div>
@@ -229,21 +219,15 @@ const AddBlog = ({ open, toggleSidebar }) => {
               )}
             />
 
-            {errors.text && (
-              <FormFeedback>{errors.text.message}</FormFeedback>
-            )}
+            {errors.text && <FormFeedback>{errors.text.message}</FormFeedback>}
           </Col>
 
           <Col sm="12">
             <div className="d-flex">
               <Button className="me-1" color="primary" type="submit">
-                ویرایش
+                افزودن
               </Button>
-              <Button
-                outline
-                color="secondary"
-                onClick={toggleSidebar}
-              >
+              <Button outline color="secondary" onClick={toggleSidebar}>
                 انصراف
               </Button>
             </div>

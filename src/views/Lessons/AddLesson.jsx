@@ -1,72 +1,64 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-import Sidebar from '@components/sidebar';
+import Sidebar from "@components/sidebar";
 
-import { selectThemeColors } from '@utils';
+import { selectThemeColors } from "@utils";
 
-import Select from 'react-select';
-import { useForm, Controller } from 'react-hook-form';
+import Select from "react-select";
+import { useForm, Controller } from "react-hook-form";
 
-import {
-  Button,
-  Label,
-  Form,
-  Input,
-  Row,
-  Col,
-  FormFeedback,
-} from 'reactstrap';
+import { Button, Label, Form, Input, Row, Col, FormFeedback } from "reactstrap";
 
-import { useNavigate } from 'react-router-dom';
-import * as yup from 'yup';
-import toast from 'react-hot-toast';
-import { yupResolver } from '@hookform/resolvers/yup';
-import Cleave from 'cleave.js/react';
+import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import toast from "react-hot-toast";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Cleave from "cleave.js/react";
 
-import htmlToDraft from 'html-to-draftjs';
-import { Editor } from 'react-draft-wysiwyg';
-import { EditorState, ContentState, convertFromRaw } from 'draft-js';
-import '@styles/react/libs/editor/editor.scss';
-import '@styles/base/plugins/forms/form-quill-editor.scss';
+import htmlToDraft from "html-to-draftjs";
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState, ContentState, convertFromRaw } from "draft-js";
+import "@styles/react/libs/editor/editor.scss";
+import "@styles/base/plugins/forms/form-quill-editor.scss";
 
-import '@styles/react/pages/page-authentication.scss';
-import 'cleave.js/dist/addons/cleave-phone.ir';
-import '@styles/react/pages/page-form-validation.scss';
-import '@styles/react/libs/flatpickr/flatpickr.scss';
+import "@styles/react/pages/page-authentication.scss";
+import "cleave.js/dist/addons/cleave-phone.ir";
+import "@styles/react/pages/page-form-validation.scss";
+import "@styles/react/libs/flatpickr/flatpickr.scss";
 
-import { GetAllNews_Articles } from '../../services/api/GetAllNews-Articles.api';
-import { EditArticle } from '../../services/api/EditArticle.api';
-import { UploadFile } from '../../services/api/UploadFile.api';
-import { AddArticle } from '../../services/api/AddArticle.api';
-import InputNumber from 'rc-input-number';
-import { Minus, Plus } from 'react-feather';
-import '@styles/react/libs/input-number/input-number.scss';
-import { LessonAdd } from '../../services/api/AddLesson.api';
+import { GetAllNews_Articles } from "../../services/api/GetAllNews-Articles.api";
+import { EditArticle } from "../../services/api/EditArticle.api";
+import { UploadFile } from "../../services/api/UploadFile.api";
+import { AddArticle } from "../../services/api/AddArticle.api";
+import InputNumber from "rc-input-number";
+import { Minus, Plus } from "react-feather";
+import "@styles/react/libs/input-number/input-number.scss";
+import { LessonAdd } from "../../services/api/AddLesson.api";
 
-const AddLesson = ({ open, toggleSidebar }) => {
+const AddLesson = ({ open, toggleSidebar, setRefreshLessons }) => {
   const [content, setContent] = useState();
 
   const [avatar, setAvatar] = useState(
-    'https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png'
+    "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png"
   );
 
   const SignupSchema = yup.object().shape({
-    lessonName: yup.string().required('لطفا فیلد نام درس را پر کنید'),
+    lessonName: yup.string().required("لطفا فیلد نام درس را پر کنید"),
   });
 
   const category = [
-    { value: 1, label: '1' },
-    { value: 2, label: '2' },
-    { value: 3, label: '3' },
-    { value: 4, label: '4' },
-    { value: 5, label: '5' },
-    { value: 6, label: '6' },
-    { value: 7, label: '7' },
-    { value: 8, label: '8' },
+    { value: 1, label: "1" },
+    { value: 2, label: "2" },
+    { value: 3, label: "3" },
+    { value: 4, label: "4" },
+    { value: 5, label: "5" },
+    { value: 6, label: "6" },
+    { value: 7, label: "7" },
+    { value: 8, label: "8" },
   ];
 
   const defaultValues = {
-    lessonName: '',
+    lessonName: "",
   };
 
   const {
@@ -78,28 +70,28 @@ const AddLesson = ({ open, toggleSidebar }) => {
     reset,
     formState: { errors },
   } = useForm({
-    mode: 'onChange',
+    mode: "onChange",
     resolver: yupResolver(SignupSchema),
     defaultValues,
   });
 
   const handleSidebarClosed = () => {
     for (const key in defaultValues) {
-      setValue(key, '');
+      setValue(key, "");
     }
     clearErrors();
   };
 
   const onChange = async (e) => {
-    const imagefile = document.querySelector('#prof');
+    const imagefile = document.querySelector("#prof");
     let myFormData = new FormData();
-    myFormData.append('image', imagefile.files[0]);
+    myFormData.append("image", imagefile.files[0]);
     const result = await UploadFile({ myFormData: myFormData });
     setAvatar(result.data.result);
   };
   const handleImgReset = () => {
     setAvatar(
-      'https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png'
+      "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png"
     );
   };
 
@@ -115,29 +107,30 @@ const AddLesson = ({ open, toggleSidebar }) => {
         image: avatar,
         topics: data?.topics?.map((topic) => topic.value),
       });
-      toast.success('درس با موفقیت افزوده شد');
+      setRefreshLessons((old) => !old);
+      toast.success("درس با موفقیت افزوده شد");
     } catch (error) {
-      toast.error('افزودن درس با خطا مواجه شد');
+      toast.error("افزودن درس با خطا مواجه شد");
     }
   };
 
   const colorOptions = [
     {
-      value: 'react',
-      label: 'react',
+      value: "react",
+      label: "react",
     },
     {
-      value: 'javascript',
-      label: 'javascript',
+      value: "javascript",
+      label: "javascript",
     },
-    { value: 'typescript', label: 'typescript' },
+    { value: "typescript", label: "typescript" },
     {
-      value: 'angular',
-      label: 'angular',
+      value: "angular",
+      label: "angular",
     },
     {
-      value: 'front',
-      label: 'front',
+      value: "front",
+      label: "front",
     },
   ];
 
@@ -192,8 +185,7 @@ const AddLesson = ({ open, toggleSidebar }) => {
                     حذف
                   </Button>
                   <p className="mb-0">
-                    JPG، GIF یا PNG مجاز است. حداکثر اندازه 800
-                    کیلوبایت
+                    JPG، GIF یا PNG مجاز است. حداکثر اندازه 800 کیلوبایت
                   </p>
                 </div>
               </div>
@@ -217,9 +209,7 @@ const AddLesson = ({ open, toggleSidebar }) => {
                 )}
               />
               {errors.lessonName && (
-                <FormFeedback>
-                  {errors.lessonName.message}
-                </FormFeedback>
+                <FormFeedback>{errors.lessonName.message}</FormFeedback>
               )}
             </div>
           </Col>
@@ -295,22 +285,16 @@ const AddLesson = ({ open, toggleSidebar }) => {
               )}
             />
             {errors.description && (
-              <FormFeedback>
-                {errors.description.message}
-              </FormFeedback>
+              <FormFeedback>{errors.description.message}</FormFeedback>
             )}
           </Col>
 
           <Col sm="12">
             <div className="d-flex">
               <Button className="me-1" color="primary" type="submit">
-                ویرایش
+                افزودن
               </Button>
-              <Button
-                outline
-                color="secondary"
-                onClick={toggleSidebar}
-              >
+              <Button outline color="secondary" onClick={toggleSidebar}>
                 انصراف
               </Button>
             </div>

@@ -132,7 +132,7 @@ const Blogs = () => {
                   </td>
 
                   <td>
-                    <div className="d-inline-block me-1 mb-1">
+                    <div className="d-inline-block me-1">
                       <Button.Ripple
                         color="primary"
                         size="sm"
@@ -141,7 +141,7 @@ const Blogs = () => {
                         <Edit size={16} />
                       </Button.Ripple>
                     </div>
-                    <div className="d-inline-block me-1 mb-1">
+                    <div className="d-inline-block me-1">
                       <Button.Ripple color="danger" size="sm">
                         <Trash
                           size={16}

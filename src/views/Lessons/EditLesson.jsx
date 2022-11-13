@@ -271,6 +271,7 @@ const EditLesson = ({
                 control={control}
                 render={({ field }) => (
                   <Input
+                    disabled
                     {...field}
                     type="text"
                     invalid={errors.lessonName && true}

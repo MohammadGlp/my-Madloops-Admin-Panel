@@ -177,7 +177,7 @@ const CommentList = () => {
                     )}
                   </td>
                   <td>
-                    <div className="d-inline-block me-1 mb-1">
+                    <div className="d-inline-block me-1">
                       <Button.Ripple
                         color="primary"
                         size="sm"
@@ -187,7 +187,7 @@ const CommentList = () => {
                       </Button.Ripple>
                     </div>
 
-                    <div className="d-inline-block me-1 mb-1">
+                    <div className="d-inline-block me-1">
                       <Button.Ripple
                         color="success"
                         size="sm"

@@ -154,6 +154,7 @@ const Routes =
           path: "/",
           index: true,
           element: <Navigate replace to={DefaultRoute} />,
+          auth: false,
         },
         {
           path: "/login",

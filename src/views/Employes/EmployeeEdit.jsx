@@ -1,16 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 import Sidebar from "@components/sidebar";
 
-import { selectThemeColors } from "@utils";
-
-import Select from "react-select";
 import classnames from "classnames";
 import { useForm, Controller } from "react-hook-form";
 
 import { Button, Label, Form, Input, Row, Col, FormFeedback } from "reactstrap";
 
-import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -25,17 +21,19 @@ import { GetEmployeeById } from "./../../services/api/GetEmployeeById.api";
 import { UploadFile } from "./../../services/api/UploadFile.api";
 import { EditEmployeeAll } from "./../../services/api/EditEmployeeKok";
 
-const AdminEdit = ({ open, toggleSidebar, adminId }) => {
-  const navigate = useNavigate();
+const AdminEdit = ({ open, toggleSidebar, adminId, setRefreshAdminData }) => {
   const [data, setData] = useState({});
+  const [refreshAdminInfo, setRefreshAdminInfo] = useState(false);
 
   useEffect(() => {
-    const getAdminById = async () => {
-      const result = await GetEmployeeById(adminId);
-      setData(result?.result);
-    };
-    getAdminById();
-  }, [adminId]);
+    if (adminId) {
+      const getAdminById = async () => {
+        const result = await GetEmployeeById(adminId);
+        setData(result?.result);
+      };
+      getAdminById();
+    }
+  }, [adminId, refreshAdminInfo]);
 
   useEffect(() => {
     reset(defaultValues);
@@ -106,9 +104,9 @@ const AdminEdit = ({ open, toggleSidebar, adminId }) => {
     clearErrors();
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (values) => {
     let myFormData = new FormData();
-    myFormData.append("image", data.files[0]);
+    myFormData.append("image", values.files[0]);
 
     const result = await UploadFile({ myFormData: myFormData });
 
@@ -116,21 +114,19 @@ const AdminEdit = ({ open, toggleSidebar, adminId }) => {
     try {
       await EditEmployeeAll(
         {
-          fullName: data.fullName,
-          email: data.email,
-          address: data.address,
-          phoneNumber: data.phoneNumber,
-          nationalId: data.nationalId,
-          birthDate: data.birthDate,
-          role: "admin",
-          profile: result?.data.result
-            ? result?.data.result
-            : "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
+          fullName: values.fullName,
+          email: values.email,
+          address: values.address,
+          phoneNumber: values.phoneNumber,
+          nationalId: values.nationalId,
+          birthDate: values.birthDate,
+          profile: result?.data.result ? result?.data.result : data?.profile,
         },
-        teacherId
+        adminId
       );
+      setRefreshAdminInfo((old) => !old);
       toast.success("ادمین با موفقیت ویرایش شد");
-      navigate(0);
+      setRefreshAdminData((old) => !old);
     } catch (error) {
       toast.error("ویرایش ادمین با خطا مواجه شد");
     }

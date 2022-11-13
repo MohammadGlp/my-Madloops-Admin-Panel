@@ -10,7 +10,6 @@ import { useForm, Controller } from "react-hook-form";
 
 import { Button, Label, Form, Input, Row, Col, FormFeedback } from "reactstrap";
 
-import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -23,9 +22,7 @@ import "@styles/react/libs/flatpickr/flatpickr.scss";
 
 import { RegisterStudent } from "./../../services/api/RegisterStudent";
 
-const AddStudent = ({ open, toggleSidebar }) => {
-  const navigate = useNavigate();
-
+const AddStudent = ({ open, toggleSidebar, setRefreshStudentInfo }) => {
   const defaultValues = {
     fullName: "",
     nationalId: "",
@@ -96,7 +93,6 @@ const AddStudent = ({ open, toggleSidebar }) => {
   const onSubmit = async (data) => {
     toggleSidebar();
     try {
-      console.log(data);
       await RegisterStudent({
         fullName: data.fullName,
         email: data.email,
@@ -107,10 +103,11 @@ const AddStudent = ({ open, toggleSidebar }) => {
         profile:
           "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
       });
-      //   navigate(0);
+      setRefreshStudentInfo((old) => !old);
       toast.success("افزودن دانشجو با موفقیت اضافه شد");
     } catch (error) {
-      toast.error("افزودن دانشجو با خطا مواجه شد");
+      console.log(error);
+      toast.error(error.data.message[0].message);
     }
   };
 

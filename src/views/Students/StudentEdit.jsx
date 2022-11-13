@@ -23,18 +23,26 @@ import "@styles/react/libs/flatpickr/flatpickr.scss";
 
 import { UploadFile } from "./../../services/api/UploadFile.api";
 import { GetStudentById } from "./../../services/api/GetStudentById";
+import { EditStudentInfo } from "./../../services/api/EditStudentInfo.api";
 
-const StudentEdit = ({ open, toggleSidebar, studentId }) => {
-  const navigate = useNavigate();
+const StudentEdit = ({
+  open,
+  toggleSidebar,
+  studentId,
+  setRefreshStudentInfo,
+}) => {
   const [data, setData] = useState({});
+  const [refreshStudentData, setRefreshStudentData] = useState(false);
 
   useEffect(() => {
-    const getAdminById = async () => {
-      const result = await GetStudentById(studentId);
-      setData(result?.result);
-    };
-    getAdminById();
-  }, [studentId]);
+    if (studentId) {
+      const getAdminById = async () => {
+        const result = await GetStudentById(studentId);
+        setData(result?.result);
+      };
+      getAdminById();
+    }
+  }, [studentId, refreshStudentData]);
 
   useEffect(() => {
     reset(defaultValues);
@@ -107,8 +115,8 @@ const StudentEdit = ({ open, toggleSidebar, studentId }) => {
         {
           fullName: data?.fullName,
           email: data?.email,
-          address: data?.address,
           phoneNumber: data?.phoneNumber,
+          nationalId: data?.nationalId,
           birthDate: data?.birthDate,
           profile: result?.data.result
             ? result?.data.result
@@ -117,7 +125,8 @@ const StudentEdit = ({ open, toggleSidebar, studentId }) => {
         studentId
       );
       toast.success("دانشجو با موفقیت ویرایش شد");
-      navigate(0);
+      setRefreshStudentInfo((old) => !old);
+      setRefreshStudentData((old) => !old);
     } catch (error) {
       toast.error("ویرایش دانشجو با خطا مواجه شد");
     }
@@ -215,7 +224,7 @@ const StudentEdit = ({ open, toggleSidebar, studentId }) => {
                     type="text"
                     placeholder={data?.nationalId}
                     invalid={errors.nationalId && true}
-                    disabled
+                    disabled={true}
                   />
                 )}
               />

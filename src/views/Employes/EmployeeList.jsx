@@ -1,18 +1,31 @@
 import { useEffect, useState } from "react";
 import { Edit, Trash, UserCheck, UserX } from "react-feather";
 import { Table, Button, Badge } from "reactstrap";
-import { DeleteCourse } from "../../services/api/DeleteCourse.api";
-import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { DeactiveEmployee } from "../../services/api/deactiveEmployee";
 import { ActiveEmployee } from "../../services/api/ActiveEmployee";
 import { GetAllEmployees } from "./../../services/api/GetAllEmployees.api";
 import { DeleteEmployee } from "../../services/api/DeleteEmployee.api";
 import AdminEdit from "./EmployeeEdit";
+import { GetEmployeeById } from "./../../services/api/GetEmployeeById.api";
+import { getToken } from "../../services/AuthServices/AuthServices";
+import { DecodeToken } from "../../utility/DecodeToken";
 
 const EmployeesList = () => {
   const [employees, setEmployees] = useState([]);
-  const navigate = useNavigate();
+  const [refreshAdminData, setRefreshAdminData] = useState(false);
+  const userToken = getToken();
+  const id = DecodeToken(userToken);
+  const [userData, setUserData] = useState();
+
+  useEffect(() => {
+    const getAdminById = async () => {
+      const result = await GetEmployeeById(id._id);
+      setUserData(result?.result);
+    };
+    getAdminById();
+  }, []);
+
   useEffect(() => {
     const getAll = async () => {
       try {
@@ -21,52 +34,45 @@ const EmployeesList = () => {
       } catch (error) {}
     };
     getAll();
-  }, []);
+  }, [refreshAdminData]);
 
   const handleDelete = async (employeeId, employeeName) => {
-    const originalStudents = [...employees];
-    const newEmplo = employees.filter((m) => m._id !== employeeId);
-    setEmployees(newEmplo);
-    try {
-      await DeleteEmployee(employeeId, employeeName);
-      toast.warning(`دانشجو با موفقیت حذف شد`);
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
-      }
-      setEmployees(originalStudents);
+    const res = await DeleteEmployee(employeeId, employeeName);
+    if (res.success === true) {
+      setStudents((old) => {
+        let newData = [...old];
+        let newAdminData = newData;
+        newAdminData = newAdminData.filter((item) => item._id !== employeeId);
+        newData = newAdminData;
+        return newData;
+      });
+      toast.success(`ادمین با موفقیت حذف شد`);
+    } else {
+      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
     }
   };
 
   const handleActive = async (employeeId) => {
-    // const originalCourses = courses;
-    // const newCourse = courses.filter((m) => m._id !== courseId);
-    // setCourses(newCourse);
     try {
       await ActiveEmployee(employeeId);
       toast.success(`وضعیت ادمین به فعال تغییر کرد`);
-      navigate(0);
+      setRefreshAdminData((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
         toast.error("خطایی رخ داده");
       }
-      //   setCourses(originalCourses);
     }
   };
 
   const handleDeactive = async (employeeId) => {
-    // const originalCourses = courses;
-    // const newCourse = courses.filter((m) => m._id !== courseId);
-    // setCourses(newCourse);
     try {
       await DeactiveEmployee(employeeId);
       toast.success(`وضعیت ادمین به فعال تغییر کرد`);
-      navigate(0);
+      setRefreshAdminData((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
         toast.error("خطایی رخ داده");
       }
-      //   setCourses(originalCourses);
     }
   };
   const [adminId, setAdminId] = useState();
@@ -93,7 +99,9 @@ const EmployeesList = () => {
         </thead>
         <tbody>
           {employees
-            .filter((em) => em.role === "admin")
+            .filter(
+              (em) => em.role === "admin" && em.fullName !== userData?.fullName
+            )
             .map((course) => (
               <tr key={course._id}>
                 <td>
@@ -110,10 +118,7 @@ const EmployeesList = () => {
                 </td>
                 <td>{course.nationalId}</td>
                 <td>{course.phoneNumber}</td>
-                <td>
-                  {course.birthDate}
-                  {/* <AvatarGroup data={course.students} /> */}
-                </td>
+                <td>{course.birthDate}</td>
                 <td>
                   {course.isActive ? (
                     <Badge className="px-1" pill color="light-success">
@@ -173,6 +178,7 @@ const EmployeesList = () => {
         open={editAdminOpen}
         toggleSidebar={toggleEditSidebar}
         adminId={adminId}
+        setRefreshAdminData={setRefreshAdminData}
       />
     </>
   ) : (

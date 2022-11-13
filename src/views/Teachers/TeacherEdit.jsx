@@ -21,21 +21,26 @@ import "cleave.js/dist/addons/cleave-phone.ir";
 import "@styles/react/pages/page-form-validation.scss";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 
-import { EditEmployeeInfo } from "./../../services/api/EditEmployeInfo.api";
 import { GetEmployeeById } from "./../../services/api/GetEmployeeById.api";
 import { UploadFile } from "./../../services/api/UploadFile.api";
 import { EditEmployeeAll } from "./../../services/api/EditEmployeeKok";
 
-const TeacherEdit = ({ open, toggleSidebar, teacherId }) => {
-  const navigate = useNavigate();
+const TeacherEdit = ({
+  open,
+  toggleSidebar,
+  teacherId,
+  setRefreshTeacherInfo,
+}) => {
   const [data, setData] = useState({});
 
   useEffect(() => {
-    const getAdminById = async () => {
-      const result = await GetEmployeeById(teacherId);
-      setData(result?.result);
-    };
-    getAdminById();
+    if (teacherId) {
+      const getAdminById = async () => {
+        const result = await GetEmployeeById(teacherId);
+        setData(result?.result);
+      };
+      getAdminById();
+    }
   }, [teacherId]);
 
   useEffect(() => {
@@ -49,13 +54,6 @@ const TeacherEdit = ({ open, toggleSidebar, teacherId }) => {
       .string()
       .email("الگوی وارد شده صحیح نمی باشد")
       .required("لطفا فیلد ایمیل را پر کنید"),
-
-    // nationalId: yup
-    //   .string()
-    //   .required("لطفا فیلد کد ملی را پر کنید")
-    //   .matches(/^[0-9]+$/, "الگوی وارد شده صحیح نمی باشد")
-    //   .min(10, "تعداد ارقام کد ملی صحیح نیست")
-    //   .max(10, "تعداد ارقام کد ملی صحیح نیست"),
 
     phoneNumber: yup
       .string()
@@ -129,7 +127,6 @@ const TeacherEdit = ({ open, toggleSidebar, teacherId }) => {
           phoneNumber: data?.phoneNumber,
           nationalId: data?.nationalId,
           birthDate: data?.birthDate,
-          role: "teacher",
           profile: result?.data.result
             ? result?.data.result
             : "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
@@ -137,9 +134,9 @@ const TeacherEdit = ({ open, toggleSidebar, teacherId }) => {
         teacherId
       );
       toast.success("استاد با موفقیت ویرایش شد");
-      navigate(0);
+      setRefreshTeacherInfo((old) => !old);
     } catch (error) {
-      toast.error("ویرایش استاد با خطا مواجه شد");
+      return toast.error("ویرایش استاد با خطا مواجه شد");
     }
   };
 

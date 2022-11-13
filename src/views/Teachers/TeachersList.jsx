@@ -8,7 +8,6 @@ import {
   ModalHeader,
   ModalBody,
 } from "reactstrap";
-import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { DeactiveEmployee } from "../../services/api/deactiveEmployee";
 import { ActiveEmployee } from "../../services/api/ActiveEmployee";
@@ -17,16 +16,20 @@ import { DeleteEmployee } from "./../../services/api/DeleteEmployee.api";
 import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
 import AddTeacher from "./AddTeacher";
 import TeacherEdit from "./TeacherEdit";
+import { GetCourseById } from "./../../services/api/GetCourseById.api";
+import { getAllCourses } from "./../../services/api/GetAllCourses.api";
 
 const TeachersList = () => {
   const [teachers, setTeachers] = useState([]);
   const [teacherModal, setTeacherModal] = useState([]);
   const [addTeacherOpen, setAddTeacherOpen] = useState(false);
   const [editTeacherOpen, setEditTeacherOpen] = useState(false);
+  const [RefreshTeacherInfo, setRefreshTeacherInfo] = useState(false);
   const [modal, setModal] = useState(false);
   const [teacherId, setTeacherId] = useState(null);
   const [teacherName, setTeacherName] = useState(null);
-  const navigate = useNavigate();
+  const [rTc, setRtc] = useState(false);
+
   useEffect(() => {
     const getAll = async () => {
       try {
@@ -35,75 +38,81 @@ const TeachersList = () => {
       } catch (error) {}
     };
     getAll();
-  }, []);
+  }, [RefreshTeacherInfo]);
 
   const handleDelete = async (teacherId, teacherName) => {
-    const originalStudents = [...teachers];
-    const newStudents = teachers.filter((m) => m._id !== teacherId);
-    setTeachers(newStudents);
-    try {
-      await DeleteEmployee(teacherId, teacherName);
-      toast.success(`دانشجو با موفقیت حذف شد`);
-    } catch (error) {
-      toast.error("خطایی رخ داده");
-
-      setTeachers(originalStudents);
+    const res = await DeleteEmployee(teacherId, teacherName);
+    if (res.success === true) {
+      setTeachers((old) => {
+        let newData = [...old];
+        let newTeachersData = newData;
+        newTeachersData = newTeachersData.filter(
+          (item) => item._id !== employeeId
+        );
+        newData = newTeachersData;
+        return newData;
+      });
+      toast.success(`استاد با موفقیت حذف شد`);
+    } else {
+      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
     }
   };
 
   const handleDeleteTeacherCourse = async (courseId, courseName) => {
-    const originalCourse = [...teacherModal];
-    const deleteCourse = teacherModal.filter((c) => c._id !== courseId);
-    try {
-      await DeleteCourse(courseId);
+    const res = await DeleteCourse(courseId);
+    if (res.success === true) {
+      setTeacherModal((old) => {
+        let newData = [...old];
+        let newTeachersData = newData;
+        newTeachersData = newTeachersData.filter(
+          (item) => item._id !== teacherId
+        );
+        newData = newTeachersData;
+        return newData;
+      });
+      setRtc((old) => !old);
       toast.success(`دوره ${courseName} با موفقیت از استاد حذف شد`);
-      setTeacherModal(deleteCourse);
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
-      }
-      setTeacherModal(originalCourse);
-      console.log(originalCourse);
+    } else {
+      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
     }
   };
 
   const handleActive = async (teacherId) => {
-    // const originalCourses = courses;
-    // const newCourse = courses.filter((m) => m._id !== courseId);
-    // setCourses(newCourse);
     try {
       await ActiveEmployee(teacherId);
       toast.success(`وضعیت استاد به فعال تغییر کرد`);
-      navigate(0);
+      setRefreshTeacherInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
         toast.error("خطایی رخ داده");
       }
-      //   setCourses(originalCourses);
     }
   };
 
   const handleDeactive = async (teacherId) => {
-    // const originalCourses = courses;
-    // const newCourse = courses.filter((m) => m._id !== courseId);
-    // setCourses(newCourse);
     try {
       await DeactiveEmployee(teacherId);
       toast.success(`وضعیت استاد به غیر فعال تغییر کرد`);
-      navigate(0);
+      setRefreshTeacherInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
         toast.error("خطایی رخ داده");
       }
-      //   setCourses(originalCourses);
     }
   };
+
+  useEffect(() => {
+    const getAll = async () => {
+      const courses = await getAllCourses();
+      setTeacherModal(courses?.data.result);
+    };
+    getAll();
+  }, [rTc]);
 
   const handleShowTeacherCourse = (teacherId, teacherTitle) => {
     setModal(true);
     setTeacherName(teacherTitle);
-    const findTeacher = teachers.find((t) => t._id === teacherId);
-    setTeacherModal(findTeacher.courses);
+    setTeacherId(teacherId);
   };
 
   const toggleAddSidebar = () => setAddTeacherOpen(!addTeacherOpen);
@@ -136,7 +145,7 @@ const TeachersList = () => {
           </tr>
         </thead>
         <tbody>
-          {teachers.map((course) => (
+          {teachers?.map((course) => (
             <tr key={course._id}>
               <td>
                 <img
@@ -216,11 +225,16 @@ const TeachersList = () => {
           ))}
         </tbody>
       </Table>
-      <AddTeacher open={addTeacherOpen} toggleSidebar={toggleAddSidebar} />
+      <AddTeacher
+        open={addTeacherOpen}
+        toggleSidebar={toggleAddSidebar}
+        setRefreshTeacherInfo={setRefreshTeacherInfo}
+      />
       <TeacherEdit
         open={editTeacherOpen}
         toggleSidebar={toggleEditSidebar}
         teacherId={teacherId}
+        setRefreshTeacherInfo={setRefreshTeacherInfo}
       />
       <Modal
         isOpen={modal}
@@ -241,27 +255,31 @@ const TeachersList = () => {
               </tr>
             </thead>
             <tbody>
-              {teacherModal.map((course) => (
-                <tr key={course._id}>
-                  <td>
-                    <span className="align-middle fw-bold">{course.title}</span>
-                  </td>
-                  <td>{course.capacity}</td>
-                  <td>
-                    <div className="d-inline-block me-1 mb-1">
-                      <Button.Ripple
-                        color="danger"
-                        size="sm"
-                        onClick={() =>
-                          handleDeleteTeacherCourse(course._id, course.title)
-                        }
-                      >
-                        <Trash size={16} />
-                      </Button.Ripple>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {teacherModal
+                .filter((te) => te.teacher._id === teacherId)
+                .map((course) => (
+                  <tr key={course._id}>
+                    <td>
+                      <span className="align-middle fw-bold">
+                        {course.title}
+                      </span>
+                    </td>
+                    <td>{course.capacity}</td>
+                    <td>
+                      <div className="d-inline-block me-1 mb-1">
+                        <Button.Ripple
+                          color="danger"
+                          size="sm"
+                          onClick={() =>
+                            handleDeleteTeacherCourse(course._id, course.title)
+                          }
+                        >
+                          <Trash size={16} />
+                        </Button.Ripple>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </Table>
         </ModalBody>

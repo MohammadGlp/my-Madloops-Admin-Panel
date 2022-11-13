@@ -1,5 +1,5 @@
 // ** React Imports
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // ** Reactstrap Imports
 import {
@@ -27,9 +27,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Avatar from "@components/avatar";
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
-import { LoginEmployee } from "./../services/api/employee/LoginEmployee.api";
+import { LoginEmployee } from "../services/api/employee/LoginEmployee.api";
 
 const LoginBasic = () => {
+  const navigate = useNavigate();
   const SignupSchema = yup.object().shape({
     email: yup
       .string()
@@ -52,7 +53,13 @@ const LoginBasic = () => {
   } = useForm({ mode: "onChange", resolver: yupResolver(SignupSchema) });
 
   const onSubmit = async (data) => {
-    await LoginEmployee(data);
+    const result = await LoginEmployee(data);
+    if (result?.success === true) {
+      setTimeout(() => {
+        navigate("/home");
+      }, 2000);
+      toast.success(result?.message[0].message);
+    }
   };
 
   const handleLanding = () => {

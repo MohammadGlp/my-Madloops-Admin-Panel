@@ -36,58 +36,57 @@ import 'cleave.js/dist/addons/cleave-phone.ir';
 import '@styles/react/pages/page-form-validation.scss';
 import '@styles/react/libs/flatpickr/flatpickr.scss';
 
-import { GetAllNews_Articles } from '../../services/api/GetAllNews-Articles.api';
-import { EditArticle } from '../../services/api/EditArticle.api';
+import { GetAllLessons } from '../../services/api/getAllLessons.api';
+import { LessonEdit } from '../../services/api/LessonEdit.api';
 import { UploadFile } from '../../services/api/UploadFile.api';
 
-const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
-  const [allBlogs, setAllBlogs] = useState([]);
-  const [blog, setBlog] = useState({});
+const EditLesson = ({ open, toggleSidebar, lessonId }) => {
+  const [allLessons, setAllLessons] = useState([]);
+  const [lesson, setLesson] = useState({});
   const [content, setContent] = useState();
 
-  const getBlogs = async () => {
-    const blogs = await GetAllNews_Articles();
-    setAllBlogs(blogs?.result);
+  const getLessons = async () => {
+    const lessons = await GetAllLessons();
+    setAllLessons(lessons?.result);
   };
 
   useEffect(() => {
-    getBlogs();
+    getLessons();
   }, []);
 
   useEffect(() => {
-    const blog = allBlogs.find((blog) => blog._id === blogId);
-    setBlog(blog);
-  }, [blogId]);
+    const lesson = allLessons.find(
+      (lesson) => lesson._id === lessonId
+    );
+    setLesson(lesson);
+  }, [lessonId]);
 
   const [avatar, setAvatar] = useState('');
 
   useEffect(() => {
-    const initialContent = blog?.text ? blog?.text : '';
+    const initialContent = lesson?.description
+      ? lesson?.description
+      : '';
     const contentBlock = htmlToDraft(initialContent);
     const contentState = ContentState.createFromBlockArray(
       contentBlock.contentBlocks
     );
     const editorState = EditorState.createWithContent(contentState);
     setContent(editorState);
-    setAvatar(blog?.image ? blog?.image : '');
+    setAvatar(lesson?.image ? lesson?.image : '');
     reset(defaultValues);
-  }, [blog]);
+  }, [lesson]);
 
   const SignupSchema = yup.object().shape({
-    title: yup.string().required('لطفا فیلد نام درس را پر کنید'),
+    lessonName: yup.string().required('لطفا فیلد نام درس را پر کنید'),
   });
 
-  const category = [
-    { value: 'news', label: 'اخبار' },
-    { value: 'article', label: 'مقاله' },
-  ];
-
   const defaultValues = {
-    title: blog?.title,
-    category: {
-      value: blog?.category,
-      label: blog?.category === 'news' ? 'اخبار' : 'مقاله',
-    },
+    lessonName: lesson?.lessonName,
+    topics: lesson?.topics?.map((topic) => ({
+      value: topic,
+      label: topic,
+    })),
   };
 
   const {
@@ -117,22 +116,41 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
       'https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png'
     );
   };
-
+  const colorOptions = [
+    {
+      value: 'react',
+      label: 'react',
+    },
+    {
+      value: 'javascript',
+      label: 'javascript',
+    },
+    { value: 'typescript', label: 'typescript' },
+    {
+      value: 'angular',
+      label: 'angular',
+    },
+    {
+      value: 'front',
+      label: 'front',
+    },
+  ];
   const onSubmit = async (data) => {
     toggleSidebar();
     try {
-      await EditArticle(
+      await LessonEdit(
         {
-          title: data?.title,
-          category: data?.category?.value,
-          text: content.getCurrentContent().getPlainText(),
+          lessonName: data?.lessonName,
+          category: 2,
+          description: content.getCurrentContent().getPlainText(),
           image: avatar,
+          topics: data?.topics?.map((topic) => topic.value),
         },
-        blogId
+        lessonId
       );
-      toast.success('مقاله با موفقیت ویرایش شد');
+      toast.success('درس با موفقیت ویرایش شد');
     } catch (error) {
-      toast.error('ویرایش مقاله با خطا مواجه شد');
+      toast.error('ویرایش درس با خطا مواجه شد');
     }
   };
 
@@ -153,7 +171,7 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
                 <img
                   className="rounded me-50"
                   src={avatar}
-                  // alt="بدون تصویر"
+                  alt="بدون تصویر"
                   height="100"
                   width="100"
                 />
@@ -195,27 +213,54 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
           </Col>
           <Col sm="12" className="mb-1">
             <div className="mb-1">
-              <Label className="form-label" for="title">
-                عنوان محتوا
+              <Label className="form-label" for="lessonName">
+                عنوان درس
               </Label>
               <Controller
-                id="title"
-                name="title"
+                id="lessonName"
+                name="lessonName"
                 control={control}
                 render={({ field }) => (
                   <Input
                     {...field}
                     type="text"
-                    invalid={errors.title && true}
+                    invalid={errors.lessonName && true}
                   />
                 )}
               />
-              {errors.title && (
-                <FormFeedback>{errors.title.message}</FormFeedback>
+              {errors.lessonName && (
+                <FormFeedback>
+                  {errors.lessonName.message}
+                </FormFeedback>
               )}
             </div>
           </Col>
-          <Col md="12" sm="12" className="mb-1">
+          <Col sm="12" className="mb-1">
+            <Label className="form-label" for="topics">
+              موضوعات درس
+            </Label>
+            <Controller
+              id="topics"
+              name="topics"
+              //   theme={selectThemeColors}
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  isClearable={false}
+                  theme={selectThemeColors}
+                  //   defaultValue={[colorOptions[2], colorOptions[3]]}
+                  isMulti
+                  name="colors"
+                  options={colorOptions}
+                  className="react-select"
+                  classNamePrefix="select"
+                />
+              )}
+            />
+          </Col>
+
+          {/* <Col md="12" sm="12" className="mb-1">
             <Label className="form-label" htmlFor="category">
               دسته بندی
             </Label>
@@ -232,30 +277,39 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
                   className="react-select"
                   classNamePrefix="select"
                 />
+                <InputNumber
+                  // defaultValue={10}
+                  {...field}
+                  min={0}
+                  max={10}
+                  defaultValue={5}
+                  upHandler={<Plus />}
+                  downHandler={<Minus />}
+                  id="min-max-number-input"
+                />
               )}
             />
-          </Col>
+          </Col> */}
           <Col sm="12" className="mb-2">
-            <Label className="form-label" htmlFor="text">
+            <Label className="form-label" htmlFor="description">
               توضیحات
             </Label>
-            {content ? (
-              <Controller
-                id="text"
-                name="text"
-                control={control}
-                render={({ field }) => (
-                  <Editor
-                    {...field}
-                    editorState={content}
-                    onEditorStateChange={(data) => setContent(data)}
-                  />
-                )}
-              />
-            ) : null}
-
-            {errors.text && (
-              <FormFeedback>{errors.text.message}</FormFeedback>
+            <Controller
+              id="description"
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <Editor
+                  {...field}
+                  editorState={content}
+                  onEditorStateChange={(data) => setContent(data)}
+                />
+              )}
+            />
+            {errors.description && (
+              <FormFeedback>
+                {errors.description.message}
+              </FormFeedback>
             )}
           </Col>
 
@@ -279,4 +333,4 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
   );
 };
 
-export default BlogsEdit;
+export default EditLesson;

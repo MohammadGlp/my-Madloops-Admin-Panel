@@ -1,30 +1,38 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import Sidebar from "@components/sidebar";
+import Sidebar from '@components/sidebar';
 
-import { selectThemeColors } from "@utils";
+import { selectThemeColors } from '@utils';
 
-import Select from "react-select";
-import classnames from "classnames";
-import { useForm, Controller } from "react-hook-form";
+import Select from 'react-select';
+import classnames from 'classnames';
+import { useForm, Controller } from 'react-hook-form';
 
-import { Button, Label, Form, Input, Row, Col, FormFeedback } from "reactstrap";
+import {
+  Button,
+  Label,
+  Form,
+  Input,
+  Row,
+  Col,
+  FormFeedback,
+} from 'reactstrap';
 
-import { useNavigate } from "react-router-dom";
-import * as yup from "yup";
-import toast from "react-hot-toast";
-import { yupResolver } from "@hookform/resolvers/yup";
-import Cleave from "cleave.js/react";
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import toast from 'react-hot-toast';
+import { yupResolver } from '@hookform/resolvers/yup';
+import Cleave from 'cleave.js/react';
 
-import "@styles/react/pages/page-authentication.scss";
-import "cleave.js/dist/addons/cleave-phone.ir";
-import "@styles/react/pages/page-form-validation.scss";
-import "@styles/react/libs/flatpickr/flatpickr.scss";
+import '@styles/react/pages/page-authentication.scss';
+import 'cleave.js/dist/addons/cleave-phone.ir';
+import '@styles/react/pages/page-form-validation.scss';
+import '@styles/react/libs/flatpickr/flatpickr.scss';
 
-import { GetAllTeachers } from "../../services/api/GetAllTeachers.api";
-import { GetAllLessons } from "../../services/api/getAllLessons.api";
-import { GetCourseById } from "../../services/api/GetCourseById.api";
-import { EditCourse } from "../../services/api/EditCourse.api";
+import { GetAllTeachers } from '../../services/api/GetAllTeachers.api';
+import { GetAllLessons } from '../../services/api/getAllLessons.api';
+import { GetCourseById } from '../../services/api/GetCourseById.api';
+import { EditCourse } from '../../services/api/EditCourse.api';
 
 const CourseEdit = ({ open, toggleSidebar, courseId }) => {
   const navigate = useNavigate();
@@ -60,23 +68,23 @@ const CourseEdit = ({ open, toggleSidebar, courseId }) => {
   }, [course]);
 
   const SignupSchema = yup.object().shape({
-    title: yup.string().required("لطفا فیلد نام درس را پر کنید"),
-    cost: yup.string().required("لطفا فیلد قیمت درس را پر کنید"),
-    capacity: yup.string().required("لطفا فیلد ظرفیت درس را پر کنید"),
+    title: yup.string().required('لطفا فیلد نام درس را پر کنید'),
+    cost: yup.string().required('لطفا فیلد قیمت درس را پر کنید'),
+    capacity: yup.string().required('لطفا فیلد ظرفیت درس را پر کنید'),
     startDate: yup
       .string()
-      .required("لطفا فیلد تاریخ شروع را پر کنید")
+      .required('لطفا فیلد تاریخ شروع را پر کنید')
       .nullable(),
     endDate: yup
       .string()
-      .required("لطفا فیلد تاریخ پایان را پر کنید")
+      .required('لطفا فیلد تاریخ پایان را پر کنید')
       .nullable(),
   });
 
   const options1 = {
     date: true,
-    delimiter: "/",
-    datePattern: ["Y", "m", "d"],
+    delimiter: '/',
+    datePattern: ['Y', 'm', 'd'],
   };
 
   const teachers = allTeachers.map((teacher) => {
@@ -113,26 +121,26 @@ const CourseEdit = ({ open, toggleSidebar, courseId }) => {
     reset,
     formState: { errors },
   } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     resolver: yupResolver(SignupSchema),
     defaultValues,
   });
 
   const handleSidebarClosed = () => {
-    for (const key in defaultValues) {
-      setValue(key, "");
-    }
-    clearErrors();
+    // for (const key in defaultValues) {
+    //   setValue(key, "");
+    // }
+    // clearErrors();
   };
 
   const onSubmit = async (data) => {
     toggleSidebar();
     try {
       await EditCourse(data, courseId);
-      toast.success("دوره با موفقیت ویرایش شد");
+      toast.success('دوره با موفقیت ویرایش شد');
       navigate(0);
     } catch (error) {
-      toast.error("ویرایش دوره با خطا مواجه شد");
+      toast.error('ویرایش دوره با خطا مواجه شد');
     }
   };
 
@@ -270,8 +278,8 @@ const CourseEdit = ({ open, toggleSidebar, courseId }) => {
                 render={({ field }) => (
                   <Cleave
                     {...field}
-                    className={classnames("form-control", {
-                      "is-invalid": errors.startDate && true,
+                    className={classnames('form-control', {
+                      'is-invalid': errors.startDate && true,
                     })}
                     placeholder={course?.startDate}
                     options={options1}
@@ -279,7 +287,9 @@ const CourseEdit = ({ open, toggleSidebar, courseId }) => {
                 )}
               />
               {errors.startDate && (
-                <FormFeedback>{errors.startDate.message}</FormFeedback>
+                <FormFeedback>
+                  {errors.startDate.message}
+                </FormFeedback>
               )}
             </div>
           </Col>
@@ -295,8 +305,8 @@ const CourseEdit = ({ open, toggleSidebar, courseId }) => {
                 render={({ field }) => (
                   <Cleave
                     {...field}
-                    className={classnames("form-control", {
-                      "is-invalid": errors.endDate && true,
+                    className={classnames('form-control', {
+                      'is-invalid': errors.endDate && true,
                     })}
                     placeholder={course.endDate}
                     options={options1}
@@ -314,7 +324,11 @@ const CourseEdit = ({ open, toggleSidebar, courseId }) => {
               <Button className="me-1" color="primary" type="submit">
                 ویرایش
               </Button>
-              <Button outline color="secondary" onClick={toggleSidebar}>
+              <Button
+                outline
+                color="secondary"
+                onClick={toggleSidebar}
+              >
                 انصراف
               </Button>
             </div>

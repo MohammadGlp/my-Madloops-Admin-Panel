@@ -5,9 +5,7 @@ import Sidebar from '@components/sidebar';
 import { selectThemeColors } from '@utils';
 
 import Select from 'react-select';
-import classnames from 'classnames';
 import { useForm, Controller } from 'react-hook-form';
-import avatar from '../../assets/images/avatars/1.png';
 
 import {
   Button,
@@ -39,39 +37,14 @@ import '@styles/react/libs/flatpickr/flatpickr.scss';
 import { GetAllNews_Articles } from '../../services/api/GetAllNews-Articles.api';
 import { EditArticle } from '../../services/api/EditArticle.api';
 import { UploadFile } from '../../services/api/UploadFile.api';
+import { AddArticle } from '../../services/api/AddArticle.api';
 
-const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
-  const [allBlogs, setAllBlogs] = useState([]);
-  const [blog, setBlog] = useState({});
+const AddBlog = ({ open, toggleSidebar }) => {
   const [content, setContent] = useState();
 
-  const getBlogs = async () => {
-    const blogs = await GetAllNews_Articles();
-    setAllBlogs(blogs?.result);
-  };
-
-  useEffect(() => {
-    getBlogs();
-  }, []);
-
-  useEffect(() => {
-    const blog = allBlogs.find((blog) => blog._id === blogId);
-    setBlog(blog);
-  }, [blogId]);
-
-  const [avatar, setAvatar] = useState('');
-
-  useEffect(() => {
-    const initialContent = blog?.text ? blog?.text : '';
-    const contentBlock = htmlToDraft(initialContent);
-    const contentState = ContentState.createFromBlockArray(
-      contentBlock.contentBlocks
-    );
-    const editorState = EditorState.createWithContent(contentState);
-    setContent(editorState);
-    setAvatar(blog?.image ? blog?.image : '');
-    reset(defaultValues);
-  }, [blog]);
+  const [avatar, setAvatar] = useState(
+    'https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png'
+  );
 
   const SignupSchema = yup.object().shape({
     title: yup.string().required('لطفا فیلد نام درس را پر کنید'),
@@ -83,10 +56,10 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
   ];
 
   const defaultValues = {
-    title: blog?.title,
+    title: '',
     category: {
-      value: blog?.category,
-      label: blog?.category === 'news' ? 'اخبار' : 'مقاله',
+      value: '',
+      label: '',
     },
   };
 
@@ -104,12 +77,18 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
     defaultValues,
   });
 
+  const handleSidebarClosed = () => {
+    for (const key in defaultValues) {
+      setValue(key, '');
+    }
+    clearErrors();
+  };
+
   const onChange = async (e) => {
     const imagefile = document.querySelector('#prof');
     let myFormData = new FormData();
     myFormData.append('image', imagefile.files[0]);
     const result = await UploadFile({ myFormData: myFormData });
-    console.log(result);
     setAvatar(result.data.result);
   };
   const handleImgReset = () => {
@@ -121,18 +100,15 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
   const onSubmit = async (data) => {
     toggleSidebar();
     try {
-      await EditArticle(
-        {
-          title: data?.title,
-          category: data?.category?.value,
-          text: content.getCurrentContent().getPlainText(),
-          image: avatar,
-        },
-        blogId
-      );
-      toast.success('مقاله با موفقیت ویرایش شد');
+      await AddArticle({
+        title: data?.title,
+        category: data?.category?.value,
+        text: content.getCurrentContent().getPlainText(),
+        image: avatar,
+      });
+      toast.success('مقاله با موفقیت افزوده شد');
     } catch (error) {
-      toast.error('ویرایش مقاله با خطا مواجه شد');
+      toast.error('افزودن مقاله با خطا مواجه شد');
     }
   };
 
@@ -140,10 +116,11 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
     <Sidebar
       size="lg"
       open={open}
-      title="ویرایش اخبار و مقالات "
+      title="افزودن اخبار و مقالات "
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
+      onClosed={handleSidebarClosed}
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
@@ -153,7 +130,7 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
                 <img
                   className="rounded me-50"
                   src={avatar}
-                  // alt="بدون تصویر"
+                  alt="بدون تصویر"
                   height="100"
                   width="100"
                 />
@@ -239,20 +216,18 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
             <Label className="form-label" htmlFor="text">
               توضیحات
             </Label>
-            {content ? (
-              <Controller
-                id="text"
-                name="text"
-                control={control}
-                render={({ field }) => (
-                  <Editor
-                    {...field}
-                    editorState={content}
-                    onEditorStateChange={(data) => setContent(data)}
-                  />
-                )}
-              />
-            ) : null}
+            <Controller
+              id="text"
+              name="text"
+              control={control}
+              render={({ field }) => (
+                <Editor
+                  {...field}
+                  editorState={content}
+                  onEditorStateChange={(data) => setContent(data)}
+                />
+              )}
+            />
 
             {errors.text && (
               <FormFeedback>{errors.text.message}</FormFeedback>
@@ -279,4 +254,4 @@ const BlogsEdit = ({ open, toggleSidebar, blogId }) => {
   );
 };
 
-export default BlogsEdit;
+export default AddBlog;

@@ -11,6 +11,9 @@ import {
   Label,
   Form,
   FormFeedback,
+  CardHeader,
+  CardBody,
+  Card,
 } from 'reactstrap';
 import toast from 'react-hot-toast';
 import { GetAllComments } from './../../services/api/GetAllComments.api';
@@ -21,6 +24,7 @@ import {
   timeConvert,
   toFarsiNumber,
 } from '../../utility/TimeAndDateConverter';
+import Breadcrumbs from '@components/breadcrumbs';
 
 import Avatar from '@components/avatar';
 import profileImg from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -113,80 +117,94 @@ const CommentList = () => {
 
   return comments ? (
     <>
-      <Table responsive>
-        <thead>
-          <tr>
-            <th>نام کاربری فرستنده</th>
-            <th>متن کامنت</th>
-            <th>تاریخ ارسال</th>
-            <th>وضعیت</th>
-            <th>عملیات</th>
-          </tr>
-        </thead>
-        <tbody>
-          {comments.map((comment) => (
-            <tr key={comment._id}>
-              <td>
-                <div className="d-flex align-items-center">
-                  <div style={{ width: '30px' }}>
-                    {comment.answer ? (
-                      <CheckCircle
-                        className="text-success"
-                        size={14}
-                      />
-                    ) : null}
-                  </div>
+      <Breadcrumbs
+        title="مدیریت کامنت ها"
+        data={[{ title: 'مدیریت کامنت ها' }]}
+      />
+      <Card>
+        <CardHeader></CardHeader>
+        <CardBody>
+          <Table responsive>
+            <thead>
+              <tr>
+                <th>نام کاربری فرستنده</th>
+                <th>متن کامنت</th>
+                <th>تاریخ ارسال</th>
+                <th>وضعیت</th>
+                <th>عملیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              {comments.map((comment) => (
+                <tr key={comment._id}>
+                  <td>
+                    <div className="d-flex align-items-center">
+                      <div style={{ width: '30px' }}>
+                        {comment.answer ? (
+                          <CheckCircle
+                            className="text-success"
+                            size={14}
+                          />
+                        ) : null}
+                      </div>
 
-                  <div>
-                    <span className="align-middle fw-bold d-block">
-                      {comment.username}
-                    </span>
-                    <small className="text-muted">
-                      {comment.email}
-                    </small>
-                  </div>
-                </div>
-              </td>
-              <td>{comment.comment}</td>
-              <td>{convertDate(comment?.createDate)}</td>
+                      <div>
+                        <span className="align-middle fw-bold d-block">
+                          {comment.username}
+                        </span>
+                        <small className="text-muted">
+                          {comment.email}
+                        </small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{comment.comment}</td>
+                  <td>{convertDate(comment?.createDate)}</td>
 
-              <td>
-                {comment.verified ? (
-                  <Badge className="px-1" pill color="light-success">
-                    تایید
-                  </Badge>
-                ) : (
-                  <Badge className="px-2" color="light-danger">
-                    عدم تایید
-                  </Badge>
-                )}
-              </td>
-              <td>
-                <div className="d-inline-block me-1 mb-1">
-                  <Button.Ripple
-                    color="primary"
-                    size="sm"
-                    onClick={() => handleModalActive(comment._id)}
-                  >
-                    <MessageCircle size={16} />
-                  </Button.Ripple>
-                </div>
+                  <td>
+                    {comment.verified ? (
+                      <Badge
+                        className="px-1"
+                        pill
+                        color="light-success"
+                      >
+                        تایید
+                      </Badge>
+                    ) : (
+                      <Badge className="px-2" color="light-danger">
+                        عدم تایید
+                      </Badge>
+                    )}
+                  </td>
+                  <td>
+                    <div className="d-inline-block me-1 mb-1">
+                      <Button.Ripple
+                        color="primary"
+                        size="sm"
+                        onClick={() => handleModalActive(comment._id)}
+                      >
+                        <MessageCircle size={16} />
+                      </Button.Ripple>
+                    </div>
 
-                <div className="d-inline-block me-1 mb-1">
-                  <Button.Ripple
-                    color="success"
-                    size="sm"
-                    onClick={() => handleVerify(comment._id)}
-                    disabled={comment.verified}
-                  >
-                    <CheckCircle size={16} />
-                  </Button.Ripple>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+                    <div className="d-inline-block me-1 mb-1">
+                      <Button.Ripple
+                        color="success"
+                        size="sm"
+                        onClick={() => handleVerify(comment._id)}
+                        disabled={comment.verified}
+                      >
+                        <CheckCircle size={16} />
+                      </Button.Ripple>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </CardBody>
+      </Card>
+
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}

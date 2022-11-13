@@ -11338,6 +11338,18 @@
   "resolved" "https://registry.npmjs.org/shallowequal/-/shallowequal-1.1.0.tgz"
   "version" "1.1.0"
 
+"shamsi-date-converter@^1.0.5":
+  "integrity" "sha512-Ip8E6WkSs7aa1Uud9jTuMpegIFU/9mOQBli6tTriBaaYU2ckuzXxZuJus24XtmW5EkXY7tieFBpsrAPD9N2nLQ=="
+  "resolved" "https://registry.npmjs.org/shamsi-date-converter/-/shamsi-date-converter-1.0.5.tgz"
+  "version" "1.0.5"
+  dependencies:
+    "shamsi" "^1.1.6"
+
+"shamsi@^1.1.6":
+  "integrity" "sha512-lTXsWGlPxY+AdkcoCJdwy4cFlqeULk0uPEBx+Mh7QIYEyfc+oPRFiChoxDHU3t2F2sL5J8gDJ6moD5sunOrWpg=="
+  "resolved" "https://registry.npmjs.org/shamsi/-/shamsi-1.1.6.tgz"
+  "version" "1.1.6"
+
 "shebang-command@^1.2.0":
   "integrity" "sha1-RKrGW2lbAzmJaMOfNj/uXer98eo= sha512-EV3L1+UQWGor21OmnvojK36mhg+TyIKDh3iFBKBohr5xeXIhNBcx8oWdgkTEEQ+BEFFYdLRuqMfd5L84N1V5Vg=="
   "resolved" "https://registry.npmjs.org/shebang-command/-/shebang-command-1.2.0.tgz"

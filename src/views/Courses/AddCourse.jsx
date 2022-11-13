@@ -29,6 +29,8 @@ import 'cleave.js/dist/addons/cleave-phone.ir';
 import '@styles/react/pages/page-form-validation.scss';
 import '@styles/react/libs/flatpickr/flatpickr.scss';
 
+import { convertDateToGregorian } from '../../utility/TimeAndDateConverter';
+
 import { GetAllTeachers } from '../../services/api/GetAllTeachers.api';
 import { GetAllLessons } from '../../services/api/getAllLessons.api';
 import { AddNewCourse } from '../../services/api/AddCourse.api';
@@ -113,9 +115,14 @@ const AddCourse = ({ open, toggleSidebar }) => {
   };
 
   const onSubmit = async (data) => {
+    const newData = {
+      ...data,
+      startDate: convertDateToGregorian(data.startDate),
+      endDate: convertDateToGregorian(data.endDate),
+    };
     toggleSidebar();
     try {
-      await AddNewCourse(data);
+      await AddNewCourse(newData);
       navigate(0);
       toast.success('دوره با موفقیت اضافه شد');
     } catch (error) {

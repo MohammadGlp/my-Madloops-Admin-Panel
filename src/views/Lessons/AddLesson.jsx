@@ -123,21 +123,64 @@ const AddLesson = ({ open, toggleSidebar }) => {
 
   const colorOptions = [
     {
+      value: 'Javascript',
+      label: 'Javascript',
+    },
+    {
+      value: 'Php',
+      label: 'Php',
+    },
+    {
+      value: 'Laravel',
+      label: 'Laravel',
+    },
+    {
+      value: 'Spring',
+      label: 'Spring',
+    },
+    {
+      value: 'Java',
+      label: 'Java',
+    },
+    {
+      value: 'C#',
+      label: 'C#',
+    },
+    {
       value: 'react',
       label: 'react',
     },
     {
-      value: 'javascript',
-      label: 'javascript',
-    },
-    { value: 'typescript', label: 'typescript' },
-    {
-      value: 'angular',
-      label: 'angular',
+      value: 'Node js',
+      label: 'Node js',
     },
     {
-      value: 'front',
-      label: 'front',
+      value: 'Django',
+      label: 'Django',
+    },
+    {
+      value: 'Python',
+      label: 'Python',
+    },
+    {
+      value: 'HTML',
+      label: 'HTMl',
+    },
+    {
+      value: 'Css',
+      label: 'Css',
+    },
+    {
+      value: 'WordPress',
+      label: 'WordPress',
+    },
+    {
+      value: 'Angular',
+      label: 'Angular',
+    },
+    {
+      value: 'Vue',
+      label: 'Vue',
     },
   ];
 
@@ -225,19 +268,17 @@ const AddLesson = ({ open, toggleSidebar }) => {
           </Col>
           <Col sm="12" className="mb-1">
             <Label className="form-label" for="topics">
-              عنوان درس
+              موضوعات درس
             </Label>
             <Controller
               id="topics"
               name="topics"
-              //   theme={selectThemeColors}
               control={control}
               render={({ field }) => (
                 <Select
                   {...field}
                   isClearable={false}
                   theme={selectThemeColors}
-                  //   defaultValue={[colorOptions[2], colorOptions[3]]}
                   isMulti
                   name="colors"
                   options={colorOptions}
@@ -247,37 +288,6 @@ const AddLesson = ({ open, toggleSidebar }) => {
               )}
             />
           </Col>
-
-          {/* <Col md="12" sm="12" className="mb-1">
-            <Label className="form-label" htmlFor="category">
-              دسته بندی
-            </Label>
-            <Controller
-              id="category"
-              name="category"
-              theme={selectThemeColors}
-              control={control}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={category}
-                  isClearable={false}
-                  className="react-select"
-                  classNamePrefix="select"
-                />
-                <InputNumber
-                  // defaultValue={10}
-                  {...field}
-                  min={0}
-                  max={10}
-                  defaultValue={5}
-                  upHandler={<Plus />}
-                  downHandler={<Minus />}
-                  id="min-max-number-input"
-                />
-              )}
-            />
-          </Col> */}
           <Col sm="12" className="mb-2">
             <Label className="form-label" htmlFor="description">
               توضیحات
@@ -304,7 +314,7 @@ const AddLesson = ({ open, toggleSidebar }) => {
           <Col sm="12">
             <div className="d-flex">
               <Button className="me-1" color="primary" type="submit">
-                ویرایش
+                افزودن
               </Button>
               <Button
                 outline

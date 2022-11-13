@@ -1,3 +1,5 @@
+import * as shamsi from 'shamsi-date-converter';
+
 function getDateFormat(uDate, option) {
   let date = new Intl.DateTimeFormat('fa-IR', option).format(uDate);
   return date;
@@ -43,4 +45,21 @@ function toFarsiNumber(n) {
   return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
 }
 
-export { dateConvert, timeConvert, solarDateArrange, toFarsiNumber };
+const convertDateToGregorian = (date) => {
+  const year = Number(date.slice(0, 4));
+  const month = Number(date.slice(5, 7));
+  const day = Number(date.slice(8, 10));
+  const convertedDate = shamsi
+    .jalaliToGregorian(year, month, day)
+    .join('/');
+  const d = new Date(convertedDate);
+  return d;
+};
+
+export {
+  dateConvert,
+  timeConvert,
+  solarDateArrange,
+  toFarsiNumber,
+  convertDateToGregorian,
+};

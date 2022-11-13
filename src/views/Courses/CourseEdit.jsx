@@ -29,6 +29,8 @@ import 'cleave.js/dist/addons/cleave-phone.ir';
 import '@styles/react/pages/page-form-validation.scss';
 import '@styles/react/libs/flatpickr/flatpickr.scss';
 
+import { convertDateToGregorian } from '../../utility/TimeAndDateConverter';
+
 import { GetAllTeachers } from '../../services/api/GetAllTeachers.api';
 import { GetAllLessons } from '../../services/api/getAllLessons.api';
 import { GetCourseById } from '../../services/api/GetCourseById.api';
@@ -112,7 +114,6 @@ const CourseEdit = ({ open, toggleSidebar, courseId }) => {
       label: course?.lesson?.lessonName,
     },
   };
-  console.log(courseId);
   const {
     control,
     handleSubmit,
@@ -126,19 +127,16 @@ const CourseEdit = ({ open, toggleSidebar, courseId }) => {
     defaultValues,
   });
 
-  const handleSidebarClosed = () => {
-    // for (const key in defaultValues) {
-    //   setValue(key, "");
-    // }
-    // clearErrors();
-  };
-
   const onSubmit = async (data) => {
+    const newData = {
+      ...data,
+      startDate: convertDateToGregorian(data.startDate),
+      endDate: convertDateToGregorian(data.endDate),
+    };
     toggleSidebar();
     try {
-      await EditCourse(data, courseId);
+      await EditCourse(newData, courseId);
       toast.success('دوره با موفقیت ویرایش شد');
-      navigate(0);
     } catch (error) {
       toast.error('ویرایش دوره با خطا مواجه شد');
     }
@@ -152,7 +150,6 @@ const CourseEdit = ({ open, toggleSidebar, courseId }) => {
       headerClassName="mb-1"
       contentClassName="pt-0"
       toggleSidebar={toggleSidebar}
-      onClosed={handleSidebarClosed}
     >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>

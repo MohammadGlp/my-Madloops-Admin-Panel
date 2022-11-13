@@ -1,12 +1,23 @@
 import { useEffect, useState } from 'react';
-import { Edit, Trash } from 'react-feather';
-import { Table, Button, Badge } from 'reactstrap';
+import { Edit, Search, Trash } from 'react-feather';
+import {
+  Table,
+  Button,
+  Badge,
+  Card,
+  CardBody,
+  CardHeader,
+  InputGroup,
+  InputGroupText,
+  Input,
+} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { DeleteArticle } from '../../services/api/DeleteNews-Articles.api';
 import { GetAllNews_Articles } from '../../services/api/GetAllNews-Articles.api';
 import BlogsEdit from './BlogsEdit';
 import AddBlog from './AddBlog';
+import Breadcrumbs from '@components/breadcrumbs';
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState();
@@ -56,71 +67,94 @@ const Blogs = () => {
 
   return blogs ? (
     <>
-      <Button.Ripple
-        color="primary"
-        size="md"
-        className="mb-2"
-        onClick={toggleAddSidebar}
-      >
-        افزودن اخبار و مقاله
-      </Button.Ripple>
-      <Table responsive>
-        <thead>
-          <tr>
-            <th>تصویر محتوا</th>
-            <th>عنوان محتوا</th>
-            <th>توضیحات</th>
-            <th>دسته بندی</th>
-            <th>عملیات</th>
-          </tr>
-        </thead>
-        <tbody>
-          {blogs.map((blog) => (
-            <tr key={blog?._id}>
-              <td>
-                <img
-                  src={blog?.image}
-                  alt="angular"
-                  height="40"
-                  width="40"
-                  className="rounded-circle"
-                />
-              </td>
-              <td>
-                <span className="align-middle fw-bold">
-                  {handleLead(blog?.title, 20)}
-                </span>
-              </td>
-              <td>{handleLead(blog?.text, 40)}</td>
-              <td>
-                <Badge pill color="light-primary" className="px-1">
-                  {blog?.category}
-                </Badge>
-              </td>
-
-              <td>
-                <div className="d-inline-block me-1 mb-1">
-                  <Button.Ripple
-                    color="primary"
-                    size="sm"
-                    onClick={() => handleEdit(blog?._id)}
-                  >
-                    <Edit size={16} />
-                  </Button.Ripple>
-                </div>
-                <div className="d-inline-block me-1 mb-1">
-                  <Button.Ripple color="danger" size="sm">
-                    <Trash
-                      size={16}
-                      onClick={() => handleDelete(blog?._id)}
+      <Breadcrumbs
+        title="مدریت اخبار و مقالات"
+        data={[{ title: 'مدیریت اخبار و مقالات' }]}
+      />
+      <Card>
+        <CardHeader className="d-flex justify-content-between align-items-center">
+          <div>
+            <InputGroup className="input-group-merge">
+              <InputGroupText>
+                <Search size={14} />
+              </InputGroupText>
+              <Input placeholder="search..." />
+            </InputGroup>
+          </div>
+          <Button.Ripple
+            color="primary"
+            size="md"
+            className="mb-2"
+            onClick={toggleAddSidebar}
+          >
+            افزودن اخبار و مقاله
+          </Button.Ripple>
+        </CardHeader>
+        <CardBody>
+          <Table responsive>
+            <thead>
+              <tr>
+                <th>تصویر محتوا</th>
+                <th>عنوان محتوا</th>
+                <th>توضیحات</th>
+                <th>دسته بندی</th>
+                <th>عملیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              {blogs.map((blog) => (
+                <tr key={blog?._id}>
+                  <td>
+                    <img
+                      src={blog?.image}
+                      alt="angular"
+                      height="40"
+                      width="40"
+                      className="rounded-circle"
                     />
-                  </Button.Ripple>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+                  </td>
+                  <td>
+                    <span className="align-middle fw-bold">
+                      {handleLead(blog?.title, 20)}
+                    </span>
+                  </td>
+                  <td>{handleLead(blog?.text, 40)}</td>
+                  <td>
+                    <Badge
+                      pill
+                      color="light-primary"
+                      className="px-1"
+                    >
+                      {blog?.category}
+                    </Badge>
+                  </td>
+
+                  <td>
+                    <div className="d-inline-block me-1 mb-1">
+                      <Button.Ripple
+                        color="primary"
+                        size="sm"
+                        onClick={() => handleEdit(blog?._id)}
+                      >
+                        <Edit size={16} />
+                      </Button.Ripple>
+                    </div>
+                    <div className="d-inline-block me-1 mb-1">
+                      <Button.Ripple color="danger" size="sm">
+                        <Trash
+                          size={16}
+                          onClick={() => handleDelete(blog?._id)}
+                        />
+                      </Button.Ripple>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </CardBody>
+      </Card>
+
       <BlogsEdit
         open={editBlogOpen}
         toggleSidebar={toggleEditSidebar}

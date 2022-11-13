@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   Edit,
+  Search,
   Trash,
   UserMinus,
   UserPlus,
@@ -13,6 +14,12 @@ import {
   ModalHeader,
   ModalBody,
   Badge,
+  Card,
+  CardBody,
+  CardHeader,
+  InputGroup,
+  InputGroupText,
+  Input,
 } from 'reactstrap';
 import AvatarGroup from '@components/avatar-group';
 import Avatar from '@components/avatar';
@@ -25,6 +32,8 @@ import { RemoveStudentFromCourse } from '../../services/api/RemoveStudentFromCou
 import toast from 'react-hot-toast';
 import AddCourse from './AddCourse';
 import EditCourse from './CourseEdit';
+import { addComma } from '../../utility/funcs';
+import Breadcrumbs from '@components/breadcrumbs';
 
 const Courses = () => {
   const [courses, setCourses] = useState();
@@ -101,83 +110,106 @@ const Courses = () => {
   };
   return courses ? (
     <>
-      <Button.Ripple
-        color="primary"
-        size="md"
-        className="mb-2"
-        onClick={toggleAddSidebar}
-      >
-        افزودن دوره
-      </Button.Ripple>
-      <Table responsive>
-        <thead>
-          <tr>
-            <th>نام دوره</th>
-            <th>مدرس</th>
-            <th>ظرفیت</th>
-            <th>دانشجویان</th>
-            <th>قیمت </th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {courses.map((course) => (
-            <tr key={course._id}>
-              <td>
-                <img
-                  className="me-75 rounded-circle"
-                  src={course.lesson.image}
-                  alt={course.title}
-                  height="40"
-                  width="40"
-                />
-                <span className="align-middle fw-bold">
-                  {course.title}
-                </span>
-              </td>
-              <td>{course.teacher.fullName}</td>
-              <td>{course.capacity}</td>
-              <td>
-                <div className="d-flex align-items-center">
-                  <Badge pill color="light-success" className="me-1">
-                    {course.students.length}
-                  </Badge>
-                  <AvatarGroup data={course.students} />
-                </div>
-              </td>
-              <td>{course.cost}</td>
-              <td>
-                <div className="d-inline-block me-1 mb-1">
-                  <Button.Ripple
-                    color="primary"
-                    size="sm"
-                    onClick={() => handleEdit(course._id)}
-                  >
-                    <Edit size={16} />
-                  </Button.Ripple>
-                </div>
-                <div className="d-inline-block me-1 mb-1">
-                  <Button.Ripple color="danger" size="sm">
-                    <Trash
-                      size={16}
-                      onClick={() => handleDelete(course._id)}
+      <Breadcrumbs
+        title="مدریت دوره"
+        data={[{ title: 'مدیریت دوره' }]}
+      />
+      <Card>
+        <CardHeader className="d-flex justify-content-between align-items-center">
+          <div>
+            <InputGroup className="input-group-merge">
+              <InputGroupText>
+                <Search size={14} />
+              </InputGroupText>
+              <Input placeholder="search..." />
+            </InputGroup>
+          </div>
+          <Button.Ripple
+            color="primary"
+            size="md"
+            className="mb-2"
+            onClick={toggleAddSidebar}
+          >
+            افزودن دوره
+          </Button.Ripple>
+        </CardHeader>
+        <CardBody>
+          <Table responsive>
+            <thead>
+              <tr>
+                <th>نام دوره</th>
+                <th>مدرس</th>
+                <th>ظرفیت</th>
+                <th>دانشجویان</th>
+                <th>قیمت </th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {courses.map((course) => (
+                <tr key={course._id}>
+                  <td>
+                    <img
+                      className="me-75 rounded-circle"
+                      src={course.lesson.image}
+                      alt={course.title}
+                      height="40"
+                      width="40"
                     />
-                  </Button.Ripple>
-                </div>
-                <div className="d-inline-block me-1 mb-1">
-                  <Button.Ripple
-                    color="success"
-                    size="sm"
-                    onClick={() => handleShowStudents(course._id)}
-                  >
-                    <Users size={16} />
-                  </Button.Ripple>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+                    <span className="align-middle fw-bold">
+                      {course.title}
+                    </span>
+                  </td>
+                  <td>{course.teacher.fullName}</td>
+                  <td>{course.capacity}</td>
+                  <td>
+                    <div className="d-flex align-items-center">
+                      <Badge
+                        pill
+                        color="light-success"
+                        className="me-1"
+                      >
+                        {course.students.length}
+                      </Badge>
+                      <AvatarGroup data={course.students} />
+                    </div>
+                  </td>
+                  <td>{addComma(course.cost.toString())}</td>
+                  <td>
+                    <div className="d-inline-block me-1 mb-1">
+                      <Button.Ripple
+                        color="primary"
+                        size="sm"
+                        onClick={() => handleEdit(course._id)}
+                      >
+                        <Edit size={16} />
+                      </Button.Ripple>
+                    </div>
+                    <div className="d-inline-block me-1 mb-1">
+                      <Button.Ripple color="danger" size="sm">
+                        <Trash
+                          size={16}
+                          onClick={() => handleDelete(course._id)}
+                        />
+                      </Button.Ripple>
+                    </div>
+                    <div className="d-inline-block me-1 mb-1">
+                      <Button.Ripple
+                        color="success"
+                        size="sm"
+                        onClick={() => handleShowStudents(course._id)}
+                      >
+                        <Users size={16} />
+                      </Button.Ripple>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </CardBody>
+      </Card>
+
       <AddCourse
         open={addCourseOpen}
         toggleSidebar={toggleAddSidebar}

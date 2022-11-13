@@ -1,32 +1,48 @@
 import { useEffect, useState } from 'react';
-import { Edit, Trash } from 'react-feather';
-import { Table, Button } from 'reactstrap';
+import { Edit, Inbox, Trash } from 'react-feather';
+import {
+  Table,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Badge,
+} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { GetAllLessons } from './../../services/api/getAllLessons.api';
 import { DeleteLessonById } from './../../services/api/DeleteLessonById';
 import AddLesson from './AddLesson';
 import EditLesson from './EditLesson';
+import { dateConvert } from '../../utility/TimeAndDateConverter';
+import { addComma } from '../../utility/funcs';
 
 const LessonList = () => {
   const [lessons, setLessons] = useState();
   const [lessonId, setLessonId] = useState();
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [editLessonOpen, setEditLessonOpen] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [lesson, setLesson] = useState();
 
   const toggleAddSidebar = () => setAddLessonOpen(!addLessonOpen);
   const toggleEditSidebar = () => setEditLessonOpen(!editLessonOpen);
 
   const getAll = async () => {
     try {
-      const lesson = await GetAllLessons();
-      setLessons(lesson?.result);
+      const lessons = await GetAllLessons();
+      setLessons(lessons?.result);
     } catch (error) {}
   };
 
   useEffect(() => {
     getAll();
   }, []);
+
+  useEffect(() => {
+    const lesson = lessons?.find((lesson) => lesson._id === lessonId);
+    setLesson(lesson);
+  }, [lessonId]);
 
   const handleDelete = async (lessonId) => {
     const originalLessons = [...lessons];
@@ -55,6 +71,21 @@ const LessonList = () => {
     setLessonId(lessonId);
   };
 
+  const convertDate = (date) => {
+    const d = new Date(date);
+    console.log(d);
+    const x = d.toISOString();
+    console.log(x);
+    const convertedDate = dateConvert(x);
+    console.log(convertedDate);
+    const m = `${convertedDate.day} ${convertedDate.monthTitle} ${convertedDate.year}`;
+    return m;
+  };
+
+  const handleShowLessonCourses = (lessonId) => {
+    setModal(true);
+    setLessonId(lessonId);
+  };
   return lessons ? (
     <>
       <Button.Ripple
@@ -70,6 +101,7 @@ const LessonList = () => {
           <tr>
             <th>نام درس</th>
             <th>توضیحات</th>
+            <th>تاریخ</th>
             <th>دوره ها</th>
             <th>عملیات</th>
           </tr>
@@ -89,8 +121,20 @@ const LessonList = () => {
                   {lesson.lessonName}
                 </span>
               </td>
+
               <td>{handleLead(lesson.description)}</td>
-              <td>{lesson?.courses?.length}</td>
+              <td>{convertDate(lesson.createDate)}</td>
+              <td>
+                {lesson?.courses?.length}{' '}
+                <Button.Ripple color="warning" size="sm">
+                  <Inbox
+                    size={16}
+                    onClick={() =>
+                      handleShowLessonCourses(lesson._id)
+                    }
+                  />
+                </Button.Ripple>
+              </td>
               <td>
                 <div className="d-inline-block me-1 mb-1">
                   <Button.Ripple
@@ -123,6 +167,44 @@ const LessonList = () => {
         toggleSidebar={toggleEditSidebar}
         lessonId={lessonId}
       />
+      <Modal
+        isOpen={modal}
+        toggle={() => setModal(!modal)}
+        className="modal-dialog-centered modal-lg"
+      >
+        <ModalHeader toggle={() => setModal(!modal)}>
+          دوره های درس
+          {/* {teachers
+            .map((name) => name.fullName)
+            .find((m) => m === teacherName)} */}
+        </ModalHeader>
+        <ModalBody>
+          <Table responsive>
+            <thead>
+              <tr>
+                <th>نام دوره</th>
+                <th>تاریخ شروع</th>
+                <th>تاریخ پایان</th>
+                <th>قیمت</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lesson?.courses.map((course) => (
+                <tr key={course._id}>
+                  <td>
+                    <span className="align-middle fw-bold">
+                      {course.title}
+                    </span>
+                  </td>
+                  <td>{convertDate(course.startDate)}</td>
+                  <td>{convertDate(course.endDate)}</td>
+                  <td>{addComma(course.cost.toString())}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </ModalBody>
+      </Modal>
     </>
   ) : (
     <p>Loading...</p>

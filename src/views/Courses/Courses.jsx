@@ -41,6 +41,7 @@ const Courses = () => {
   const [pageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchCourses, setSearchCourses] = useState("");
+  const [modalCurrentPage, setModalCurrentPage] = useState(1);
 
   const toggleAddSidebar = () => setAddCourseOpen(!addCourseOpen);
   const toggleEditSidebar = () => setEditCourseOpen(!editCourseOpen);
@@ -143,6 +144,23 @@ const Courses = () => {
   }
 
   const paginateData = paginate(filtehCourses, currentPage, pageSize);
+
+  const handleModalPageChange = (page) => {
+    setModalCurrentPage(page);
+  };
+
+  const handleModalNext = () => {
+    const pagesCount = Math.ceil(students?.length / pageSize);
+    modalCurrentPage !== pagesCount &&
+      setModalCurrentPage((modalCurrentPage) => modalCurrentPage + 1);
+  };
+
+  const handleModalPrev = () => {
+    modalCurrentPage !== 1 &&
+      setModalCurrentPage((modalCurrentPage) => modalCurrentPage - 1);
+  };
+
+  const paginateModalData = paginate(students, modalCurrentPage, pageSize);
 
   return courses ? (
     <>
@@ -273,7 +291,7 @@ const Courses = () => {
           toggle={() => setShow(!show)}
         ></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
-          {students.map((student) => (
+          {paginateModalData.map((student) => (
             <div
               key={student._id}
               className="employee-task d-flex justify-content-between align-items-center mb-2"
@@ -316,6 +334,17 @@ const Courses = () => {
               </div>
             </div>
           ))}
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>تعداد آیتم ها : {students.length}</h6>
+            <PaginationIcons
+              itemsCount={students.length}
+              pageSize={pageSize}
+              currentPage={modalCurrentPage}
+              onPageChange={handleModalPageChange}
+              onNext={handleModalNext}
+              onPrev={handleModalPrev}
+            />
+          </div>
         </ModalBody>
       </Modal>
     </>

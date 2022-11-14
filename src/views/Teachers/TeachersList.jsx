@@ -41,6 +41,7 @@ const TeachersList = () => {
   const [pageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTeachers, setSearchTeachers] = useState("");
+  const [modalCurrentPage, setModalCurrentPage] = useState(1);
 
   useEffect(() => {
     const getAll = async () => {
@@ -163,6 +164,30 @@ const TeachersList = () => {
   }
 
   const paginateData = paginate(filterTeachers, currentPage, pageSize);
+
+  const handleModalPageChange = (page) => {
+    setModalCurrentPage(page);
+  };
+
+  const handleModalNext = () => {
+    const pagesCount = Math.ceil(
+      teacherModal.filter((te) => te.teacher._id === teacherId).length /
+        pageSize
+    );
+    modalCurrentPage !== pagesCount &&
+      setModalCurrentPage((modalCurrentPage) => modalCurrentPage + 1);
+  };
+
+  const handleModalPrev = () => {
+    modalCurrentPage !== 1 &&
+      setModalCurrentPage((modalCurrentPage) => modalCurrentPage - 1);
+  };
+
+  const paginateModalData = paginate(
+    teacherModal.filter((te) => te.teacher._id === teacherId),
+    modalCurrentPage,
+    pageSize
+  );
 
   return teachers ? (
     <>
@@ -330,33 +355,45 @@ const TeachersList = () => {
               </tr>
             </thead>
             <tbody>
-              {teacherModal
-                .filter((te) => te.teacher._id === teacherId)
-                .map((course) => (
-                  <tr key={course._id}>
-                    <td>
-                      <span className="align-middle fw-bold">
-                        {course.title}
-                      </span>
-                    </td>
-                    <td>{course.capacity}</td>
-                    <td>
-                      <div className="d-inline-block me-1">
-                        <Button.Ripple
-                          color="danger"
-                          size="sm"
-                          onClick={() =>
-                            handleDeleteTeacherCourse(course._id, course.title)
-                          }
-                        >
-                          <Trash size={16} />
-                        </Button.Ripple>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+              {paginateModalData.map((course) => (
+                <tr key={course._id}>
+                  <td>
+                    <span className="align-middle fw-bold">{course.title}</span>
+                  </td>
+                  <td>{course.capacity}</td>
+                  <td>
+                    <div className="d-inline-block me-1 mb-1">
+                      <Button.Ripple
+                        color="danger"
+                        size="sm"
+                        onClick={() =>
+                          handleDeleteTeacherCourse(course._id, course.title)
+                        }
+                      >
+                        <Trash size={16} />
+                      </Button.Ripple>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>
+              تعداد آیتم ها :{" "}
+              {teacherModal.filter((te) => te.teacher._id === teacherId).length}
+            </h6>
+            <PaginationIcons
+              itemsCount={
+                teacherModal.filter((te) => te.teacher._id === teacherId).length
+              }
+              pageSize={pageSize}
+              currentPage={modalCurrentPage}
+              onPageChange={handleModalPageChange}
+              onNext={handleModalNext}
+              onPrev={handleModalPrev}
+            />
+          </div>
         </ModalBody>
       </Modal>
     </>

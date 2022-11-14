@@ -8,6 +8,7 @@ import {
   Trash,
   UserCheck,
   UserX,
+  Layers,
 } from "react-feather";
 import {
   Table,
@@ -35,16 +36,20 @@ import { AddStudentToCourse } from "./../../services/api/AddStudentToCourse.api"
 import { getAllCourses } from "./../../services/api/GetAllCourses.api";
 import AddStudent from "./AddStudent";
 import Breadcrumbs from "@components/breadcrumbs";
+import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
 
 const StudentsList = () => {
   const [students, setStudents] = useState([]);
   const [editStudentOpen, setEditStudentOpen] = useState(false);
   const [studentsId, setStudentsId] = useState();
-  const [courses, setCourses] = useState();
+  const [courses, setCourses] = useState([]);
   const [show, setShow] = useState(false);
   const [addStudentOpen, setAddStudentOpen] = useState(false);
   const [RefreshStudentInfo, setRefreshStudentInfo] = useState(false);
   const [refStudentModal, setRefStudentModal] = useState(false);
+  const [studentName, setStudentName] = useState(null);
+  const [studentModal, setStudentModal] = useState([]);
+  const [modal, setModal] = useState(false);
 
   useEffect(() => {
     const getAll = async () => {
@@ -61,6 +66,7 @@ const StudentsList = () => {
       try {
         const courses = await getAllCourses();
         setCourses(courses?.data.result);
+        setStudentModal(courses?.data.result);
       } catch (error) {}
     };
     getAllCourse();
@@ -142,6 +148,31 @@ const StudentsList = () => {
     setStudentsId(studentId);
   };
 
+  const handleShowStudentCourse = (studentId, studentTitle) => {
+    setModal(true);
+    setStudentName(studentTitle);
+    setStudentsId(studentId);
+  };
+
+  const handleDeleteStudentCourse = async (courseId, courseName) => {
+    const res = await DeleteCourse(courseId);
+    if (res.success === true) {
+      setStudentModal((old) => {
+        let newData = [...old];
+        let newTeachersData = newData;
+        newTeachersData = newTeachersData.filter(
+          (item) => item._id !== studentsId
+        );
+        newData = newTeachersData;
+        return newData;
+      });
+      setRefreshStudentInfo((old) => !old);
+      toast.success(`دوره ${courseName} با موفقیت از دانشجو حذف شد`);
+    } else {
+      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
+    }
+  };
+  console.log(studentModal);
   return students ? (
     <>
       <Breadcrumbs
@@ -220,19 +251,22 @@ const StudentsList = () => {
                     </div>
                     <div className="d-inline-block me-1">
                       <Button.Ripple
+                        color="warning"
+                        size="sm"
+                        onClick={() =>
+                          handleShowStudentCourse(course._id, course.fullName)
+                        }
+                      >
+                        <Layers size={16} />
+                      </Button.Ripple>
+                    </div>
+                    <div className="d-inline-block me-1">
+                      <Button.Ripple
                         color="primary"
                         size="sm"
                         onClick={() => handleEdit(course?._id)}
                       >
                         <Edit size={16} />
-                      </Button.Ripple>
-                    </div>
-                    <div className="d-inline-block me-1">
-                      <Button.Ripple color="danger" size="sm">
-                        <Trash
-                          size={16}
-                          onClick={() => handleDelete(course._id)}
-                        />
                       </Button.Ripple>
                     </div>
                     <div className="d-inline-block me-1">
@@ -253,6 +287,14 @@ const StudentsList = () => {
                           <UserCheck size={16} />
                         </Button.Ripple>
                       )}
+                    </div>
+                    <div className="d-inline-block me-1">
+                      <Button.Ripple color="danger" size="sm">
+                        <Trash
+                          size={16}
+                          onClick={() => handleDelete(course._id)}
+                        />
+                      </Button.Ripple>
                     </div>
                   </td>
                 </tr>
@@ -328,6 +370,54 @@ const StudentsList = () => {
               </div>
             </div>
           ))}
+        </ModalBody>
+      </Modal>
+      <Modal
+        isOpen={modal}
+        toggle={() => setShow(!modal)}
+        className="modal-dialog-centered"
+      >
+        <ModalHeader toggle={() => setModal(!modal)}>
+          درس های دانشجو :
+          {students.map((name) => name.fullName).find((m) => m === studentName)}
+        </ModalHeader>
+        <ModalBody>
+          <Table responsive>
+            <thead>
+              <tr>
+                <th>نام دوره</th>
+                <th>ظرفیت</th>
+                <th>عملیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              {studentModal
+                .filter((te) => te.students._id === studentsId)
+                .map((course) => (
+                  <tr key={course._id}>
+                    <td>
+                      <span className="align-middle fw-bold">
+                        {course.title}
+                      </span>
+                    </td>
+                    <td>{course.capacity}</td>
+                    <td>
+                      <div className="d-inline-block me-1 mb-1">
+                        <Button.Ripple
+                          color="danger"
+                          size="sm"
+                          onClick={() =>
+                            handleDeleteStudentCourse(course._id, course.title)
+                          }
+                        >
+                          <Trash size={16} />
+                        </Button.Ripple>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
         </ModalBody>
       </Modal>
     </>

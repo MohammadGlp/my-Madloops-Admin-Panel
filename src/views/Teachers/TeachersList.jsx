@@ -210,17 +210,6 @@ const TeachersList = () => {
                         <Inbox size={16} />
                       </Button.Ripple>
                     </div>
-
-                    <div className="d-inline-block me-1">
-                      <Button.Ripple color="danger" size="sm">
-                        <Trash
-                          size={16}
-                          onClick={() =>
-                            handleDelete(course._id, course.fullName)
-                          }
-                        />
-                      </Button.Ripple>
-                    </div>
                     <div className="d-inline-block me-1">
                       {course.isActive === true ? (
                         <Button.Ripple
@@ -239,6 +228,16 @@ const TeachersList = () => {
                           <UserCheck size={16} />
                         </Button.Ripple>
                       )}
+                    </div>
+                    <div className="d-inline-block me-1">
+                      <Button.Ripple color="danger" size="sm">
+                        <Trash
+                          size={16}
+                          onClick={() =>
+                            handleDelete(course._id, course.fullName)
+                          }
+                        />
+                      </Button.Ripple>
                     </div>
                   </td>
                 </tr>

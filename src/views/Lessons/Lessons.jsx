@@ -39,6 +39,7 @@ const LessonList = () => {
   const [lesson, setLesson] = useState();
   const [pageSize] = useState(2);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchLessons, setSearchLessons] = useState("");
 
   const toggleAddSidebar = () => setAddLessonOpen(!addLessonOpen);
   const toggleEditSidebar = () => setEditLessonOpen(!editLessonOpen);
@@ -88,11 +89,11 @@ const LessonList = () => {
 
   const convertDate = (date) => {
     const d = new Date(date);
-    console.log(d);
+
     const x = d.toISOString();
-    console.log(x);
+
     const convertedDate = dateConvert(x);
-    console.log(convertedDate);
+
     const m = `${convertedDate.day} ${convertedDate.monthTitle} ${convertedDate.year}`;
     return m;
   };
@@ -116,7 +117,24 @@ const LessonList = () => {
     currentPage !== 1 && setCurrentPage((currentPage) => currentPage - 1);
   };
 
-  const paginateData = paginate(lessons, currentPage, pageSize);
+  const handleSearch = (value) => {
+    setSearchLessons(value);
+    setCurrentPage(1);
+  };
+
+  let filterLessons = lessons;
+
+  if (searchLessons) {
+    filterLessons = lessons.filter(
+      (lesson) =>
+        lesson.lessonName
+          .toString()
+          .toLowerCase()
+          .indexOf(searchLessons.toLowerCase()) > -1
+    );
+  }
+
+  const paginateData = paginate(filterLessons, currentPage, pageSize);
 
   return lessons ? (
     <>
@@ -128,7 +146,11 @@ const LessonList = () => {
               <InputGroupText>
                 <Search size={14} />
               </InputGroupText>
-              <Input placeholder="search..." />
+              <Input
+                value={searchLessons}
+                onChange={(e) => handleSearch(e.target.value)}
+                placeholder="جستجو..."
+              />
             </InputGroup>
           </div>
           <Button.Ripple

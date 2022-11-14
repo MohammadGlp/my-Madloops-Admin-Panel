@@ -22,7 +22,7 @@ const themeConfig = {
       backgroundColor: "white", // BS color options [primary, success, etc]
     },
     footer: {
-      type: "static", // static, sticky, hidden
+      type: "sticky", // static, sticky, hidden
     },
     customizer: false,
     scrollTop: true, // Enable scroll to top button

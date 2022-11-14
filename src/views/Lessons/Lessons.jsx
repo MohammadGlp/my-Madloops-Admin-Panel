@@ -40,6 +40,7 @@ const LessonList = () => {
   const [pageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
   const [modalCurrentPage, setModalCurrentPage] = useState(1);
+  const [searchLessons, setSearchLessons] = useState('');
 
   const toggleAddSidebar = () => setAddLessonOpen(!addLessonOpen);
   const toggleEditSidebar = () => setEditLessonOpen(!editLessonOpen);
@@ -137,7 +138,24 @@ const LessonList = () => {
       setCurrentPage((currentPage) => currentPage - 1);
   };
 
-  const paginateData = paginate(lessons, currentPage, pageSize);
+  const handleSearch = (value) => {
+    setSearchLessons(value);
+    setCurrentPage(1);
+  };
+
+  let filterLessons = lessons;
+
+  if (searchLessons) {
+    filterLessons = lessons.filter(
+      (lesson) =>
+        lesson.lessonName
+          .toString()
+          .toLowerCase()
+          .indexOf(searchLessons.toLowerCase()) > -1
+    );
+  }
+
+  const paginateData = paginate(filterLessons, currentPage, pageSize);
 
   return lessons ? (
     <>
@@ -152,7 +170,11 @@ const LessonList = () => {
               <InputGroupText>
                 <Search size={14} />
               </InputGroupText>
-              <Input placeholder="search..." />
+              <Input
+                value={searchLessons}
+                onChange={(e) => handleSearch(e.target.value)}
+                placeholder="جستجو..."
+              />
             </InputGroup>
           </div>
           <Button.Ripple

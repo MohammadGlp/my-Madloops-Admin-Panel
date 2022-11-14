@@ -55,9 +55,9 @@ const LoginBasic = () => {
   const onSubmit = async (data) => {
     const result = await LoginEmployee(data);
     if (result?.success === true) {
-      // setTimeout(() => {
-      //   navigate("/home");
-      // }, 2000);
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
       toast.success(result?.message[0].message);
     }
   };

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Edit, Search, Trash, UserCheck, UserX } from 'react-feather';
+import { useEffect, useState } from "react";
+import { Edit, Search, Trash, UserCheck, UserX } from "react-feather";
 import {
   Table,
   Button,
@@ -10,17 +10,17 @@ import {
   InputGroup,
   InputGroupText,
   Input,
-} from 'reactstrap';
-import toast from 'react-hot-toast';
-import { DeactiveEmployee } from '../../services/api/deactiveEmployee';
-import { ActiveEmployee } from '../../services/api/ActiveEmployee';
-import { GetAllEmployees } from './../../services/api/GetAllEmployees.api';
-import { DeleteEmployee } from '../../services/api/DeleteEmployee.api';
-import AdminEdit from './EmployeeEdit';
-import { GetEmployeeById } from './../../services/api/GetEmployeeById.api';
-import { getToken } from '../../services/AuthServices/AuthServices';
-import { DecodeToken } from '../../utility/DecodeToken';
-import Breadcrumbs from '@components/breadcrumbs';
+} from "reactstrap";
+import toast from "react-hot-toast";
+import { DeactiveEmployee } from "../../services/api/deactiveEmployee";
+import { ActiveEmployee } from "../../services/api/ActiveEmployee";
+import { GetAllEmployees } from "./../../services/api/GetAllEmployees.api";
+import { DeleteEmployee } from "../../services/api/DeleteEmployee.api";
+import AdminEdit from "./EmployeeEdit";
+import { GetEmployeeById } from "./../../services/api/GetEmployeeById.api";
+import { getToken } from "../../services/AuthServices/AuthServices";
+import { DecodeToken } from "../../utility/DecodeToken";
+import Breadcrumbs from "@components/breadcrumbs";
 
 const EmployeesList = () => {
   const [employees, setEmployees] = useState([]);
@@ -53,15 +53,13 @@ const EmployeesList = () => {
       setStudents((old) => {
         let newData = [...old];
         let newAdminData = newData;
-        newAdminData = newAdminData.filter(
-          (item) => item._id !== employeeId
-        );
+        newAdminData = newAdminData.filter((item) => item._id !== employeeId);
         newData = newAdminData;
         return newData;
       });
       toast.success(`ادمین با موفقیت حذف شد`);
     } else {
-      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
+      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
     }
   };
 
@@ -72,7 +70,7 @@ const EmployeesList = () => {
       setRefreshAdminData((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error('خطایی رخ داده');
+        toast.error("خطایی رخ داده");
       }
     }
   };
@@ -84,7 +82,7 @@ const EmployeesList = () => {
       setRefreshAdminData((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error('خطایی رخ داده');
+        toast.error("خطایی رخ داده");
       }
     }
   };
@@ -101,7 +99,7 @@ const EmployeesList = () => {
     <>
       <Breadcrumbs
         title="مدیریت کارمندان"
-        data={[{ title: 'مدیریت کارمندان' }]}
+        data={[{ title: "مدیریت کارمندان" }]}
       />
       <Card>
         <CardHeader className="d-flex justify-content-between align-items-center">
@@ -130,8 +128,7 @@ const EmployeesList = () => {
               {employees
                 .filter(
                   (em) =>
-                    em.role === 'admin' &&
-                    em.fullName !== userData?.fullName
+                    em.role === "admin" && em.fullName !== userData?.fullName
                 )
                 .map((course) => (
                   <tr key={course._id}>
@@ -152,11 +149,7 @@ const EmployeesList = () => {
                     <td>{course.birthDate}</td>
                     <td>
                       {course.isActive ? (
-                        <Badge
-                          className="px-1"
-                          pill
-                          color="light-success"
-                        >
+                        <Badge className="px-1" pill color="light-success">
                           فعال
                         </Badge>
                       ) : (
@@ -166,7 +159,7 @@ const EmployeesList = () => {
                       )}
                     </td>
                     <td>
-                      <div className="d-inline-block me-1 mb-1">
+                      <div className="d-inline-block me-1">
                         <Button.Ripple
                           color="primary"
                           size="sm"
@@ -175,20 +168,17 @@ const EmployeesList = () => {
                           <Edit size={16} />
                         </Button.Ripple>
                       </div>
-                      <div className="d-inline-block me-1 mb-1">
+                      <div className="d-inline-block me-1">
                         <Button.Ripple color="danger" size="sm">
                           <Trash
                             size={16}
                             onClick={() =>
-                              handleDelete(
-                                course._id,
-                                course.fullName
-                              )
+                              handleDelete(course._id, course.fullName)
                             }
                           />
                         </Button.Ripple>
                       </div>
-                      <div className="d-inline-block me-1 mb-1">
+                      <div className="d-inline-block me-1">
                         {course.isActive === true ? (
                           <Button.Ripple
                             color="danger"

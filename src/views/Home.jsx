@@ -17,7 +17,7 @@ import { Row, Col } from "reactstrap";
 import StatsHorizontal from "@components/widgets/stats/StatsHorizontal";
 
 // ** Icons Imports
-import { User, UserPlus, UserCheck, UserX, ArrowDown } from "react-feather";
+import { Users, UserPlus, UserCheck, FileText, Book } from "react-feather";
 
 // ** Styles
 import "@styles/react/apps/app-users.scss";
@@ -36,11 +36,18 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import CardTransactions from "./CardTransactions";
+import { dateConvert } from "../utility/TimeAndDateConverter";
+import { GetAllNews_Articles } from "../services/api/GetAllNews-Articles.api";
+import { GetAllLessons } from "./../services/api/getAllLessons.api";
 
 const Home = () => {
   const { colors } = useContext(ThemeColors);
   const [students, setStudents] = useState([]);
   const [teachers, setTeachers] = useState([]);
+  const [blogs, setBlogs] = useState([]);
+  const [lessons, setLessons] = useState([]);
+  const [nameData, setNameData] = useState([]);
+  const [newDate, setNewDate] = useState([]);
 
   const getAllStudents = async () => {
     try {
@@ -56,61 +63,101 @@ const Home = () => {
     } catch (error) {}
   };
 
+  const getAllBlogs = async () => {
+    try {
+      const blog = await GetAllNews_Articles();
+      setBlogs(blog?.result);
+    } catch (error) {}
+  };
+
+  const getAllLesson = async () => {
+    try {
+      const lessons = await GetAllLessons();
+      setLessons(lessons?.result);
+    } catch (error) {}
+  };
+
   useEffect(() => {
     getAllTeachers();
     getAllStudents();
+    getAllBlogs();
+    getAllLesson();
   }, []);
+
+  useEffect(() => {
+    getStudentChart();
+    getNameOfMonth();
+  }, [students]);
+
+  const getStudentChart = () => {
+    const newData = students.map(
+      (student) => dateConvert(student.registerDate).monthTitle
+    );
+    setNewDate(newData);
+  };
+
+  const addStudent = () => {
+    const newStudent = nameData.map(
+      (data) => newDate.filter((dat) => dat === data).length
+    );
+    return newStudent;
+  };
 
   const data = [
     {
       name: "فروردین",
-      pv: 280,
+      pv: addStudent()[0],
     },
     {
       name: "اردیبهشت",
-      pv: 200,
+      pv: addStudent()[1],
     },
     {
       name: "خرداد",
-      pv: 220,
+      pv: addStudent()[2],
     },
     {
       name: "تیر",
-      pv: 180,
+      pv: addStudent()[3],
     },
     {
       name: "مرداد",
-      pv: 270,
+      pv: addStudent()[4],
     },
     {
       name: "شهریور",
-      pv: 250,
+      pv: addStudent()[5],
     },
     {
       name: "مهر",
-      pv: 70,
+      pv: addStudent()[6],
     },
     {
       name: "آبان",
-      pv: 90,
+      pv: addStudent()[7],
     },
     {
       name: "آذر",
-      pv: 200,
+      pv: addStudent()[8],
     },
     {
       name: "دی",
-      pv: 150,
+      pv: addStudent()[9],
     },
     {
       name: "بهمن",
-      pv: 160,
+      pv: addStudent()[10],
     },
     {
       name: "اسفند",
-      pv: 50,
+      pv: addStudent()[11],
     },
   ];
+
+  const getNameOfMonth = () => {
+    const newNameData = data.map((data) => data.name);
+    setNameData(newNameData);
+  };
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload) {
@@ -132,23 +179,12 @@ const Home = () => {
             <StatsHorizontal
               color="danger"
               statTitle="کل اساتید"
-              icon={<UserPlus size={20} />}
+              icon={<Users size={20} />}
               renderStats={
                 <h3 className="fw-bolder mb-75">{teachers.length}</h3>
               }
             />
           </Col>
-          <Col lg="3" sm="6">
-            <StatsHorizontal
-              color="primary"
-              statTitle="کل دانشجویان"
-              icon={<User size={20} />}
-              renderStats={
-                <h3 className="fw-bolder mb-75">{students.length}</h3>
-              }
-            />
-          </Col>
-
           <Col lg="3" sm="6">
             <StatsHorizontal
               color="success"
@@ -164,38 +200,36 @@ const Home = () => {
               }
             />
           </Col>
+
+          <Col lg="3" sm="6">
+            <StatsHorizontal
+              color="primary"
+              statTitle="درس ها"
+              icon={<Book size={20} />}
+              renderStats={
+                <h3 className="fw-bolder mb-75">{lessons.length}</h3>
+              }
+            />
+          </Col>
+
           <Col lg="3" sm="6">
             <StatsHorizontal
               color="warning"
-              statTitle="دانشجویان غیر فعال"
-              icon={<UserX size={20} />}
-              renderStats={
-                <h3 className="fw-bolder mb-75">
-                  {
-                    students.filter((student) => student.isActive === false)
-                      .length
-                  }
-                </h3>
-              }
+              statTitle="خبر و مقاله"
+              icon={<FileText size={20} />}
+              renderStats={<h3 className="fw-bolder mb-75">{blogs.length}</h3>}
             />
           </Col>
         </Row>
         <Row className="match-height">
-          <Col sm="9">
+          <Col sm="12" lg="9">
             <Card>
               <CardHeader>
                 <div>
-                  <CardTitle tag="h4">Balance</CardTitle>
+                  <CardTitle tag="h4">نمودار دانشجویان</CardTitle>
                   <small className="text-muted">
-                    Commercial networks & enterprises
+                    نمودار بررسی تعداد ثبت نام دانشجویان در ماه
                   </small>
-                </div>
-                <div className="d-flex align-items-center flex-wrap mt-sm-0 mt-1">
-                  <h5 className="fw-bold mb-0 me-1">$ 100,000</h5>
-                  <Badge className="badge-md" color="light-secondary">
-                    <ArrowDown className="text-danger me-50" size={15} />
-                    20%
-                  </Badge>
                 </div>
               </CardHeader>
               <CardBody>
@@ -217,7 +251,7 @@ const Home = () => {
               </CardBody>
             </Card>
           </Col>
-          <Col sm="3">
+          <Col sm="12" lg="3">
             <CardTransactions />
           </Col>
         </Row>

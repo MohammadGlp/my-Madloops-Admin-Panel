@@ -17,7 +17,6 @@ import {
   PaginationItem,
   PaginationLink,
 } from "reactstrap";
-import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { GetAllLessons } from "./../../services/api/getAllLessons.api";
 import { DeleteLessonById } from "./../../services/api/DeleteLessonById";

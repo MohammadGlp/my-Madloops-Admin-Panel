@@ -39,6 +39,7 @@ import Breadcrumbs from "@components/breadcrumbs";
 import PaginationIcons from "../pagination";
 import { paginate } from "../../utility/paginate";
 import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
+import { GetStudentById } from "./../../services/api/GetStudentById";
 
 const StudentsList = () => {
   const [students, setStudents] = useState([]);
@@ -49,11 +50,13 @@ const StudentsList = () => {
   const [addStudentOpen, setAddStudentOpen] = useState(false);
   const [RefreshStudentInfo, setRefreshStudentInfo] = useState(false);
   const [refStudentModal, setRefStudentModal] = useState(false);
+  const [refStudentModal2, setRefStudentModal2] = useState(false);
   const [studentName, setStudentName] = useState(null);
   const [studentModal, setStudentModal] = useState([]);
   const [modal, setModal] = useState(false);
   const [pageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchStudents, setSearchStudents] = useState("");
 
   useEffect(() => {
     const getAll = async () => {
@@ -70,11 +73,23 @@ const StudentsList = () => {
       try {
         const courses = await getAllCourses();
         setCourses(courses?.data.result);
-        setStudentModal(courses?.data.result);
       } catch (error) {}
     };
     getAllCourse();
   }, [refStudentModal]);
+
+  useEffect(() => {
+    if (studentsId) {
+      const getStudentById = async () => {
+        try {
+          const student = await GetStudentById(studentsId);
+          console.log(student);
+          setStudentModal(student?.result);
+        } catch (error) {}
+      };
+      getStudentById();
+    }
+  }, [refStudentModal2]);
 
   const handleDelete = async (studentId) => {
     const res = await DeleteStudentById(studentId);
@@ -156,23 +171,32 @@ const StudentsList = () => {
     setModal(true);
     setStudentName(studentTitle);
     setStudentsId(studentId);
+    setRefStudentModal2((old) => !old);
   };
 
   const handleDeleteStudentCourse = async (courseId, courseName) => {
-    const res = await DeleteCourse(courseId);
-    if (res.success === true) {
-      setStudentModal((old) => {
-        let newData = [...old];
-        let newTeachersData = newData;
-        newTeachersData = newTeachersData.filter(
-          (item) => item._id !== studentsId
-        );
-        newData = newTeachersData;
-        return newData;
-      });
+    // const res = await RemoveStudentFromCourse(courseId, studentsId);
+    // if (res.success === true) {
+    //   setStudentModal((old) => {
+    //     let newData = [...old];
+    //     let newTeachersData = newData;
+    //     newTeachersData = newTeachersData.filter(
+    //       (item) => item._id !== studentsId
+    //     );
+    //     newData = newTeachersData;
+    //     return newData;
+    //   });
+
+    // } else {
+
+    // }
+
+    setModal(!modal);
+    try {
+      await RemoveStudentFromCourse(courseId, studentsId);
       setRefreshStudentInfo((old) => !old);
       toast.success(`دوره ${courseName} با موفقیت از دانشجو حذف شد`);
-    } else {
+    } catch (error) {
       toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
     }
   };
@@ -191,7 +215,24 @@ const StudentsList = () => {
     currentPage !== 1 && setCurrentPage((currentPage) => currentPage - 1);
   };
 
-  const paginateData = paginate(students, currentPage, pageSize);
+  const handleSearch = (value) => {
+    setSearchStudents(value);
+    setCurrentPage(1);
+  };
+
+  let filterStudents = students;
+
+  if (searchStudents) {
+    filterStudents = students.filter(
+      (student) =>
+        student.fullName
+          .toString()
+          .toLowerCase()
+          .indexOf(searchStudents.toLowerCase()) > -1
+    );
+  }
+
+  const paginateData = paginate(filterStudents, currentPage, pageSize);
 
   return students ? (
     <>
@@ -206,7 +247,11 @@ const StudentsList = () => {
               <InputGroupText>
                 <Search size={14} />
               </InputGroupText>
-              <Input placeholder="search..." />
+              <Input
+                calue={searchStudents}
+                onChange={(e) => handleSearch(e.target.value)}
+                placeholder="search..."
+              />
             </InputGroup>
           </div>
           <Button.Ripple
@@ -417,36 +462,32 @@ const StudentsList = () => {
             <thead>
               <tr>
                 <th>نام دوره</th>
-                <th>ظرفیت</th>
+                <th>نام مدرس</th>
                 <th>عملیات</th>
               </tr>
             </thead>
             <tbody>
-              {studentModal
-                .filter((te) => te.students._id === studentsId)
-                .map((course) => (
-                  <tr key={course._id}>
-                    <td>
-                      <span className="align-middle fw-bold">
-                        {course.title}
-                      </span>
-                    </td>
-                    <td>{course.capacity}</td>
-                    <td>
-                      <div className="d-inline-block me-1 mb-1">
-                        <Button.Ripple
-                          color="danger"
-                          size="sm"
-                          onClick={() =>
-                            handleDeleteStudentCourse(course._id, course.title)
-                          }
-                        >
-                          <Trash size={16} />
-                        </Button.Ripple>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+              {studentModal?.courses?.map((course) => (
+                <tr key={course._id}>
+                  <td>
+                    <span className="align-middle fw-bold">{course.title}</span>
+                  </td>
+                  <td>{course.teacher.fullName}</td>
+                  <td>
+                    <div className="d-inline-block me-1 mb-1">
+                      <Button.Ripple
+                        color="danger"
+                        size="sm"
+                        onClick={() =>
+                          handleDeleteStudentCourse(course._id, course.title)
+                        }
+                      >
+                        <Trash size={16} />
+                      </Button.Ripple>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </Table>
         </ModalBody>

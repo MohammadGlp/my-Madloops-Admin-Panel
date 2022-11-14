@@ -72,7 +72,7 @@ const BreadCrumbs = (props) => {
       <div className="content-header-right text-md-end col-md-3 col-12 d-md-block d-none">
         <div className="breadcrumb-right dropdown">
           <UncontrolledButtonDropdown>
-            <DropdownToggle
+            {/* <DropdownToggle
               color="primary"
               className="btn-icon btn-round dropdown-toggle"
             >
@@ -95,7 +95,7 @@ const BreadCrumbs = (props) => {
                 <Calendar className="me-1" size={14} />
                 <span className="align-middle">Calendar</span>
               </DropdownItem>
-            </DropdownMenu>
+            </DropdownMenu> */}
           </UncontrolledButtonDropdown>
         </div>
       </div>

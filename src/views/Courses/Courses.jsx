@@ -34,6 +34,8 @@ import AddCourse from './AddCourse';
 import EditCourse from './CourseEdit';
 import { addComma } from '../../utility/funcs';
 import Breadcrumbs from '@components/breadcrumbs';
+import PaginationIcons from '../pagination';
+import { paginate } from '../../utility/paginate';
 
 const Courses = () => {
   const [courses, setCourses] = useState();
@@ -43,6 +45,8 @@ const Courses = () => {
   const [show, setShow] = useState(false);
   const [students, setStudents] = useState([]);
   const [RefreshCourses, setRefreshCourses] = useState(false);
+  const [pageSize] = useState(4);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const toggleAddSidebar = () => setAddCourseOpen(!addCourseOpen);
   const toggleEditSidebar = () => setEditCourseOpen(!editCourseOpen);
@@ -112,6 +116,24 @@ const Courses = () => {
       toast.success('دانشجو با موفقیت از دوره حذف شد');
     } catch (error) {}
   };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleNext = () => {
+    const pagesCount = Math.ceil(courses.length / pageSize);
+    currentPage !== pagesCount &&
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+
+  const handlePrev = () => {
+    currentPage !== 1 &&
+      setCurrentPage((currentPage) => currentPage - 1);
+  };
+
+  const paginateData = paginate(courses, currentPage, pageSize);
+
   return courses ? (
     <>
       <Breadcrumbs
@@ -150,7 +172,7 @@ const Courses = () => {
               </tr>
             </thead>
             <tbody>
-              {courses.map((course) => (
+              {paginateData.map((course) => (
                 <tr key={course._id}>
                   <td>
                     <img
@@ -211,6 +233,17 @@ const Courses = () => {
               ))}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>تعداد آیتم ها : {courses.length}</h6>
+            <PaginationIcons
+              itemsCount={courses.length}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              onNext={handleNext}
+              onPrev={handlePrev}
+            />
+          </div>
         </CardBody>
       </Card>
 

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Edit, Inbox, Search, Trash } from "react-feather";
+import { useEffect, useState } from 'react';
+import { Edit, Inbox, Search, Trash } from 'react-feather';
 import {
   Table,
   Button,
@@ -16,18 +16,18 @@ import {
   Pagination,
   PaginationItem,
   PaginationLink,
-} from "reactstrap";
-import { Link } from "react-router-dom";
-import toast from "react-hot-toast";
-import { GetAllLessons } from "./../../services/api/getAllLessons.api";
-import { DeleteLessonById } from "./../../services/api/DeleteLessonById";
-import AddLesson from "./AddLesson";
-import EditLesson from "./EditLesson";
-import { dateConvert } from "../../utility/TimeAndDateConverter";
-import { addComma } from "../../utility/funcs";
-import Breadcrumbs from "@components/breadcrumbs";
-import PaginationIcons from "./../pagination";
-import { paginate } from "./../../utility/paginate";
+} from 'reactstrap';
+import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { GetAllLessons } from './../../services/api/getAllLessons.api';
+import { DeleteLessonById } from './../../services/api/DeleteLessonById';
+import AddLesson from './AddLesson';
+import EditLesson from './EditLesson';
+import { dateConvert } from '../../utility/TimeAndDateConverter';
+import { addComma } from '../../utility/funcs';
+import Breadcrumbs from '@components/breadcrumbs';
+import PaginationIcons from './../pagination';
+import { paginate } from './../../utility/paginate';
 
 const LessonList = () => {
   const [lessons, setLessons] = useState();
@@ -37,7 +37,7 @@ const LessonList = () => {
   const [refreshLessons, setRefreshLessons] = useState(false);
   const [modal, setModal] = useState(false);
   const [lesson, setLesson] = useState();
-  const [pageSize] = useState(2);
+  const [pageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
 
   const toggleAddSidebar = () => setAddLessonOpen(!addLessonOpen);
@@ -68,7 +68,7 @@ const LessonList = () => {
       setRefreshLessons((old) => !old);
       toast.success(`آیتم مورد نظر حذف شد`);
     } catch (error) {
-      toast.error("خطایی رخ داده");
+      toast.error('خطایی رخ داده');
       setLessons(originalLessons);
     }
   };
@@ -77,7 +77,8 @@ const LessonList = () => {
     const trimmedLead =
       value
         .substring(0, 60)
-        .substring(0, value.substring(0, 200).lastIndexOf(" ")) + "...";
+        .substring(0, value.substring(0, 200).lastIndexOf(' ')) +
+      '...';
     return trimmedLead;
   };
 
@@ -88,11 +89,8 @@ const LessonList = () => {
 
   const convertDate = (date) => {
     const d = new Date(date);
-    console.log(d);
     const x = d.toISOString();
-    console.log(x);
     const convertedDate = dateConvert(x);
-    console.log(convertedDate);
     const m = `${convertedDate.day} ${convertedDate.monthTitle} ${convertedDate.year}`;
     return m;
   };
@@ -113,14 +111,18 @@ const LessonList = () => {
   };
 
   const handlePrev = () => {
-    currentPage !== 1 && setCurrentPage((currentPage) => currentPage - 1);
+    currentPage !== 1 &&
+      setCurrentPage((currentPage) => currentPage - 1);
   };
 
   const paginateData = paginate(lessons, currentPage, pageSize);
 
   return lessons ? (
     <>
-      <Breadcrumbs title="مدیریت درس" data={[{ title: "مدیریت درس" }]} />
+      <Breadcrumbs
+        title="مدیریت درس"
+        data={[{ title: 'مدیریت درس' }]}
+      />
       <Card>
         <CardHeader className="d-flex justify-content-between align-items-center">
           <div>
@@ -142,7 +144,7 @@ const LessonList = () => {
         </CardHeader>
         <CardBody>
           <Table responsive>
-            <thead style={{ fontSize: "18px" }}>
+            <thead style={{ fontSize: '18px' }}>
               <tr>
                 <th>نام درس</th>
                 <th>توضیحات</th>
@@ -173,9 +175,13 @@ const LessonList = () => {
                     <Button.Ripple
                       color="warning"
                       size="sm"
-                      onClick={() => handleShowLessonCourses(lesson._id)}
+                      onClick={() =>
+                        handleShowLessonCourses(lesson._id)
+                      }
                     >
-                      <span className="me-2">{lesson?.courses?.length}</span>
+                      <span className="me-2">
+                        {lesson?.courses?.length}
+                      </span>
 
                       <Inbox size={16} />
                     </Button.Ripple>
@@ -234,8 +240,11 @@ const LessonList = () => {
         className="modal-dialog-centered modal-lg"
       >
         <ModalHeader toggle={() => setModal(!modal)}>
-          دوره های درس{" "}
-          {lessons?.find((lesson) => lesson._id === lessonId)?.lessonName}
+          دوره های درس{' '}
+          {
+            lessons?.find((lesson) => lesson._id === lessonId)
+              ?.lessonName
+          }
         </ModalHeader>
         <ModalBody>
           <Table responsive>
@@ -251,7 +260,9 @@ const LessonList = () => {
               {lesson?.courses.map((course) => (
                 <tr key={course._id}>
                   <td>
-                    <span className="align-middle fw-bold">{course.title}</span>
+                    <span className="align-middle fw-bold">
+                      {course.title}
+                    </span>
                   </td>
                   <td>{convertDate(course.startDate)}</td>
                   <td>{convertDate(course.endDate)}</td>

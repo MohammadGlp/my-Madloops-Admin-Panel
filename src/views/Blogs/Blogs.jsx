@@ -18,6 +18,8 @@ import { GetAllNews_Articles } from '../../services/api/GetAllNews-Articles.api'
 import BlogsEdit from './BlogsEdit';
 import AddBlog from './AddBlog';
 import Breadcrumbs from '@components/breadcrumbs';
+import PaginationIcons from '../pagination';
+import { paginate } from '../../utility/paginate';
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState();
@@ -25,6 +27,8 @@ const Blogs = () => {
   const [addBlogOpen, setAddBlogOpen] = useState(false);
   const [blogId, setBlogId] = useState();
   const [RefreshBlogs, setRefreshBlogs] = useState(false);
+  const [pageSize] = useState(4);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const toggleEditSidebar = () => setEditBlogOpen(!editBlogOpen);
   const toggleAddSidebar = () => setAddBlogOpen(!addBlogOpen);
@@ -67,6 +71,22 @@ const Blogs = () => {
     setBlogId(blogId);
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleNext = () => {
+    const pagesCount = Math.ceil(blogs.length / pageSize);
+    currentPage !== pagesCount &&
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+
+  const handlePrev = () => {
+    currentPage !== 1 &&
+      setCurrentPage((currentPage) => currentPage - 1);
+  };
+
+  const paginateData = paginate(blogs, currentPage, pageSize);
   return blogs ? (
     <>
       <Breadcrumbs
@@ -104,7 +124,7 @@ const Blogs = () => {
               </tr>
             </thead>
             <tbody>
-              {blogs.map((blog) => (
+              {paginateData.map((blog) => (
                 <tr key={blog?._id}>
                   <td>
                     <img
@@ -154,6 +174,17 @@ const Blogs = () => {
               ))}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>تعداد آیتم ها : {blogs.length}</h6>
+            <PaginationIcons
+              itemsCount={blogs.length}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              onNext={handleNext}
+              onPrev={handlePrev}
+            />
+          </div>
         </CardBody>
       </Card>
 

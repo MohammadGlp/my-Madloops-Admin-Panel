@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Book,
   Edit,
@@ -8,7 +8,7 @@ import {
   Trash,
   UserCheck,
   UserX,
-} from "react-feather";
+} from 'react-feather';
 import {
   Table,
   Button,
@@ -22,19 +22,21 @@ import {
   InputGroup,
   InputGroupText,
   Input,
-} from "reactstrap";
-import Avatar from "@components/avatar";
-import { GetAllStudents } from "../../services/api/GetAllStudents.api";
-import toast from "react-hot-toast";
-import { ActiveStudent } from "../../services/api/ActiveStudent";
-import { DeactiveStudent } from "../../services/api/deactiveStudent";
-import { DeleteStudentById } from "../../services/api/DeleteStudentById";
-import StudentEdit from "./StudentEdit";
-import { RemoveStudentFromCourse } from "./../../services/api/RemoveStudentFromCourse.api";
-import { AddStudentToCourse } from "./../../services/api/AddStudentToCourse.api";
-import { getAllCourses } from "./../../services/api/GetAllCourses.api";
-import AddStudent from "./AddStudent";
-import Breadcrumbs from "@components/breadcrumbs";
+} from 'reactstrap';
+import Avatar from '@components/avatar';
+import { GetAllStudents } from '../../services/api/GetAllStudents.api';
+import toast from 'react-hot-toast';
+import { ActiveStudent } from '../../services/api/ActiveStudent';
+import { DeactiveStudent } from '../../services/api/deactiveStudent';
+import { DeleteStudentById } from '../../services/api/DeleteStudentById';
+import StudentEdit from './StudentEdit';
+import { RemoveStudentFromCourse } from './../../services/api/RemoveStudentFromCourse.api';
+import { AddStudentToCourse } from './../../services/api/AddStudentToCourse.api';
+import { getAllCourses } from './../../services/api/GetAllCourses.api';
+import AddStudent from './AddStudent';
+import Breadcrumbs from '@components/breadcrumbs';
+import PaginationIcons from '../pagination';
+import { paginate } from '../../utility/paginate';
 
 const StudentsList = () => {
   const [students, setStudents] = useState([]);
@@ -45,6 +47,8 @@ const StudentsList = () => {
   const [addStudentOpen, setAddStudentOpen] = useState(false);
   const [RefreshStudentInfo, setRefreshStudentInfo] = useState(false);
   const [refStudentModal, setRefStudentModal] = useState(false);
+  const [pageSize] = useState(4);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const getAll = async () => {
@@ -80,7 +84,7 @@ const StudentsList = () => {
       });
       toast.success(`دانشجو با موفقیت حذف شد`);
     } else {
-      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
+      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
     }
   };
 
@@ -91,7 +95,7 @@ const StudentsList = () => {
       setRefreshStudentInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
   };
@@ -103,7 +107,7 @@ const StudentsList = () => {
       setRefreshStudentInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
   };
@@ -118,9 +122,9 @@ const StudentsList = () => {
     try {
       await AddStudentToCourse(courseId, studentsId);
       setRefStudentModal((old) => !old);
-      toast.success("دانشجو با موفقیت به دوره اضافه شد");
+      toast.success('دانشجو با موفقیت به دوره اضافه شد');
     } catch (error) {
-      toast.error("افزودن دانشجو با مشکل مواجه شد");
+      toast.error('افزودن دانشجو با مشکل مواجه شد');
     }
   };
 
@@ -129,24 +133,42 @@ const StudentsList = () => {
     try {
       await RemoveStudentFromCourse(courseId, studentsId);
       setRefStudentModal((old) => !old);
-      toast.success("دانشجو با موفقیت از دوره حذف شد");
+      toast.success('دانشجو با موفقیت از دوره حذف شد');
     } catch (error) {
-      toast.error("حذف دانشجو با مشکل مواجه شد");
+      toast.error('حذف دانشجو با مشکل مواجه شد');
     }
   };
   const toggleAddSidebar = () => setAddStudentOpen(!addStudentOpen);
-  const toggleEditSidebar = () => setEditStudentOpen(!editStudentOpen);
+  const toggleEditSidebar = () =>
+    setEditStudentOpen(!editStudentOpen);
 
   const handleEdit = (studentId) => {
     toggleEditSidebar();
     setStudentsId(studentId);
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleNext = () => {
+    const pagesCount = Math.ceil(students.length / pageSize);
+    currentPage !== pagesCount &&
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+
+  const handlePrev = () => {
+    currentPage !== 1 &&
+      setCurrentPage((currentPage) => currentPage - 1);
+  };
+
+  const paginateData = paginate(students, currentPage, pageSize);
+
   return students ? (
     <>
       <Breadcrumbs
         title="مدیریت دانشجویان"
-        data={[{ title: "مدیریت دانشجویان" }]}
+        data={[{ title: 'مدیریت دانشجویان' }]}
       />
       <Card>
         <CardHeader className="d-flex justify-content-between align-items-center">
@@ -180,7 +202,7 @@ const StudentsList = () => {
               </tr>
             </thead>
             <tbody>
-              {students.map((course) => (
+              {paginateData.map((course) => (
                 <tr key={course._id}>
                   <td>
                     <img
@@ -199,7 +221,11 @@ const StudentsList = () => {
                   <td>{course.birthDate}</td>
                   <td>
                     {course.isActive ? (
-                      <Badge className="px-1" pill color="light-success">
+                      <Badge
+                        className="px-1"
+                        pill
+                        color="light-success"
+                      >
                         فعال
                       </Badge>
                     ) : (
@@ -259,6 +285,17 @@ const StudentsList = () => {
               ))}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>تعداد آیتم ها : {students.length}</h6>
+            <PaginationIcons
+              itemsCount={students.length}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              onNext={handleNext}
+              onPrev={handlePrev}
+            />
+          </div>
         </CardBody>
       </Card>
 
@@ -298,7 +335,9 @@ const StudentsList = () => {
                 />
                 <div className="my-auto">
                   <h6 className="mb-0">{course.title}</h6>
-                  <small className="text-muted">{course.cost} تومان</small>
+                  <small className="text-muted">
+                    {course.cost} تومان
+                  </small>
                 </div>
               </div>
               <div className="d-flex align-items-center">
@@ -311,7 +350,9 @@ const StudentsList = () => {
                       (student) => student._id === studentsId
                     )
                   }
-                  onClick={() => handleRemoveStudentFromCourse(course._id)}
+                  onClick={() =>
+                    handleRemoveStudentFromCourse(course._id)
+                  }
                 >
                   <Minus size={16} />
                 </Button.Ripple>

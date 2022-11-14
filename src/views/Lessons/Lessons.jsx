@@ -39,6 +39,7 @@ const LessonList = () => {
   const [lesson, setLesson] = useState();
   const [pageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalCurrentPage, setModalCurrentPage] = useState(1);
 
   const toggleAddSidebar = () => setAddLessonOpen(!addLessonOpen);
   const toggleEditSidebar = () => setEditLessonOpen(!editLessonOpen);
@@ -103,6 +104,27 @@ const LessonList = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+  const handleModalPageChange = (page) => {
+    setModalCurrentPage(page);
+  };
+
+  const handleModalNext = () => {
+    const pagesCount = Math.ceil(lesson.courses?.length / pageSize);
+    modalCurrentPage !== pagesCount &&
+      setModalCurrentPage((modalCurrentPage) => modalCurrentPage + 1);
+  };
+
+  const handleModalPrev = () => {
+    modalCurrentPage !== 1 &&
+      setModalCurrentPage((modalCurrentPage) => modalCurrentPage - 1);
+  };
+
+  const paginateModalData = paginate(
+    lesson?.courses,
+    modalCurrentPage,
+    pageSize
+  );
 
   const handleNext = () => {
     const pagesCount = Math.ceil(lessons.length / pageSize);
@@ -257,7 +279,7 @@ const LessonList = () => {
               </tr>
             </thead>
             <tbody>
-              {lesson?.courses.map((course) => (
+              {paginateModalData.map((course) => (
                 <tr key={course._id}>
                   <td>
                     <span className="align-middle fw-bold">
@@ -271,6 +293,17 @@ const LessonList = () => {
               ))}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>تعداد آیتم ها : {lesson?.courses?.length}</h6>
+            <PaginationIcons
+              itemsCount={lesson?.courses?.length}
+              pageSize={pageSize}
+              currentPage={modalCurrentPage}
+              onPageChange={handleModalPageChange}
+              onNext={handleModalNext}
+              onPrev={handleModalPrev}
+            />
+          </div>
         </ModalBody>
       </Modal>
     </>

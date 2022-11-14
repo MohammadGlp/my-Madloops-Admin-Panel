@@ -1,10 +1,8 @@
 // ** Icons Import
-import { Heart } from "react-feather";
-
 const Footer = () => {
   return (
-    <p className="clearfix mb-0">
-      <span className="float-md-start d-block d-md-inline-block mt-25">
+    <p className="clearfix text-center">
+      <span className="d-block d-md-inline-block">
         © {new Date().getFullYear()} تمامی حقوق سایت محفوظ میباشد.
       </span>
     </p>

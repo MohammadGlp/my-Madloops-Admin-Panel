@@ -1,30 +1,31 @@
 // ** React Imports
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect } from "react";
 
 // ** Third Party Components
-import axios from 'axios';
+import axios from "axios";
 
 // ** Reactstrap Imports
-import { Row, Col, TabContent, TabPane } from 'reactstrap';
+import { Row, Col, TabContent, TabPane } from "reactstrap";
 
 // ** Demo Components
-import Tabs from './Tabs';
-import Breadcrumbs from '@components/breadcrumbs';
-import AccountTabContent from './AccountTabContent';
+import Tabs from "./Tabs";
+import Breadcrumbs from "@components/breadcrumbs";
+import AccountTabContent from "./AccountTabContent";
 
 // ** Styles
-import '@styles/react/libs/flatpickr/flatpickr.scss';
-import '@styles/react/pages/page-account-settings.scss';
-import { getToken } from '../../services/AuthServices/AuthServices';
-import { DecodeToken } from './../../utility/DecodeToken';
-import { GetEmployeeById } from './../../services/api/GetEmployeeById.api';
+import "@styles/react/libs/flatpickr/flatpickr.scss";
+import "@styles/react/pages/page-account-settings.scss";
+import { getToken } from "../../services/AuthServices/AuthServices";
+import { DecodeToken } from "./../../utility/DecodeToken";
+import { GetEmployeeById } from "./../../services/api/GetEmployeeById.api";
 
 const AccountSettings = () => {
   // ** States
   const userToken = getToken();
   const id = DecodeToken(userToken);
-  const [activeTab, setActiveTab] = useState('1');
+  const [activeTab, setActiveTab] = useState("1");
   const [data, setData] = useState(null);
+  const [refresh, setRefresh] = useState(false);
 
   const toggleTab = (tab) => {
     setActiveTab(tab);
@@ -36,14 +37,11 @@ const AccountSettings = () => {
       setData(result.result);
     };
     getAdminById();
-  }, [id]);
+  }, [refresh]);
 
   return (
     <Fragment>
-      <Breadcrumbs
-        title="مدریت حساب"
-        data={[{ title: 'مدیریت حساب' }]}
-      />
+      <Breadcrumbs title="مدریت حساب" data={[{ title: "مدیریت حساب" }]} />
       {data !== null ? (
         <Row>
           <Col xs={12}>
@@ -55,7 +53,7 @@ const AccountSettings = () => {
 
             <TabContent activeTab={activeTab}>
               <TabPane tabId="1">
-                <AccountTabContent data={data} />
+                <AccountTabContent data={data} setRefresh={setRefresh} />
               </TabPane>
             </TabContent>
           </Col>

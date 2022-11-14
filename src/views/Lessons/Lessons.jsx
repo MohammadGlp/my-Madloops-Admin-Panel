@@ -26,6 +26,8 @@ import EditLesson from "./EditLesson";
 import { dateConvert } from "../../utility/TimeAndDateConverter";
 import { addComma } from "../../utility/funcs";
 import Breadcrumbs from "@components/breadcrumbs";
+import PaginationIcons from "./../pagination";
+import { paginate } from "./../../utility/paginate";
 
 const LessonList = () => {
   const [lessons, setLessons] = useState();
@@ -35,6 +37,8 @@ const LessonList = () => {
   const [refreshLessons, setRefreshLessons] = useState(false);
   const [modal, setModal] = useState(false);
   const [lesson, setLesson] = useState();
+  const [pageSize] = useState(2);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const toggleAddSidebar = () => setAddLessonOpen(!addLessonOpen);
   const toggleEditSidebar = () => setEditLessonOpen(!editLessonOpen);
@@ -97,6 +101,23 @@ const LessonList = () => {
     setModal(true);
     setLessonId(lessonId);
   };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleNext = () => {
+    const pagesCount = Math.ceil(lessons.length / pageSize);
+    currentPage !== pagesCount &&
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+
+  const handlePrev = () => {
+    currentPage !== 1 && setCurrentPage((currentPage) => currentPage - 1);
+  };
+
+  const paginateData = paginate(lessons, currentPage, pageSize);
+
   return lessons ? (
     <>
       <Breadcrumbs title="مدیریت درس" data={[{ title: "مدیریت درس" }]} />
@@ -131,7 +152,7 @@ const LessonList = () => {
               </tr>
             </thead>
             <tbody>
-              {lessons.map((lesson) => (
+              {paginateData.map((lesson) => (
                 <tr key={lesson._id}>
                   <td>
                     <img
@@ -183,6 +204,17 @@ const LessonList = () => {
               ))}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>تعداد آیتم ها : {lessons.length}</h6>
+            <PaginationIcons
+              itemsCount={lessons.length}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              onNext={handleNext}
+              onPrev={handlePrev}
+            />
+          </div>
         </CardBody>
       </Card>
       <AddLesson

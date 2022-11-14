@@ -99,7 +99,7 @@ const StudentsList = () => {
   const handleDeactive = async (studentId) => {
     try {
       await DeactiveStudent(studentId);
-      toast.success(`وضعیت دانشجو به فعال تغییر کرد`);
+      toast.success(`وضعیت دانشجو به غیر فعال تغییر کرد`);
       setRefreshStudentInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {

@@ -29,7 +29,11 @@ const UserDropdown = () => {
   const userToken = getToken();
   const id = DecodeToken(userToken);
   const [userData, setUserData] = useState();
+  const [refUser, setRefUser] = useState(false);
+
   const navigate = useNavigate();
+  const user = getItem("userInfo");
+  const x = JSON.parse(user);
 
   useEffect(() => {
     const getAdminById = async () => {
@@ -40,8 +44,6 @@ const UserDropdown = () => {
   }, []);
 
   const handleLanding = () => {
-    const user = getItem("userInfo");
-    const x = JSON.parse(user);
     if (x.role === "admin" || x.role === "teacher") {
       const EmpToken = getItem("token");
       window.location.href = `http://localhost:2000/adminAuth/${EmpToken}`;

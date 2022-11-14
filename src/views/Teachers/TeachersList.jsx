@@ -48,20 +48,16 @@ const TeachersList = () => {
   }, [RefreshTeacherInfo]);
 
   const handleDelete = async (teacherId, teacherName) => {
-    const res = await DeleteEmployee(teacherId, teacherName);
-    if (res.success === true) {
-      setTeachers((old) => {
-        let newData = [...old];
-        let newTeachersData = newData;
-        newTeachersData = newTeachersData.filter(
-          (item) => item._id !== employeeId
-        );
-        newData = newTeachersData;
-        return newData;
-      });
+    const originalTeachers = [...teachers];
+    const newTeacher = teachers.filter((m) => m._id !== teacherId);
+    setTeachers(newTeacher);
+    try {
+      await DeleteEmployee(teacherId, teacherName);
+      setRefreshTeacherInfo((old) => !old);
       toast.success(`استاد با موفقیت حذف شد`);
-    } else {
+    } catch (error) {
       toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
+      setTeachers(originalTeachers);
     }
   };
 

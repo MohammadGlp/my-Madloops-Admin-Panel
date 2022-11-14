@@ -36,7 +36,13 @@ const CardTransactions = () => {
           .map((item) => (
             <div key={item._id} className="transaction-item">
               <div className="d-flex">
-                <Avatar className="rounded bg-white" img={item.lesson?.image} />
+                <img
+                  src={item.lesson?.image}
+                  className="rounded-circle me-1"
+                  width="40"
+                  height="40"
+                  alt=""
+                />
                 <div>
                   <h6 className="transaction-title">{item.title}</h6>
                   <small>{item.lesson?.lessonName}</small>

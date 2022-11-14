@@ -131,9 +131,7 @@ const TeacherEdit = ({
           phoneNumber: values?.phoneNumber,
           nationalId: values?.nationalId,
           birthDate: values?.birthDate,
-          profile: result?.data.result
-            ? result?.data.result
-            : data?.profile,
+          profile: avatar ? avatar : data?.profile,
         },
         teacherId
       );

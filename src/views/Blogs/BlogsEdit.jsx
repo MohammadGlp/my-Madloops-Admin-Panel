@@ -130,7 +130,7 @@ const BlogsEdit = ({
           title: data?.title,
           category: data?.category?.value,
           text: content.getCurrentContent().getPlainText(),
-          image: result?.data.result ? result?.data.result : avatar,
+          image: avatar,
         },
         blogId
       );

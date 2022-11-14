@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Edit, Inbox, Search, Trash } from 'react-feather';
+import { useEffect, useState } from "react";
+import { Edit, Inbox, Search, Trash } from "react-feather";
 import {
   Table,
   Button,
@@ -16,16 +16,16 @@ import {
   Pagination,
   PaginationItem,
   PaginationLink,
-} from 'reactstrap';
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { GetAllLessons } from './../../services/api/getAllLessons.api';
-import { DeleteLessonById } from './../../services/api/DeleteLessonById';
-import AddLesson from './AddLesson';
-import EditLesson from './EditLesson';
-import { dateConvert } from '../../utility/TimeAndDateConverter';
-import { addComma } from '../../utility/funcs';
-import Breadcrumbs from '@components/breadcrumbs';
+} from "reactstrap";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { GetAllLessons } from "./../../services/api/getAllLessons.api";
+import { DeleteLessonById } from "./../../services/api/DeleteLessonById";
+import AddLesson from "./AddLesson";
+import EditLesson from "./EditLesson";
+import { dateConvert } from "../../utility/TimeAndDateConverter";
+import { addComma } from "../../utility/funcs";
+import Breadcrumbs from "@components/breadcrumbs";
 
 const LessonList = () => {
   const [lessons, setLessons] = useState();
@@ -64,7 +64,7 @@ const LessonList = () => {
       setRefreshLessons((old) => !old);
       toast.success(`آیتم مورد نظر حذف شد`);
     } catch (error) {
-      toast.error('خطایی رخ داده');
+      toast.error("خطایی رخ داده");
       setLessons(originalLessons);
     }
   };
@@ -73,8 +73,7 @@ const LessonList = () => {
     const trimmedLead =
       value
         .substring(0, 60)
-        .substring(0, value.substring(0, 200).lastIndexOf(' ')) +
-      '...';
+        .substring(0, value.substring(0, 200).lastIndexOf(" ")) + "...";
     return trimmedLead;
   };
 
@@ -100,10 +99,7 @@ const LessonList = () => {
   };
   return lessons ? (
     <>
-      <Breadcrumbs
-        title="مدیریت درس"
-        data={[{ title: 'مدیریت درس' }]}
-      />
+      <Breadcrumbs title="مدیریت درس" data={[{ title: "مدیریت درس" }]} />
       <Card>
         <CardHeader className="d-flex justify-content-between align-items-center">
           <div>
@@ -125,7 +121,7 @@ const LessonList = () => {
         </CardHeader>
         <CardBody>
           <Table responsive>
-            <thead style={{ fontSize: '18px' }}>
+            <thead style={{ fontSize: "18px" }}>
               <tr>
                 <th>نام درس</th>
                 <th>توضیحات</th>
@@ -156,13 +152,9 @@ const LessonList = () => {
                     <Button.Ripple
                       color="warning"
                       size="sm"
-                      onClick={() =>
-                        handleShowLessonCourses(lesson._id)
-                      }
+                      onClick={() => handleShowLessonCourses(lesson._id)}
                     >
-                      <span className="me-2">
-                        {lesson?.courses?.length}
-                      </span>
+                      <span className="me-2">{lesson?.courses?.length}</span>
 
                       <Inbox size={16} />
                     </Button.Ripple>
@@ -178,11 +170,12 @@ const LessonList = () => {
                       </Button.Ripple>
                     </div>
                     <div className="d-inline-block me-1">
-                      <Button.Ripple color="danger" size="sm">
-                        <Trash
-                          size={16}
-                          onClick={() => handleDelete(lesson._id)}
-                        />
+                      <Button.Ripple
+                        color="danger"
+                        size="sm"
+                        onClick={() => handleDelete(lesson._id)}
+                      >
+                        <Trash size={16} />
                       </Button.Ripple>
                     </div>
                   </td>
@@ -209,11 +202,8 @@ const LessonList = () => {
         className="modal-dialog-centered modal-lg"
       >
         <ModalHeader toggle={() => setModal(!modal)}>
-          دوره های درس{' '}
-          {
-            lessons?.find((lesson) => lesson._id === lessonId)
-              ?.lessonName
-          }
+          دوره های درس{" "}
+          {lessons?.find((lesson) => lesson._id === lessonId)?.lessonName}
         </ModalHeader>
         <ModalBody>
           <Table responsive>
@@ -229,9 +219,7 @@ const LessonList = () => {
               {lesson?.courses.map((course) => (
                 <tr key={course._id}>
                   <td>
-                    <span className="align-middle fw-bold">
-                      {course.title}
-                    </span>
+                    <span className="align-middle fw-bold">{course.title}</span>
                   </td>
                   <td>{convertDate(course.startDate)}</td>
                   <td>{convertDate(course.endDate)}</td>

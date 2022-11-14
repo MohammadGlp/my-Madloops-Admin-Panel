@@ -1,5 +1,12 @@
-import { useEffect, useState } from "react";
-import { Edit, Trash, UserCheck, UserX, Inbox, Search } from "react-feather";
+import { useEffect, useState } from 'react';
+import {
+  Edit,
+  Trash,
+  UserCheck,
+  UserX,
+  Inbox,
+  Search,
+} from 'react-feather';
 import {
   Table,
   Button,
@@ -13,18 +20,20 @@ import {
   InputGroup,
   InputGroupText,
   Input,
-} from "reactstrap";
-import toast from "react-hot-toast";
-import { DeactiveEmployee } from "../../services/api/deactiveEmployee";
-import { ActiveEmployee } from "../../services/api/ActiveEmployee";
-import { GetAllTeachers } from "./../../services/api/GetAllTeachers.api";
-import { DeleteEmployee } from "./../../services/api/DeleteEmployee.api";
-import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
-import AddTeacher from "./AddTeacher";
-import TeacherEdit from "./TeacherEdit";
-import { GetCourseById } from "./../../services/api/GetCourseById.api";
-import { getAllCourses } from "./../../services/api/GetAllCourses.api";
-import Breadcrumbs from "@components/breadcrumbs";
+} from 'reactstrap';
+import toast from 'react-hot-toast';
+import { DeactiveEmployee } from '../../services/api/deactiveEmployee';
+import { ActiveEmployee } from '../../services/api/ActiveEmployee';
+import { GetAllTeachers } from './../../services/api/GetAllTeachers.api';
+import { DeleteEmployee } from './../../services/api/DeleteEmployee.api';
+import { DeleteCourse } from './../../services/api/DeleteCourse.api';
+import AddTeacher from './AddTeacher';
+import TeacherEdit from './TeacherEdit';
+import { GetCourseById } from './../../services/api/GetCourseById.api';
+import { getAllCourses } from './../../services/api/GetAllCourses.api';
+import Breadcrumbs from '@components/breadcrumbs';
+import PaginationIcons from '../pagination';
+import { paginate } from '../../utility/paginate';
 
 const TeachersList = () => {
   const [teachers, setTeachers] = useState([]);
@@ -36,6 +45,8 @@ const TeachersList = () => {
   const [teacherId, setTeacherId] = useState(null);
   const [teacherName, setTeacherName] = useState(null);
   const [rTc, setRtc] = useState(false);
+  const [pageSize] = useState(4);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const getAll = async () => {
@@ -56,7 +67,7 @@ const TeachersList = () => {
       setRefreshTeacherInfo((old) => !old);
       toast.success(`استاد با موفقیت حذف شد`);
     } catch (error) {
-      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
+      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
       setTeachers(originalTeachers);
     }
   };
@@ -76,7 +87,7 @@ const TeachersList = () => {
       setRtc((old) => !old);
       toast.success(`دوره ${courseName} با موفقیت از استاد حذف شد`);
     } else {
-      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
+      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
     }
   };
 
@@ -87,7 +98,7 @@ const TeachersList = () => {
       setRefreshTeacherInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
   };
@@ -99,7 +110,7 @@ const TeachersList = () => {
       setRefreshTeacherInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
   };
@@ -119,16 +130,37 @@ const TeachersList = () => {
   };
 
   const toggleAddSidebar = () => setAddTeacherOpen(!addTeacherOpen);
-  const toggleEditSidebar = () => setEditTeacherOpen(!editTeacherOpen);
+  const toggleEditSidebar = () =>
+    setEditTeacherOpen(!editTeacherOpen);
 
   const handleEdit = (teacherId) => {
     toggleEditSidebar();
     setTeacherId(teacherId);
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleNext = () => {
+    const pagesCount = Math.ceil(teachers.length / pageSize);
+    currentPage !== pagesCount &&
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+
+  const handlePrev = () => {
+    currentPage !== 1 &&
+      setCurrentPage((currentPage) => currentPage - 1);
+  };
+
+  const paginateData = paginate(teachers, currentPage, pageSize);
+
   return teachers ? (
     <>
-      <Breadcrumbs title="مدیریت اساتید" data={[{ title: "مدیریت اساتید" }]} />
+      <Breadcrumbs
+        title="مدیریت اساتید"
+        data={[{ title: 'مدیریت اساتید' }]}
+      />
       <Card>
         <CardHeader className="d-flex justify-content-between align-items-center">
           <div>
@@ -180,7 +212,11 @@ const TeachersList = () => {
                   <td>{course.birthDate}</td>
                   <td>
                     {course.isActive ? (
-                      <Badge className="px-1" pill color="light-success">
+                      <Badge
+                        className="px-1"
+                        pill
+                        color="light-success"
+                      >
                         فعال
                       </Badge>
                     ) : (
@@ -204,7 +240,10 @@ const TeachersList = () => {
                         color="warning"
                         size="sm"
                         onClick={() =>
-                          handleShowTeacherCourse(course._id, course.fullName)
+                          handleShowTeacherCourse(
+                            course._id,
+                            course.fullName
+                          )
                         }
                       >
                         <Inbox size={16} />
@@ -244,6 +283,17 @@ const TeachersList = () => {
               ))}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>تعداد آیتم ها : {teachers.length}</h6>
+            <PaginationIcons
+              itemsCount={teachers.length}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              onNext={handleNext}
+              onPrev={handlePrev}
+            />
+          </div>
         </CardBody>
       </Card>
 
@@ -265,7 +315,9 @@ const TeachersList = () => {
       >
         <ModalHeader toggle={() => setModal(!modal)}>
           درس های استاد :
-          {teachers.map((name) => name.fullName).find((m) => m === teacherName)}
+          {teachers
+            .map((name) => name.fullName)
+            .find((m) => m === teacherName)}
         </ModalHeader>
         <ModalBody>
           <Table responsive>
@@ -293,7 +345,10 @@ const TeachersList = () => {
                           color="danger"
                           size="sm"
                           onClick={() =>
-                            handleDeleteTeacherCourse(course._id, course.title)
+                            handleDeleteTeacherCourse(
+                              course._id,
+                              course.title
+                            )
                           }
                         >
                           <Trash size={16} />

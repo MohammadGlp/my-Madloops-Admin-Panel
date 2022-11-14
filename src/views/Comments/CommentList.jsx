@@ -31,6 +31,8 @@ import profileImg from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { paginate } from '../../utility/paginate';
+import PaginationIcons from '../pagination';
 
 const CommentList = () => {
   const [comments, setComments] = useState([]);
@@ -39,6 +41,8 @@ const CommentList = () => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [RefreshComments, setRefreshComments] = useState(false);
+  const [pageSize] = useState(4);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     reset(defaultValues);
@@ -115,6 +119,23 @@ const CommentList = () => {
     setShow(!show);
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleNext = () => {
+    const pagesCount = Math.ceil(comments.length / pageSize);
+    currentPage !== pagesCount &&
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+
+  const handlePrev = () => {
+    currentPage !== 1 &&
+      setCurrentPage((currentPage) => currentPage - 1);
+  };
+
+  const paginateData = paginate(comments, currentPage, pageSize);
+
   return comments ? (
     <>
       <Breadcrumbs
@@ -135,7 +156,7 @@ const CommentList = () => {
               </tr>
             </thead>
             <tbody>
-              {comments.map((comment) => (
+              {paginateData.map((comment) => (
                 <tr key={comment._id}>
                   <td>
                     <div className="d-flex align-items-center">
@@ -201,6 +222,17 @@ const CommentList = () => {
               ))}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>تعداد آیتم ها : {comments.length}</h6>
+            <PaginationIcons
+              itemsCount={comments.length}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              onNext={handleNext}
+              onPrev={handlePrev}
+            />
+          </div>
         </CardBody>
       </Card>
 

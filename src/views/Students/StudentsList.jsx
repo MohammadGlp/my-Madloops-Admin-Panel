@@ -36,6 +36,8 @@ import { AddStudentToCourse } from "./../../services/api/AddStudentToCourse.api"
 import { getAllCourses } from "./../../services/api/GetAllCourses.api";
 import AddStudent from "./AddStudent";
 import Breadcrumbs from "@components/breadcrumbs";
+import PaginationIcons from "../pagination";
+import { paginate } from "../../utility/paginate";
 import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
 
 const StudentsList = () => {
@@ -50,6 +52,8 @@ const StudentsList = () => {
   const [studentName, setStudentName] = useState(null);
   const [studentModal, setStudentModal] = useState([]);
   const [modal, setModal] = useState(false);
+  const [pageSize] = useState(4);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const getAll = async () => {
@@ -173,6 +177,22 @@ const StudentsList = () => {
     }
   };
   console.log(studentModal);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleNext = () => {
+    const pagesCount = Math.ceil(students.length / pageSize);
+    currentPage !== pagesCount &&
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+
+  const handlePrev = () => {
+    currentPage !== 1 && setCurrentPage((currentPage) => currentPage - 1);
+  };
+
+  const paginateData = paginate(students, currentPage, pageSize);
+
   return students ? (
     <>
       <Breadcrumbs
@@ -211,7 +231,7 @@ const StudentsList = () => {
               </tr>
             </thead>
             <tbody>
-              {students.map((course) => (
+              {paginateData.map((course) => (
                 <tr key={course._id}>
                   <td>
                     <img
@@ -301,6 +321,17 @@ const StudentsList = () => {
               ))}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>تعداد آیتم ها : {students.length}</h6>
+            <PaginationIcons
+              itemsCount={students.length}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              onNext={handleNext}
+              onPrev={handlePrev}
+            />
+          </div>
         </CardBody>
       </Card>
 

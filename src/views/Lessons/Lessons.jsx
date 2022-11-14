@@ -37,7 +37,7 @@ const LessonList = () => {
   const [refreshLessons, setRefreshLessons] = useState(false);
   const [modal, setModal] = useState(false);
   const [lesson, setLesson] = useState();
-  const [pageSize] = useState(2);
+  const [pageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchLessons, setSearchLessons] = useState("");
 
@@ -89,11 +89,8 @@ const LessonList = () => {
 
   const convertDate = (date) => {
     const d = new Date(date);
-
     const x = d.toISOString();
-
     const convertedDate = dateConvert(x);
-
     const m = `${convertedDate.day} ${convertedDate.monthTitle} ${convertedDate.year}`;
     return m;
   };

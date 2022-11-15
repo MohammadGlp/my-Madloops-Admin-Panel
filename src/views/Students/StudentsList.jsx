@@ -23,6 +23,8 @@ import {
   InputGroup,
   InputGroupText,
   Input,
+  Row,
+  Col,
 } from "reactstrap";
 import Avatar from "@components/avatar";
 import { GetAllStudents } from "../../services/api/GetAllStudents.api";
@@ -38,6 +40,7 @@ import AddStudent from "./AddStudent";
 import Breadcrumbs from "@components/breadcrumbs";
 import PaginationIcons from "../pagination";
 import { paginate } from "../../utility/paginate";
+import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
 import { GetStudentById } from "./../../services/api/GetStudentById";
 
 const StudentsList = () => {
@@ -55,7 +58,11 @@ const StudentsList = () => {
   const [modal, setModal] = useState(false);
   const [pageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalCurrentPageCourse, setModalCurrentPageCourse] = useState(1);
+  const [modalCurrentPageLesson, setModalCurrentPageLesson] = useState(1);
   const [searchStudents, setSearchStudents] = useState("");
+  const [searchCourse, setSearchCourse] = useState("");
+  const [searchLesson, setSearchLesson] = useState("");
 
   useEffect(() => {
     const getAll = async () => {
@@ -216,6 +223,84 @@ const StudentsList = () => {
   }
 
   const paginateData = paginate(filterStudents, currentPage, pageSize);
+
+  const handleModalPageChange = (page) => {
+    setModalCurrentPageCourse(page);
+  };
+
+  const handleModalNext = () => {
+    const pagesCount = Math.ceil(courses?.length / pageSize);
+    modalCurrentPageCourse !== pagesCount &&
+      setModalCurrentPageCourse((modalCurrentPage) => modalCurrentPage + 1);
+  };
+
+  const handleModalPrev = () => {
+    modalCurrentPageCourse !== 1 &&
+      setModalCurrentPageCourse((modalCurrentPage) => modalCurrentPage - 1);
+  };
+
+  const handleSearchCourse = (value) => {
+    setSearchCourse(value);
+    setModalCurrentPageCourse(1);
+  };
+
+  let filterCourses = courses;
+
+  if (searchCourse) {
+    filterCourses = courses.filter(
+      (course) =>
+        course.title
+          .toString()
+          .toLowerCase()
+          .indexOf(searchCourse.toLowerCase()) > -1
+    );
+  }
+
+  const paginateModalData = paginate(
+    filterCourses,
+    modalCurrentPageCourse,
+    pageSize
+  );
+
+  const handleLessonModalPageChange = (page) => {
+    setModalCurrentPageLesson(page);
+  };
+
+  const handleLessonModalNext = () => {
+    const pagesCount = Math.ceil(studentModal?.courses?.length / pageSize);
+    modalCurrentPageLesson !== pagesCount &&
+      setModalCurrentPageLesson((modalCurrentPage) => modalCurrentPage + 1);
+  };
+
+  const handleLessonModalPrev = () => {
+    modalCurrentPageLesson !== 1 &&
+      setModalCurrentPageLesson((modalCurrentPage) => modalCurrentPage - 1);
+  };
+
+  const handleSearchLesson = (value) => {
+    setSearchLesson(value);
+    setModalCurrentPageLesson(1);
+  };
+
+  let filterLessons = courses;
+
+  if (searchCourse) {
+    filterLessons = studentModal?.courses.filter(
+      (course) =>
+        course.title
+          .toString()
+          .toLowerCase()
+          .indexOf(searchCourse.toLowerCase()) > -1
+    );
+  }
+
+  const paginateModalLessons = paginate(
+    filterLessons,
+    modalCurrentPageCourse,
+    pageSize
+  );
+
+  console.log(paginateModalLessons);
 
   return students ? (
     <>
@@ -384,7 +469,23 @@ const StudentsList = () => {
           toggle={() => setShow(!show)}
         ></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
-          {courses?.map((course) => (
+          <Row className="mb-1">
+            <Col sm={2}></Col>
+            <Col sm={8}>
+              <InputGroup className="input-group-merge">
+                <InputGroupText>
+                  <Search size={14} />
+                </InputGroupText>
+                <Input
+                  value={searchCourse}
+                  onChange={(e) => handleSearchCourse(e.target.value)}
+                  placeholder="جستجو..."
+                />
+              </InputGroup>
+            </Col>
+            <Col sm={2}></Col>
+          </Row>
+          {paginateModalData?.map((course) => (
             <div
               key={course._id}
               className="employee-task d-flex justify-content-between align-items-center mb-2"
@@ -429,6 +530,17 @@ const StudentsList = () => {
               </div>
             </div>
           ))}
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>تعداد آیتم ها : {courses.length}</h6>
+            <PaginationIcons
+              itemsCount={courses.length}
+              pageSize={pageSize}
+              currentPage={modalCurrentPageCourse}
+              onPageChange={handleModalPageChange}
+              onNext={handleModalNext}
+              onPrev={handleModalPrev}
+            />
+          </div>
         </ModalBody>
       </Modal>
       <Modal
@@ -441,6 +553,22 @@ const StudentsList = () => {
           {students.map((name) => name.fullName).find((m) => m === studentName)}
         </ModalHeader>
         <ModalBody>
+          <Row className="mb-1">
+            <Col sm={2}></Col>
+            <Col sm={8}>
+              <InputGroup className="input-group-merge">
+                <InputGroupText>
+                  <Search size={14} />
+                </InputGroupText>
+                <Input
+                  value={searchLesson}
+                  onChange={(e) => handleSearchLesson(e.target.value)}
+                  placeholder="جستجو..."
+                />
+              </InputGroup>
+            </Col>
+            <Col sm={2}></Col>
+          </Row>
           <Table responsive>
             <thead>
               <tr>
@@ -450,7 +578,7 @@ const StudentsList = () => {
               </tr>
             </thead>
             <tbody>
-              {studentModal?.courses?.map((course) => (
+              {paginateModalLessons.map((course) => (
                 <tr key={course._id}>
                   <td>
                     <span className="align-middle fw-bold">{course.title}</span>
@@ -473,6 +601,17 @@ const StudentsList = () => {
               ))}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>تعداد آیتم ها : {studentModal?.courses?.length}</h6>
+            <PaginationIcons
+              itemsCount={studentModal?.courses?.length}
+              pageSize={pageSize}
+              currentPage={modalCurrentPageLesson}
+              onPageChange={handleLessonModalPageChange}
+              onNext={handleLessonModalNext}
+              onPrev={handleLessonModalPrev}
+            />
+          </div>
         </ModalBody>
       </Modal>
     </>

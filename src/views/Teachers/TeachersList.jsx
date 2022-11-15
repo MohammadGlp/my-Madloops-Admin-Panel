@@ -13,6 +13,8 @@ import {
   InputGroup,
   InputGroupText,
   Input,
+  Row,
+  Col,
 } from "reactstrap";
 import toast from "react-hot-toast";
 import { DeactiveEmployee } from "../../services/api/deactiveEmployee";
@@ -22,12 +24,10 @@ import { DeleteEmployee } from "./../../services/api/DeleteEmployee.api";
 import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
 import AddTeacher from "./AddTeacher";
 import TeacherEdit from "./TeacherEdit";
-import { GetCourseById } from "./../../services/api/GetCourseById.api";
 import { getAllCourses } from "./../../services/api/GetAllCourses.api";
 import Breadcrumbs from "@components/breadcrumbs";
 import PaginationIcons from "../pagination";
 import { paginate } from "../../utility/paginate";
-import Skeleton from "./../skeleton";
 
 const TeachersList = () => {
   const [teachers, setTeachers] = useState([]);
@@ -43,6 +43,7 @@ const TeachersList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTeachers, setSearchTeachers] = useState("");
   const [modalCurrentPage, setModalCurrentPage] = useState(1);
+  const [searchCourse, setSearchCourse] = useState("");
 
   useEffect(() => {
     const getAll = async () => {
@@ -184,11 +185,26 @@ const TeachersList = () => {
       setModalCurrentPage((modalCurrentPage) => modalCurrentPage - 1);
   };
 
-  const paginateModalData = paginate(
-    teacherModal.filter((te) => te.teacher._id === teacherId),
-    modalCurrentPage,
-    pageSize
-  );
+  const handleSearchCourse = (value) => {
+    setSearchCourse(value);
+    setModalCurrentPage(1);
+  };
+
+  let filterCourses = teacherModal.filter((te) => te.teacher._id === teacherId);
+
+  if (searchCourse) {
+    filterCourses = teacherModal
+      .filter((te) => te.teacher._id === teacherId)
+      .filter(
+        (course) =>
+          course.title
+            .toString()
+            .toLowerCase()
+            .indexOf(searchCourse.toLowerCase()) > -1
+      );
+  }
+
+  const paginateModalData = paginate(filterCourses, modalCurrentPage, pageSize);
 
   return (
     <>
@@ -355,6 +371,22 @@ const TeachersList = () => {
           {teachers.map((name) => name.fullName).find((m) => m === teacherName)}
         </ModalHeader>
         <ModalBody>
+          <Row className="mb-1">
+            <Col sm={2}></Col>
+            <Col sm={8}>
+              <InputGroup className="input-group-merge">
+                <InputGroupText>
+                  <Search size={14} />
+                </InputGroupText>
+                <Input
+                  value={searchCourse}
+                  onChange={(e) => handleSearchCourse(e.target.value)}
+                  placeholder="جستجو..."
+                />
+              </InputGroup>
+            </Col>
+            <Col sm={2}></Col>
+          </Row>
           <Table responsive>
             <thead>
               <tr>

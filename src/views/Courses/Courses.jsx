@@ -1,5 +1,12 @@
-import { useEffect, useState } from "react";
-import { Edit, Search, Trash, UserMinus, UserPlus, Users } from "react-feather";
+import { useEffect, useState } from 'react';
+import {
+  Edit,
+  Search,
+  Trash,
+  UserMinus,
+  UserPlus,
+  Users,
+} from 'react-feather';
 import {
   Table,
   Button,
@@ -13,22 +20,24 @@ import {
   InputGroup,
   InputGroupText,
   Input,
-} from "reactstrap";
-import AvatarGroup from "@components/avatar-group";
-import Avatar from "@components/avatar";
+  Row,
+  Col,
+} from 'reactstrap';
+import AvatarGroup from '@components/avatar-group';
+import Avatar from '@components/avatar';
 
-import { getAllCourses } from "../../services/api/GetAllCourses.api";
-import { DeleteCourse } from "../../services/api/DeleteCourse.api";
-import { GetAllStudents } from "../../services/api/GetAllStudents.api";
-import { AddStudentToCourse } from "../../services/api/AddStudentToCourse.api";
-import { RemoveStudentFromCourse } from "../../services/api/RemoveStudentFromCourse.api";
-import toast from "react-hot-toast";
-import AddCourse from "./AddCourse";
-import EditCourse from "./CourseEdit";
-import { addComma } from "../../utility/funcs";
-import Breadcrumbs from "@components/breadcrumbs";
-import PaginationIcons from "../pagination";
-import { paginate } from "../../utility/paginate";
+import { getAllCourses } from '../../services/api/GetAllCourses.api';
+import { DeleteCourse } from '../../services/api/DeleteCourse.api';
+import { GetAllStudents } from '../../services/api/GetAllStudents.api';
+import { AddStudentToCourse } from '../../services/api/AddStudentToCourse.api';
+import { RemoveStudentFromCourse } from '../../services/api/RemoveStudentFromCourse.api';
+import toast from 'react-hot-toast';
+import AddCourse from './AddCourse';
+import EditCourse from './CourseEdit';
+import { addComma } from '../../utility/funcs';
+import Breadcrumbs from '@components/breadcrumbs';
+import PaginationIcons from '../pagination';
+import { paginate } from '../../utility/paginate';
 
 const Courses = () => {
   const [courses, setCourses] = useState();
@@ -40,8 +49,9 @@ const Courses = () => {
   const [RefreshCourses, setRefreshCourses] = useState(false);
   const [pageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchCourses, setSearchCourses] = useState("");
+  const [searchCourses, setSearchCourses] = useState('');
   const [modalCurrentPage, setModalCurrentPage] = useState(1);
+  const [searchStudent, setSearchStudent] = useState('');
 
   const toggleAddSidebar = () => setAddCourseOpen(!addCourseOpen);
   const toggleEditSidebar = () => setEditCourseOpen(!editCourseOpen);
@@ -78,7 +88,7 @@ const Courses = () => {
       toast(`آیتم مورد نظر حذف شد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
       setCourses(originalCourses);
     }
@@ -99,7 +109,7 @@ const Courses = () => {
     try {
       await AddStudentToCourse(courseId, studentId);
       setRefreshCourses((old) => !old);
-      toast.success("دانشجو با موفقیت به دوره اضافه شد");
+      toast.success('دانشجو با موفقیت به دوره اضافه شد');
     } catch (error) {}
   };
 
@@ -108,7 +118,7 @@ const Courses = () => {
     try {
       await RemoveStudentFromCourse(courseId, studentId);
       setRefreshCourses((old) => !old);
-      toast.success("دانشجو با موفقیت از دوره حذف شد");
+      toast.success('دانشجو با موفقیت از دوره حذف شد');
     } catch (error) {}
   };
 
@@ -123,7 +133,8 @@ const Courses = () => {
   };
 
   const handlePrev = () => {
-    currentPage !== 1 && setCurrentPage((currentPage) => currentPage - 1);
+    currentPage !== 1 &&
+      setCurrentPage((currentPage) => currentPage - 1);
   };
 
   const handleSearch = (value) => {
@@ -160,11 +171,35 @@ const Courses = () => {
       setModalCurrentPage((modalCurrentPage) => modalCurrentPage - 1);
   };
 
-  const paginateModalData = paginate(students, modalCurrentPage, pageSize);
+  const handleSearchStudent = (value) => {
+    setSearchStudent(value);
+    setModalCurrentPage(1);
+  };
+
+  let filterStudents = students;
+
+  if (searchStudent) {
+    filterStudents = students.filter(
+      (student) =>
+        student.fullName
+          .toString()
+          .toLowerCase()
+          .indexOf(searchStudent.toLowerCase()) > -1
+    );
+  }
+
+  const paginateModalData = paginate(
+    filterStudents,
+    modalCurrentPage,
+    pageSize
+  );
 
   return courses ? (
     <>
-      <Breadcrumbs title="مدیریت دوره" data={[{ title: "مدیریت دوره" }]} />
+      <Breadcrumbs
+        title="مدیریت دوره"
+        data={[{ title: 'مدیریت دوره' }]}
+      />
       <Card>
         <CardHeader className="d-flex justify-content-between align-items-center">
           <div>
@@ -211,13 +246,19 @@ const Courses = () => {
                       height="40"
                       width="40"
                     />
-                    <span className="align-middle fw-bold">{course.title}</span>
+                    <span className="align-middle fw-bold">
+                      {course.title}
+                    </span>
                   </td>
                   <td>{course.teacher.fullName}</td>
                   <td>{course.capacity}</td>
                   <td>
                     <div className="d-flex align-items-center">
-                      <Badge pill color="light-success" className="me-1">
+                      <Badge
+                        pill
+                        color="light-success"
+                        className="me-1"
+                      >
                         {course.students.length}
                       </Badge>
                       <AvatarGroup data={course.students} />
@@ -292,6 +333,24 @@ const Courses = () => {
           toggle={() => setShow(!show)}
         ></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
+          <Row className="mb-1">
+            <Col sm={2}></Col>
+            <Col sm={8}>
+              <InputGroup className="input-group-merge">
+                <InputGroupText>
+                  <Search size={14} />
+                </InputGroupText>
+                <Input
+                  value={searchStudent}
+                  onChange={(e) =>
+                    handleSearchStudent(e.target.value)
+                  }
+                  placeholder="جستجو..."
+                />
+              </InputGroup>
+            </Col>
+            <Col sm={2}></Col>
+          </Row>
           {paginateModalData.map((student) => (
             <div
               key={student._id}
@@ -307,7 +366,9 @@ const Courses = () => {
                 />
                 <div className="my-auto">
                   <h6 className="mb-0">{student.fullName}</h6>
-                  <small className="text-muted">{student.email}</small>
+                  <small className="text-muted">
+                    {student.email}
+                  </small>
                 </div>
               </div>
               <div className="d-flex align-items-center">
@@ -316,9 +377,13 @@ const Courses = () => {
                   className="me-1"
                   size="sm"
                   disabled={
-                    !student.courses.find((course) => course._id === courseId)
+                    !student.courses.find(
+                      (course) => course._id === courseId
+                    )
                   }
-                  onClick={() => handleRemoveStudentFromCourse(student._id)}
+                  onClick={() =>
+                    handleRemoveStudentFromCourse(student._id)
+                  }
                 >
                   <UserMinus size={16} />
                 </Button.Ripple>
@@ -328,7 +393,9 @@ const Courses = () => {
                   disabled={student.courses.find(
                     (course) => course._id === courseId
                   )}
-                  onClick={() => handleAddStudentToCourse(student._id)}
+                  onClick={() =>
+                    handleAddStudentToCourse(student._id)
+                  }
                 >
                   <UserPlus size={16} />
                 </Button.Ripple>

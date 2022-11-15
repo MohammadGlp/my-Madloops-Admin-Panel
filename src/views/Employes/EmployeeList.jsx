@@ -201,25 +201,6 @@ const EmployeesList = () => {
                     </td>
                     <td>
                       <div className="d-inline-block me-1">
-                        <Button.Ripple
-                          color="primary"
-                          size="sm"
-                          onClick={() => handleEdit(course?._id)}
-                        >
-                          <Edit size={16} />
-                        </Button.Ripple>
-                      </div>
-                      <div className="d-inline-block me-1">
-                        <Button.Ripple color="danger" size="sm">
-                          <Trash
-                            size={16}
-                            onClick={() =>
-                              handleDelete(course._id, course.fullName)
-                            }
-                          />
-                        </Button.Ripple>
-                      </div>
-                      <div className="d-inline-block me-1">
                         {course.isActive === true ? (
                           <Button.Ripple
                             color="danger"
@@ -237,6 +218,26 @@ const EmployeesList = () => {
                             <UserCheck size={16} />
                           </Button.Ripple>
                         )}
+                      </div>
+                      <div className="d-inline-block me-1">
+                        <Button.Ripple
+                          color="primary"
+                          size="sm"
+                          onClick={() => handleEdit(course?._id)}
+                        >
+                          <Edit size={16} />
+                        </Button.Ripple>
+                      </div>
+
+                      <div className="d-inline-block me-1">
+                        <Button.Ripple color="danger" size="sm">
+                          <Trash
+                            size={16}
+                            onClick={() =>
+                              handleDelete(course._id, course.fullName)
+                            }
+                          />
+                        </Button.Ripple>
                       </div>
                     </td>
                   </tr>

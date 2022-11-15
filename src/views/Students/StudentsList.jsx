@@ -38,7 +38,6 @@ import AddStudent from "./AddStudent";
 import Breadcrumbs from "@components/breadcrumbs";
 import PaginationIcons from "../pagination";
 import { paginate } from "../../utility/paginate";
-import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
 import { GetStudentById } from "./../../services/api/GetStudentById";
 
 const StudentsList = () => {
@@ -175,32 +174,16 @@ const StudentsList = () => {
   };
 
   const handleDeleteStudentCourse = async (courseId, courseName) => {
-    // const res = await RemoveStudentFromCourse(courseId, studentsId);
-    // if (res.success === true) {
-    //   setStudentModal((old) => {
-    //     let newData = [...old];
-    //     let newTeachersData = newData;
-    //     newTeachersData = newTeachersData.filter(
-    //       (item) => item._id !== studentsId
-    //     );
-    //     newData = newTeachersData;
-    //     return newData;
-    //   });
-
-    // } else {
-
-    // }
-
     setModal(!modal);
     try {
       await RemoveStudentFromCourse(courseId, studentsId);
-      setRefreshStudentInfo((old) => !old);
+      setRefStudentModal2((old) => !old);
       toast.success(`دوره ${courseName} با موفقیت از دانشجو حذف شد`);
     } catch (error) {
       toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
     }
   };
-  console.log(studentModal);
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -306,6 +289,25 @@ const StudentsList = () => {
                   </td>
                   <td>
                     <div className="d-inline-block me-1">
+                      {course.isActive === true ? (
+                        <Button.Ripple
+                          color="danger"
+                          size="sm"
+                          onClick={() => handleDeactive(course._id)}
+                        >
+                          <UserX size={16} />
+                        </Button.Ripple>
+                      ) : (
+                        <Button.Ripple
+                          color="success"
+                          size="sm"
+                          onClick={() => handleActive(course._id)}
+                        >
+                          <UserCheck size={16} />
+                        </Button.Ripple>
+                      )}
+                    </div>
+                    <div className="d-inline-block me-1">
                       <Button.Ripple
                         color="success"
                         size="sm"
@@ -333,25 +335,6 @@ const StudentsList = () => {
                       >
                         <Edit size={16} />
                       </Button.Ripple>
-                    </div>
-                    <div className="d-inline-block me-1">
-                      {course.isActive === true ? (
-                        <Button.Ripple
-                          color="danger"
-                          size="sm"
-                          onClick={() => handleDeactive(course._id)}
-                        >
-                          <UserX size={16} />
-                        </Button.Ripple>
-                      ) : (
-                        <Button.Ripple
-                          color="success"
-                          size="sm"
-                          onClick={() => handleActive(course._id)}
-                        >
-                          <UserCheck size={16} />
-                        </Button.Ripple>
-                      )}
                     </div>
                     <div className="d-inline-block me-1">
                       <Button.Ripple color="danger" size="sm">

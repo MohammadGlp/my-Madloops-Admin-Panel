@@ -227,6 +227,15 @@ const Courses = () => {
                   <td>
                     <div className="d-inline-block me-1">
                       <Button.Ripple
+                        color="success"
+                        size="sm"
+                        onClick={() => handleShowStudents(course._id)}
+                      >
+                        <Users size={16} />
+                      </Button.Ripple>
+                    </div>
+                    <div className="d-inline-block me-1">
+                      <Button.Ripple
                         color="primary"
                         size="sm"
                         onClick={() => handleEdit(course._id)}
@@ -234,21 +243,13 @@ const Courses = () => {
                         <Edit size={16} />
                       </Button.Ripple>
                     </div>
+
                     <div className="d-inline-block me-1">
                       <Button.Ripple color="danger" size="sm">
                         <Trash
                           size={16}
                           onClick={() => handleDelete(course._id)}
                         />
-                      </Button.Ripple>
-                    </div>
-                    <div className="d-inline-block me-1">
-                      <Button.Ripple
-                        color="success"
-                        size="sm"
-                        onClick={() => handleShowStudents(course._id)}
-                      >
-                        <Users size={16} />
                       </Button.Ripple>
                     </div>
                   </td>

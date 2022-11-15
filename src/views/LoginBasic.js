@@ -28,6 +28,7 @@ import Avatar from "@components/avatar";
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
 import { LoginEmployee } from "../services/api/employee/LoginEmployee.api";
+import { clearStorage } from "../services/storage/storage";
 
 const LoginBasic = () => {
   const navigate = useNavigate();
@@ -63,6 +64,7 @@ const LoginBasic = () => {
   };
 
   const handleLanding = () => {
+    clearStorage();
     window.location.href = "http://localhost:2000";
   };
 

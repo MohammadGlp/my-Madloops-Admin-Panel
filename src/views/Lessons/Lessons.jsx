@@ -39,7 +39,7 @@ const LessonList = () => {
   const [refreshLessons, setRefreshLessons] = useState(false);
   const [modal, setModal] = useState(false);
   const [lesson, setLesson] = useState();
-  const [pageSize] = useState(4);
+  const [pageSize, setPageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
   const [modalCurrentPage, setModalCurrentPage] = useState(1);
   const [searchLessons, setSearchLessons] = useState('');
@@ -275,27 +275,18 @@ const LessonList = () => {
             </tbody>
           </Table>
           <div className="d-flex justify-content-between align-items-center mt-3">
-            {/* <div className="d-flex">
-              <Input type="select" name="select" id="select-basic">
-                <option>Pulp Fiction</option>
-                <option>Nightcrawler</option>
-                <option>Donnie Darko</option>
-              </Input>
-              <h6>تعداد آیتم ها : {lessons.length}</h6>
-            </div> */}
             <div className="d-flex align-items-center justify-content-center justify-content-lg-start">
-              {/* <label htmlFor="rows-per-page">Show</label> */}
               <Input
                 className="mx-50"
                 type="select"
                 id="rows-per-page"
-                // value={rowsPerPage}
-                // onChange={handlePerPage}
+                value={pageSize}
+                onChange={(e) => setPageSize(e.target.value)}
                 style={{ width: '5rem' }}
               >
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
+                <option value="4">4</option>
+                <option value="6">6</option>
+                <option value="8">8</option>
               </Input>
               <h6>تعداد کل درس ها : {lessons.length}</h6>
             </div>

@@ -47,7 +47,7 @@ const TeachersList = () => {
   const [teacherId, setTeacherId] = useState(null);
   const [teacherName, setTeacherName] = useState(null);
   const [rTc, setRtc] = useState(false);
-  const [pageSize] = useState(4);
+  const [pageSize, setPageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTeachers, setSearchTeachers] = useState('');
   const [modalCurrentPage, setModalCurrentPage] = useState(1);
@@ -359,7 +359,21 @@ const TeachersList = () => {
             </tbody>
           </Table>
           <div className="d-flex justify-content-between align-items-center mt-3">
-            <h6>تعداد آیتم ها : {teachers.length}</h6>
+            <div className="d-flex align-items-center justify-content-center justify-content-lg-start">
+              <Input
+                className="mx-50"
+                type="select"
+                id="rows-per-page"
+                value={pageSize}
+                onChange={(e) => setPageSize(e.target.value)}
+                style={{ width: '5rem' }}
+              >
+                <option value="4">4</option>
+                <option value="6">6</option>
+                <option value="8">8</option>
+              </Input>
+              <h6>تعداد کل اساتید : {teachers.length}</h6>
+            </div>
             <PaginationIcons
               itemsCount={teachers.length}
               pageSize={pageSize}

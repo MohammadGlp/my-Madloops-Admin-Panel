@@ -41,7 +41,7 @@ const CommentList = () => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [RefreshComments, setRefreshComments] = useState(false);
-  const [pageSize] = useState(4);
+  const [pageSize, setPageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -223,7 +223,21 @@ const CommentList = () => {
             </tbody>
           </Table>
           <div className="d-flex justify-content-between align-items-center mt-3">
-            <h6>تعداد آیتم ها : {comments.length}</h6>
+            <div className="d-flex align-items-center justify-content-center justify-content-lg-start">
+              <Input
+                className="mx-50"
+                type="select"
+                id="rows-per-page"
+                value={pageSize}
+                onChange={(e) => setPageSize(e.target.value)}
+                style={{ width: '5rem' }}
+              >
+                <option value="4">4</option>
+                <option value="6">6</option>
+                <option value="8">8</option>
+              </Input>
+              <h6>تعداد کل کامنت ها : {comments.length}</h6>
+            </div>
             <PaginationIcons
               itemsCount={comments.length}
               pageSize={pageSize}

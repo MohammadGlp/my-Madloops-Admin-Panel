@@ -28,6 +28,7 @@ import { getAllCourses } from "./../../services/api/GetAllCourses.api";
 import Breadcrumbs from "@components/breadcrumbs";
 import PaginationIcons from "../pagination";
 import { paginate } from "../../utility/paginate";
+import Skeleton from "./../skeleton";
 
 const TeachersList = () => {
   const [teachers, setTeachers] = useState([]);
@@ -403,7 +404,7 @@ const TeachersList = () => {
                   </td>
                   <td>{course.capacity}</td>
                   <td>
-                    <div className="d-inline-block me-1 mb-1">
+                    <div className="d-inline-block me-1">
                       <Button.Ripple
                         color="danger"
                         size="sm"

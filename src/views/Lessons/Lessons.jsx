@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Edit, Inbox, Search, Trash } from 'react-feather';
+import { useEffect, useState } from "react";
+import { Edit, Inbox, Search, Trash } from "react-feather";
 import {
   Table,
   Button,
@@ -18,18 +18,19 @@ import {
   PaginationLink,
   Row,
   Col,
-} from 'reactstrap';
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { GetAllLessons } from './../../services/api/getAllLessons.api';
-import { DeleteLessonById } from './../../services/api/DeleteLessonById';
-import AddLesson from './AddLesson';
-import EditLesson from './EditLesson';
-import { dateConvert } from '../../utility/TimeAndDateConverter';
-import { addComma } from '../../utility/funcs';
-import Breadcrumbs from '@components/breadcrumbs';
-import PaginationIcons from './../pagination';
-import { paginate } from './../../utility/paginate';
+} from "reactstrap";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { GetAllLessons } from "./../../services/api/getAllLessons.api";
+import { DeleteLessonById } from "./../../services/api/DeleteLessonById";
+import AddLesson from "./AddLesson";
+import EditLesson from "./EditLesson";
+import { dateConvert } from "../../utility/TimeAndDateConverter";
+import { addComma } from "../../utility/funcs";
+import Breadcrumbs from "@components/breadcrumbs";
+import PaginationIcons from "./../pagination";
+import { paginate } from "./../../utility/paginate";
+import Skeleton from "./../skeleton";
 
 const LessonList = () => {
   const [lessons, setLessons] = useState();
@@ -42,8 +43,8 @@ const LessonList = () => {
   const [pageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
   const [modalCurrentPage, setModalCurrentPage] = useState(1);
-  const [searchLessons, setSearchLessons] = useState('');
-  const [searchCourse, setSearchCourse] = useState('');
+  const [searchLessons, setSearchLessons] = useState("");
+  const [searchCourse, setSearchCourse] = useState("");
 
   const toggleAddSidebar = () => setAddLessonOpen(!addLessonOpen);
   const toggleEditSidebar = () => setEditLessonOpen(!editLessonOpen);
@@ -73,7 +74,7 @@ const LessonList = () => {
       setRefreshLessons((old) => !old);
       toast.success(`آیتم مورد نظر حذف شد`);
     } catch (error) {
-      toast.error('خطایی رخ داده');
+      toast.error("خطایی رخ داده");
       setLessons(originalLessons);
     }
   };
@@ -82,8 +83,7 @@ const LessonList = () => {
     const trimmedLead =
       value
         .substring(0, 60)
-        .substring(0, value.substring(0, 200).lastIndexOf(' ')) +
-      '...';
+        .substring(0, value.substring(0, 200).lastIndexOf(" ")) + "...";
     return trimmedLead;
   };
 
@@ -141,11 +141,7 @@ const LessonList = () => {
     );
   }
 
-  const paginateModalData = paginate(
-    filterCourses,
-    modalCurrentPage,
-    pageSize
-  );
+  const paginateModalData = paginate(filterCourses, modalCurrentPage, pageSize);
 
   const handleNext = () => {
     const pagesCount = Math.ceil(lessons.length / pageSize);
@@ -154,8 +150,7 @@ const LessonList = () => {
   };
 
   const handlePrev = () => {
-    currentPage !== 1 &&
-      setCurrentPage((currentPage) => currentPage - 1);
+    currentPage !== 1 && setCurrentPage((currentPage) => currentPage - 1);
   };
 
   const handleSearch = (value) => {
@@ -177,12 +172,9 @@ const LessonList = () => {
 
   const paginateData = paginate(filterLessons, currentPage, pageSize);
 
-  return lessons ? (
+  return (
     <>
-      <Breadcrumbs
-        title="مدیریت درس"
-        data={[{ title: 'مدیریت درس' }]}
-      />
+      <Breadcrumbs title="مدیریت درس" data={[{ title: "مدیریت درس" }]} />
       <Card>
         <CardHeader className="d-flex justify-content-between align-items-center">
           <div>
@@ -208,7 +200,7 @@ const LessonList = () => {
         </CardHeader>
         <CardBody>
           <Table responsive>
-            <thead style={{ fontSize: '18px' }}>
+            <thead style={{ fontSize: "18px" }}>
               <tr>
                 <th>نام درس</th>
                 <th>توضیحات</th>
@@ -218,60 +210,62 @@ const LessonList = () => {
               </tr>
             </thead>
             <tbody>
-              {paginateData.map((lesson) => (
-                <tr key={lesson._id}>
-                  <td>
-                    <img
-                      className="me-75 rounded-circle"
-                      src={lesson.image}
-                      alt={lesson.lessonName}
-                      height="40"
-                      width="40"
-                    />
-                    <span className="align-middle fw-bold">
-                      {lesson.lessonName}
-                    </span>
-                  </td>
+              {paginateData.length > 0
+                ? paginateData.map((lesson) => (
+                    <tr key={lesson._id}>
+                      <td>
+                        <img
+                          className="me-75 rounded-circle"
+                          src={lesson.image}
+                          alt={lesson.lessonName}
+                          height="40"
+                          width="40"
+                        />
+                        <span className="align-middle fw-bold">
+                          {lesson.lessonName}
+                        </span>
+                      </td>
 
-                  <td>{handleLead(lesson.description)}</td>
-                  <td>{convertDate(lesson.createDate)}</td>
-                  <td>
-                    <Button.Ripple
-                      color="warning"
-                      size="sm"
-                      onClick={() =>
-                        handleShowLessonCourses(lesson._id)
-                      }
-                    >
-                      <span className="me-2">
-                        {lesson?.courses?.length}
-                      </span>
+                      <td>{handleLead(lesson.description)}</td>
+                      <td>{convertDate(lesson.createDate)}</td>
+                      <td>
+                        <Button.Ripple
+                          color="warning"
+                          size="sm"
+                          onClick={() => handleShowLessonCourses(lesson._id)}
+                        >
+                          <span className="me-2">
+                            {lesson?.courses?.length}
+                          </span>
 
-                      <Inbox size={16} />
-                    </Button.Ripple>
-                  </td>
-                  <td>
-                    <div className="d-inline-block me-1">
-                      <Button.Ripple
-                        color="primary"
-                        size="sm"
-                        onClick={() => handleEdit(lesson?._id)}
-                      >
-                        <Edit size={16} />
-                      </Button.Ripple>
-                    </div>
-                    <div className="d-inline-block me-1">
-                      <Button.Ripple
-                        color="danger"
-                        size="sm"
-                        onClick={() => handleDelete(lesson._id)}
-                      >
-                        <Trash size={16} />
-                      </Button.Ripple>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                          <Inbox size={16} />
+                        </Button.Ripple>
+                      </td>
+                      <td>
+                        <div className="d-inline-block me-1">
+                          <Button.Ripple
+                            color="primary"
+                            size="sm"
+                            onClick={() => handleEdit(lesson?._id)}
+                          >
+                            <Edit size={16} />
+                          </Button.Ripple>
+                        </div>
+                        <div className="d-inline-block me-1">
+                          <Button.Ripple
+                            color="danger"
+                            size="sm"
+                            onClick={() => handleDelete(lesson._id)}
+                          >
+                            <Trash size={16} />
+                          </Button.Ripple>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                : Array(pageSize)
+                    .fill()
+                    .map((i) => <Skeleton key={i} />)}
             </tbody>
           </Table>
           <div className="d-flex justify-content-between align-items-center mt-3">
@@ -291,16 +285,16 @@ const LessonList = () => {
                 id="rows-per-page"
                 // value={rowsPerPage}
                 // onChange={handlePerPage}
-                style={{ width: '5rem' }}
+                style={{ width: "5rem" }}
               >
                 <option value="10">10</option>
                 <option value="25">25</option>
                 <option value="50">50</option>
               </Input>
-              <h6>تعداد کل درس ها : {lessons.length}</h6>
+              <h6>تعداد کل درس ها : {lessons?.length}</h6>
             </div>
             <PaginationIcons
-              itemsCount={lessons.length}
+              itemsCount={lessons?.length}
               pageSize={pageSize}
               currentPage={currentPage}
               onPageChange={handlePageChange}
@@ -327,11 +321,8 @@ const LessonList = () => {
         className="modal-dialog-centered modal-lg"
       >
         <ModalHeader toggle={() => setModal(!modal)}>
-          دوره های درس{' '}
-          {
-            lessons?.find((lesson) => lesson._id === lessonId)
-              ?.lessonName
-          }
+          دوره های درس{" "}
+          {lessons?.find((lesson) => lesson._id === lessonId)?.lessonName}
         </ModalHeader>
         <ModalBody>
           <Row className="mb-1">
@@ -363,9 +354,7 @@ const LessonList = () => {
               {paginateModalData.map((course) => (
                 <tr key={course._id}>
                   <td>
-                    <span className="align-middle fw-bold">
-                      {course.title}
-                    </span>
+                    <span className="align-middle fw-bold">{course.title}</span>
                   </td>
                   <td>{convertDate(course.startDate)}</td>
                   <td>{convertDate(course.endDate)}</td>
@@ -388,8 +377,6 @@ const LessonList = () => {
         </ModalBody>
       </Modal>
     </>
-  ) : (
-    <p>Loading...</p>
   );
 };
 

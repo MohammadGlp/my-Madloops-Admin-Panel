@@ -23,6 +23,7 @@ import { DecodeToken } from "../../utility/DecodeToken";
 import Breadcrumbs from "@components/breadcrumbs";
 import { paginate } from "../../utility/paginate";
 import PaginationIcons from "../pagination";
+import Skeleton from "./../skeleton";
 
 const EmployeesList = () => {
   const [employees, setEmployees] = useState([]);
@@ -135,7 +136,7 @@ const EmployeesList = () => {
 
   const paginateData = paginate(filtehEmployees, currentPage, pageSize);
 
-  return employees ? (
+  return (
     <>
       <Breadcrumbs
         title="مدیریت کارمندان"
@@ -169,79 +170,83 @@ const EmployeesList = () => {
               </tr>
             </thead>
             <tbody>
-              {paginateData
-                .filter((em) => em.fullName !== userData?.fullName)
-                .map((course) => (
-                  <tr key={course._id}>
-                    <td>
-                      <img
-                        className="me-75 rounded-circle"
-                        src={course.profile}
-                        alt="angular"
-                        height="40"
-                        width="40"
-                      />
-                      <span className="align-middle fw-bold">
-                        {course.fullName}
-                      </span>
-                    </td>
-                    <td>{course.nationalId}</td>
-                    <td>{course.phoneNumber}</td>
-                    <td>{course.birthDate}</td>
-                    <td>
-                      {course.isActive ? (
-                        <Badge className="px-1" pill color="light-success">
-                          فعال
-                        </Badge>
-                      ) : (
-                        <Badge className="px-2" color="light-danger">
-                          غیرفعال
-                        </Badge>
-                      )}
-                    </td>
-                    <td>
-                      <div className="d-inline-block me-1">
-                        {course.isActive === true ? (
-                          <Button.Ripple
-                            color="danger"
-                            size="sm"
-                            onClick={() => handleDeactive(course._id)}
-                          >
-                            <UserX size={16} />
-                          </Button.Ripple>
-                        ) : (
-                          <Button.Ripple
-                            color="success"
-                            size="sm"
-                            onClick={() => handleActive(course._id)}
-                          >
-                            <UserCheck size={16} />
-                          </Button.Ripple>
-                        )}
-                      </div>
-                      <div className="d-inline-block me-1">
-                        <Button.Ripple
-                          color="primary"
-                          size="sm"
-                          onClick={() => handleEdit(course?._id)}
-                        >
-                          <Edit size={16} />
-                        </Button.Ripple>
-                      </div>
-
-                      <div className="d-inline-block me-1">
-                        <Button.Ripple color="danger" size="sm">
-                          <Trash
-                            size={16}
-                            onClick={() =>
-                              handleDelete(course._id, course.fullName)
-                            }
+              {paginateData.length > 0
+                ? paginateData
+                    .filter((em) => em.fullName !== userData?.fullName)
+                    .map((course) => (
+                      <tr key={course._id}>
+                        <td>
+                          <img
+                            className="me-75 rounded-circle"
+                            src={course.profile}
+                            alt="angular"
+                            height="40"
+                            width="40"
                           />
-                        </Button.Ripple>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                          <span className="align-middle fw-bold">
+                            {course.fullName}
+                          </span>
+                        </td>
+                        <td>{course.nationalId}</td>
+                        <td>{course.phoneNumber}</td>
+                        <td>{course.birthDate}</td>
+                        <td>
+                          {course.isActive ? (
+                            <Badge className="px-1" pill color="light-success">
+                              فعال
+                            </Badge>
+                          ) : (
+                            <Badge className="px-2" color="light-danger">
+                              غیرفعال
+                            </Badge>
+                          )}
+                        </td>
+                        <td>
+                          <div className="d-inline-block me-1">
+                            {course.isActive === true ? (
+                              <Button.Ripple
+                                color="danger"
+                                size="sm"
+                                onClick={() => handleDeactive(course._id)}
+                              >
+                                <UserX size={16} />
+                              </Button.Ripple>
+                            ) : (
+                              <Button.Ripple
+                                color="success"
+                                size="sm"
+                                onClick={() => handleActive(course._id)}
+                              >
+                                <UserCheck size={16} />
+                              </Button.Ripple>
+                            )}
+                          </div>
+                          <div className="d-inline-block me-1">
+                            <Button.Ripple
+                              color="primary"
+                              size="sm"
+                              onClick={() => handleEdit(course?._id)}
+                            >
+                              <Edit size={16} />
+                            </Button.Ripple>
+                          </div>
+
+                          <div className="d-inline-block me-1">
+                            <Button.Ripple color="danger" size="sm">
+                              <Trash
+                                size={16}
+                                onClick={() =>
+                                  handleDelete(course._id, course.fullName)
+                                }
+                              />
+                            </Button.Ripple>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                : Array(pageSize)
+                    .fill()
+                    .map((i) => <Skeleton key={i} />)}
             </tbody>
           </Table>
           <div className="d-flex justify-content-between align-items-center mt-3">
@@ -265,8 +270,6 @@ const EmployeesList = () => {
         setRefreshAdminData={setRefreshAdminData}
       />
     </>
-  ) : (
-    <p>Loading...</p>
   );
 };
 

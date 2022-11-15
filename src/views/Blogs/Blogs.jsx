@@ -20,6 +20,7 @@ import AddBlog from "./AddBlog";
 import Breadcrumbs from "@components/breadcrumbs";
 import PaginationIcons from "../pagination";
 import { paginate } from "../../utility/paginate";
+import Skeleton from "./../skeleton";
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState();
@@ -103,7 +104,7 @@ const Blogs = () => {
   }
 
   const paginateData = paginate(filtehBlogs, currentPage, pageSize);
-  return blogs ? (
+  return (
     <>
       <Breadcrumbs
         title="مدیریت اخبار و مقالات"
@@ -144,56 +145,60 @@ const Blogs = () => {
               </tr>
             </thead>
             <tbody>
-              {paginateData.map((blog) => (
-                <tr key={blog?._id}>
-                  <td>
-                    <img
-                      src={blog?.image}
-                      alt="angular"
-                      height="40"
-                      width="40"
-                      className="rounded-circle"
-                    />
-                  </td>
-                  <td>
-                    <span className="align-middle fw-bold">
-                      {handleLead(blog?.title, 20)}
-                    </span>
-                  </td>
-                  <td>{handleLead(blog?.text, 40)}</td>
-                  <td>
-                    <Badge pill color="light-primary" className="px-1">
-                      {blog?.category}
-                    </Badge>
-                  </td>
-
-                  <td>
-                    <div className="d-inline-block me-1">
-                      <Button.Ripple
-                        color="primary"
-                        size="sm"
-                        onClick={() => handleEdit(blog?._id)}
-                      >
-                        <Edit size={16} />
-                      </Button.Ripple>
-                    </div>
-                    <div className="d-inline-block me-1">
-                      <Button.Ripple color="danger" size="sm">
-                        <Trash
-                          size={16}
-                          onClick={() => handleDelete(blog?._id)}
+              {paginateData.length > 0
+                ? paginateData.map((blog) => (
+                    <tr key={blog?._id}>
+                      <td>
+                        <img
+                          src={blog?.image}
+                          alt="angular"
+                          height="40"
+                          width="40"
+                          className="rounded-circle"
                         />
-                      </Button.Ripple>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                      </td>
+                      <td>
+                        <span className="align-middle fw-bold">
+                          {handleLead(blog?.title, 20)}
+                        </span>
+                      </td>
+                      <td>{handleLead(blog?.text, 40)}</td>
+                      <td>
+                        <Badge pill color="light-primary" className="px-1">
+                          {blog?.category}
+                        </Badge>
+                      </td>
+
+                      <td>
+                        <div className="d-inline-block me-1">
+                          <Button.Ripple
+                            color="primary"
+                            size="sm"
+                            onClick={() => handleEdit(blog?._id)}
+                          >
+                            <Edit size={16} />
+                          </Button.Ripple>
+                        </div>
+                        <div className="d-inline-block me-1">
+                          <Button.Ripple color="danger" size="sm">
+                            <Trash
+                              size={16}
+                              onClick={() => handleDelete(blog?._id)}
+                            />
+                          </Button.Ripple>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                : Array(pageSize)
+                    .fill()
+                    .map((i) => <Skeleton key={i} />)}
             </tbody>
           </Table>
           <div className="d-flex justify-content-between align-items-center mt-3">
-            <h6>تعداد آیتم ها : {blogs.length}</h6>
+            <h6>تعداد آیتم ها : {blogs?.length}</h6>
             <PaginationIcons
-              itemsCount={blogs.length}
+              itemsCount={blogs?.length}
               pageSize={pageSize}
               currentPage={currentPage}
               onPageChange={handlePageChange}
@@ -216,8 +221,6 @@ const Blogs = () => {
         setRefreshBlogs={setRefreshBlogs}
       />
     </>
-  ) : (
-    <p>Loading...</p>
   );
 };
 

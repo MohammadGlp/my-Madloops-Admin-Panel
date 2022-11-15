@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Book,
   Edit,
@@ -9,7 +9,7 @@ import {
   UserCheck,
   UserX,
   Layers,
-} from "react-feather";
+} from 'react-feather';
 import {
   Table,
   Button,
@@ -23,23 +23,25 @@ import {
   InputGroup,
   InputGroupText,
   Input,
-} from "reactstrap";
-import Avatar from "@components/avatar";
-import { GetAllStudents } from "../../services/api/GetAllStudents.api";
-import toast from "react-hot-toast";
-import { ActiveStudent } from "../../services/api/ActiveStudent";
-import { DeactiveStudent } from "../../services/api/deactiveStudent";
-import { DeleteStudentById } from "../../services/api/DeleteStudentById";
-import StudentEdit from "./StudentEdit";
-import { RemoveStudentFromCourse } from "./../../services/api/RemoveStudentFromCourse.api";
-import { AddStudentToCourse } from "./../../services/api/AddStudentToCourse.api";
-import { getAllCourses } from "./../../services/api/GetAllCourses.api";
-import AddStudent from "./AddStudent";
-import Breadcrumbs from "@components/breadcrumbs";
-import PaginationIcons from "../pagination";
-import { paginate } from "../../utility/paginate";
-import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
-import { GetStudentById } from "./../../services/api/GetStudentById";
+  Row,
+  Col,
+} from 'reactstrap';
+import Avatar from '@components/avatar';
+import { GetAllStudents } from '../../services/api/GetAllStudents.api';
+import toast from 'react-hot-toast';
+import { ActiveStudent } from '../../services/api/ActiveStudent';
+import { DeactiveStudent } from '../../services/api/deactiveStudent';
+import { DeleteStudentById } from '../../services/api/DeleteStudentById';
+import StudentEdit from './StudentEdit';
+import { RemoveStudentFromCourse } from './../../services/api/RemoveStudentFromCourse.api';
+import { AddStudentToCourse } from './../../services/api/AddStudentToCourse.api';
+import { getAllCourses } from './../../services/api/GetAllCourses.api';
+import AddStudent from './AddStudent';
+import Breadcrumbs from '@components/breadcrumbs';
+import PaginationIcons from '../pagination';
+import { paginate } from '../../utility/paginate';
+import { DeleteCourse } from './../../services/api/DeleteCourse.api';
+import { GetStudentById } from './../../services/api/GetStudentById';
 
 const StudentsList = () => {
   const [students, setStudents] = useState([]);
@@ -56,7 +58,13 @@ const StudentsList = () => {
   const [modal, setModal] = useState(false);
   const [pageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchStudents, setSearchStudents] = useState("");
+  const [modalCurrentPageCourse, setModalCurrentPageCourse] =
+    useState(1);
+  const [modalCurrentPageLesson, setModalCurrentPageLesson] =
+    useState(1);
+  const [searchStudents, setSearchStudents] = useState('');
+  const [searchCourse, setSearchCourse] = useState('');
+  const [searchLesson, setSearchLesson] = useState('');
 
   useEffect(() => {
     const getAll = async () => {
@@ -105,7 +113,7 @@ const StudentsList = () => {
       });
       toast.success(`دانشجو با موفقیت حذف شد`);
     } else {
-      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
+      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
     }
   };
 
@@ -116,7 +124,7 @@ const StudentsList = () => {
       setRefreshStudentInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
   };
@@ -128,7 +136,7 @@ const StudentsList = () => {
       setRefreshStudentInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
   };
@@ -143,9 +151,9 @@ const StudentsList = () => {
     try {
       await AddStudentToCourse(courseId, studentsId);
       setRefStudentModal((old) => !old);
-      toast.success("دانشجو با موفقیت به دوره اضافه شد");
+      toast.success('دانشجو با موفقیت به دوره اضافه شد');
     } catch (error) {
-      toast.error("افزودن دانشجو با مشکل مواجه شد");
+      toast.error('افزودن دانشجو با مشکل مواجه شد');
     }
   };
 
@@ -154,13 +162,14 @@ const StudentsList = () => {
     try {
       await RemoveStudentFromCourse(courseId, studentsId);
       setRefStudentModal((old) => !old);
-      toast.success("دانشجو با موفقیت از دوره حذف شد");
+      toast.success('دانشجو با موفقیت از دوره حذف شد');
     } catch (error) {
-      toast.error("حذف دانشجو با مشکل مواجه شد");
+      toast.error('حذف دانشجو با مشکل مواجه شد');
     }
   };
   const toggleAddSidebar = () => setAddStudentOpen(!addStudentOpen);
-  const toggleEditSidebar = () => setEditStudentOpen(!editStudentOpen);
+  const toggleEditSidebar = () =>
+    setEditStudentOpen(!editStudentOpen);
 
   const handleEdit = (studentId) => {
     toggleEditSidebar();
@@ -175,29 +184,13 @@ const StudentsList = () => {
   };
 
   const handleDeleteStudentCourse = async (courseId, courseName) => {
-    // const res = await RemoveStudentFromCourse(courseId, studentsId);
-    // if (res.success === true) {
-    //   setStudentModal((old) => {
-    //     let newData = [...old];
-    //     let newTeachersData = newData;
-    //     newTeachersData = newTeachersData.filter(
-    //       (item) => item._id !== studentsId
-    //     );
-    //     newData = newTeachersData;
-    //     return newData;
-    //   });
-
-    // } else {
-
-    // }
-
     setModal(!modal);
     try {
       await RemoveStudentFromCourse(courseId, studentsId);
       setRefreshStudentInfo((old) => !old);
       toast.success(`دوره ${courseName} با موفقیت از دانشجو حذف شد`);
     } catch (error) {
-      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
+      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
     }
   };
   console.log(studentModal);
@@ -212,7 +205,8 @@ const StudentsList = () => {
   };
 
   const handlePrev = () => {
-    currentPage !== 1 && setCurrentPage((currentPage) => currentPage - 1);
+    currentPage !== 1 &&
+      setCurrentPage((currentPage) => currentPage - 1);
   };
 
   const handleSearch = (value) => {
@@ -232,13 +226,105 @@ const StudentsList = () => {
     );
   }
 
-  const paginateData = paginate(filterStudents, currentPage, pageSize);
+  const paginateData = paginate(
+    filterStudents,
+    currentPage,
+    pageSize
+  );
+
+  const handleModalPageChange = (page) => {
+    setModalCurrentPageCourse(page);
+  };
+
+  const handleModalNext = () => {
+    const pagesCount = Math.ceil(courses?.length / pageSize);
+    modalCurrentPageCourse !== pagesCount &&
+      setModalCurrentPageCourse(
+        (modalCurrentPage) => modalCurrentPage + 1
+      );
+  };
+
+  const handleModalPrev = () => {
+    modalCurrentPageCourse !== 1 &&
+      setModalCurrentPageCourse(
+        (modalCurrentPage) => modalCurrentPage - 1
+      );
+  };
+
+  const handleSearchCourse = (value) => {
+    setSearchCourse(value);
+    setModalCurrentPageCourse(1);
+  };
+
+  let filterCourses = courses;
+
+  if (searchCourse) {
+    filterCourses = courses.filter(
+      (course) =>
+        course.title
+          .toString()
+          .toLowerCase()
+          .indexOf(searchCourse.toLowerCase()) > -1
+    );
+  }
+
+  const paginateModalData = paginate(
+    filterCourses,
+    modalCurrentPageCourse,
+    pageSize
+  );
+
+  const handleLessonModalPageChange = (page) => {
+    setModalCurrentPageLesson(page);
+  };
+
+  const handleLessonModalNext = () => {
+    const pagesCount = Math.ceil(
+      studentModal?.courses?.length / pageSize
+    );
+    modalCurrentPageLesson !== pagesCount &&
+      setModalCurrentPageLesson(
+        (modalCurrentPage) => modalCurrentPage + 1
+      );
+  };
+
+  const handleLessonModalPrev = () => {
+    modalCurrentPageLesson !== 1 &&
+      setModalCurrentPageLesson(
+        (modalCurrentPage) => modalCurrentPage - 1
+      );
+  };
+
+  const handleSearchLesson = (value) => {
+    setSearchLesson(value);
+    setModalCurrentPageLesson(1);
+  };
+
+  let filterLessons = courses;
+
+  if (searchCourse) {
+    filterLessons = studentModal?.courses.filter(
+      (course) =>
+        course.title
+          .toString()
+          .toLowerCase()
+          .indexOf(searchCourse.toLowerCase()) > -1
+    );
+  }
+
+  const paginateModalLessons = paginate(
+    filterLessons,
+    modalCurrentPageCourse,
+    pageSize
+  );
+
+  console.log(paginateModalLessons);
 
   return students ? (
     <>
       <Breadcrumbs
         title="مدیریت دانشجویان"
-        data={[{ title: "مدیریت دانشجویان" }]}
+        data={[{ title: 'مدیریت دانشجویان' }]}
       />
       <Card>
         <CardHeader className="d-flex justify-content-between align-items-center">
@@ -295,7 +381,11 @@ const StudentsList = () => {
                   <td>{course.birthDate}</td>
                   <td>
                     {course.isActive ? (
-                      <Badge className="px-1" pill color="light-success">
+                      <Badge
+                        className="px-1"
+                        pill
+                        color="light-success"
+                      >
                         فعال
                       </Badge>
                     ) : (
@@ -319,7 +409,10 @@ const StudentsList = () => {
                         color="warning"
                         size="sm"
                         onClick={() =>
-                          handleShowStudentCourse(course._id, course.fullName)
+                          handleShowStudentCourse(
+                            course._id,
+                            course.fullName
+                          )
                         }
                       >
                         <Layers size={16} />
@@ -401,7 +494,23 @@ const StudentsList = () => {
           toggle={() => setShow(!show)}
         ></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
-          {courses?.map((course) => (
+          <Row className="mb-1">
+            <Col sm={2}></Col>
+            <Col sm={8}>
+              <InputGroup className="input-group-merge">
+                <InputGroupText>
+                  <Search size={14} />
+                </InputGroupText>
+                <Input
+                  value={searchCourse}
+                  onChange={(e) => handleSearchCourse(e.target.value)}
+                  placeholder="جستجو..."
+                />
+              </InputGroup>
+            </Col>
+            <Col sm={2}></Col>
+          </Row>
+          {paginateModalData?.map((course) => (
             <div
               key={course._id}
               className="employee-task d-flex justify-content-between align-items-center mb-2"
@@ -416,7 +525,9 @@ const StudentsList = () => {
                 />
                 <div className="my-auto">
                   <h6 className="mb-0">{course.title}</h6>
-                  <small className="text-muted">{course.cost} تومان</small>
+                  <small className="text-muted">
+                    {course.cost} تومان
+                  </small>
                 </div>
               </div>
               <div className="d-flex align-items-center">
@@ -429,7 +540,9 @@ const StudentsList = () => {
                       (student) => student._id === studentsId
                     )
                   }
-                  onClick={() => handleRemoveStudentFromCourse(course._id)}
+                  onClick={() =>
+                    handleRemoveStudentFromCourse(course._id)
+                  }
                 >
                   <Minus size={16} />
                 </Button.Ripple>
@@ -446,6 +559,17 @@ const StudentsList = () => {
               </div>
             </div>
           ))}
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>تعداد آیتم ها : {courses.length}</h6>
+            <PaginationIcons
+              itemsCount={courses.length}
+              pageSize={pageSize}
+              currentPage={modalCurrentPageCourse}
+              onPageChange={handleModalPageChange}
+              onNext={handleModalNext}
+              onPrev={handleModalPrev}
+            />
+          </div>
         </ModalBody>
       </Modal>
       <Modal
@@ -455,9 +579,27 @@ const StudentsList = () => {
       >
         <ModalHeader toggle={() => setModal(!modal)}>
           درس های دانشجو :
-          {students.map((name) => name.fullName).find((m) => m === studentName)}
+          {students
+            .map((name) => name.fullName)
+            .find((m) => m === studentName)}
         </ModalHeader>
         <ModalBody>
+          <Row className="mb-1">
+            <Col sm={2}></Col>
+            <Col sm={8}>
+              <InputGroup className="input-group-merge">
+                <InputGroupText>
+                  <Search size={14} />
+                </InputGroupText>
+                <Input
+                  value={searchLesson}
+                  onChange={(e) => handleSearchLesson(e.target.value)}
+                  placeholder="جستجو..."
+                />
+              </InputGroup>
+            </Col>
+            <Col sm={2}></Col>
+          </Row>
           <Table responsive>
             <thead>
               <tr>
@@ -467,10 +609,12 @@ const StudentsList = () => {
               </tr>
             </thead>
             <tbody>
-              {studentModal?.courses?.map((course) => (
+              {paginateModalLessons.map((course) => (
                 <tr key={course._id}>
                   <td>
-                    <span className="align-middle fw-bold">{course.title}</span>
+                    <span className="align-middle fw-bold">
+                      {course.title}
+                    </span>
                   </td>
                   <td>{course.teacher.fullName}</td>
                   <td>
@@ -479,7 +623,10 @@ const StudentsList = () => {
                         color="danger"
                         size="sm"
                         onClick={() =>
-                          handleDeleteStudentCourse(course._id, course.title)
+                          handleDeleteStudentCourse(
+                            course._id,
+                            course.title
+                          )
                         }
                       >
                         <Trash size={16} />
@@ -490,6 +637,17 @@ const StudentsList = () => {
               ))}
             </tbody>
           </Table>
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <h6>تعداد آیتم ها : {studentModal?.courses?.length}</h6>
+            <PaginationIcons
+              itemsCount={studentModal?.courses?.length}
+              pageSize={pageSize}
+              currentPage={modalCurrentPageLesson}
+              onPageChange={handleLessonModalPageChange}
+              onNext={handleLessonModalNext}
+              onPrev={handleLessonModalPrev}
+            />
+          </div>
         </ModalBody>
       </Modal>
     </>

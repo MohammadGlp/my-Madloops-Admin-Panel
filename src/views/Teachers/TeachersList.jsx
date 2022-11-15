@@ -1,5 +1,12 @@
-import { useEffect, useState } from "react";
-import { Edit, Trash, UserCheck, UserX, Inbox, Search } from "react-feather";
+import { useEffect, useState } from 'react';
+import {
+  Edit,
+  Trash,
+  UserCheck,
+  UserX,
+  Inbox,
+  Search,
+} from 'react-feather';
 import {
   Table,
   Button,
@@ -13,20 +20,22 @@ import {
   InputGroup,
   InputGroupText,
   Input,
-} from "reactstrap";
-import toast from "react-hot-toast";
-import { DeactiveEmployee } from "../../services/api/deactiveEmployee";
-import { ActiveEmployee } from "../../services/api/ActiveEmployee";
-import { GetAllTeachers } from "./../../services/api/GetAllTeachers.api";
-import { DeleteEmployee } from "./../../services/api/DeleteEmployee.api";
-import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
-import AddTeacher from "./AddTeacher";
-import TeacherEdit from "./TeacherEdit";
-import { GetCourseById } from "./../../services/api/GetCourseById.api";
-import { getAllCourses } from "./../../services/api/GetAllCourses.api";
-import Breadcrumbs from "@components/breadcrumbs";
-import PaginationIcons from "../pagination";
-import { paginate } from "../../utility/paginate";
+  Row,
+  Col,
+} from 'reactstrap';
+import toast from 'react-hot-toast';
+import { DeactiveEmployee } from '../../services/api/deactiveEmployee';
+import { ActiveEmployee } from '../../services/api/ActiveEmployee';
+import { GetAllTeachers } from './../../services/api/GetAllTeachers.api';
+import { DeleteEmployee } from './../../services/api/DeleteEmployee.api';
+import { DeleteCourse } from './../../services/api/DeleteCourse.api';
+import AddTeacher from './AddTeacher';
+import TeacherEdit from './TeacherEdit';
+import { GetCourseById } from './../../services/api/GetCourseById.api';
+import { getAllCourses } from './../../services/api/GetAllCourses.api';
+import Breadcrumbs from '@components/breadcrumbs';
+import PaginationIcons from '../pagination';
+import { paginate } from '../../utility/paginate';
 
 const TeachersList = () => {
   const [teachers, setTeachers] = useState([]);
@@ -40,8 +49,9 @@ const TeachersList = () => {
   const [rTc, setRtc] = useState(false);
   const [pageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTeachers, setSearchTeachers] = useState("");
+  const [searchTeachers, setSearchTeachers] = useState('');
   const [modalCurrentPage, setModalCurrentPage] = useState(1);
+  const [searchCourse, setSearchCourse] = useState('');
 
   useEffect(() => {
     const getAll = async () => {
@@ -62,7 +72,7 @@ const TeachersList = () => {
       setRefreshTeacherInfo((old) => !old);
       toast.success(`استاد با موفقیت حذف شد`);
     } catch (error) {
-      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
+      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
       setTeachers(originalTeachers);
     }
   };
@@ -82,7 +92,7 @@ const TeachersList = () => {
       setRtc((old) => !old);
       toast.success(`دوره ${courseName} با موفقیت از استاد حذف شد`);
     } else {
-      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
+      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
     }
   };
 
@@ -93,7 +103,7 @@ const TeachersList = () => {
       setRefreshTeacherInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
   };
@@ -105,7 +115,7 @@ const TeachersList = () => {
       setRefreshTeacherInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
   };
@@ -125,7 +135,8 @@ const TeachersList = () => {
   };
 
   const toggleAddSidebar = () => setAddTeacherOpen(!addTeacherOpen);
-  const toggleEditSidebar = () => setEditTeacherOpen(!editTeacherOpen);
+  const toggleEditSidebar = () =>
+    setEditTeacherOpen(!editTeacherOpen);
 
   const handleEdit = (teacherId) => {
     toggleEditSidebar();
@@ -143,7 +154,8 @@ const TeachersList = () => {
   };
 
   const handlePrev = () => {
-    currentPage !== 1 && setCurrentPage((currentPage) => currentPage - 1);
+    currentPage !== 1 &&
+      setCurrentPage((currentPage) => currentPage - 1);
   };
 
   const handleSearch = (value) => {
@@ -163,7 +175,11 @@ const TeachersList = () => {
     );
   }
 
-  const paginateData = paginate(filterTeachers, currentPage, pageSize);
+  const paginateData = paginate(
+    filterTeachers,
+    currentPage,
+    pageSize
+  );
 
   const handleModalPageChange = (page) => {
     setModalCurrentPage(page);
@@ -171,8 +187,8 @@ const TeachersList = () => {
 
   const handleModalNext = () => {
     const pagesCount = Math.ceil(
-      teacherModal.filter((te) => te.teacher._id === teacherId).length /
-        pageSize
+      teacherModal.filter((te) => te.teacher._id === teacherId)
+        .length / pageSize
     );
     modalCurrentPage !== pagesCount &&
       setModalCurrentPage((modalCurrentPage) => modalCurrentPage + 1);
@@ -183,15 +199,39 @@ const TeachersList = () => {
       setModalCurrentPage((modalCurrentPage) => modalCurrentPage - 1);
   };
 
+  const handleSearchCourse = (value) => {
+    setSearchCourse(value);
+    setModalCurrentPage(1);
+  };
+
+  let filterCourses = teacherModal.filter(
+    (te) => te.teacher._id === teacherId
+  );
+
+  if (searchCourse) {
+    filterCourses = teacherModal
+      .filter((te) => te.teacher._id === teacherId)
+      .filter(
+        (course) =>
+          course.title
+            .toString()
+            .toLowerCase()
+            .indexOf(searchCourse.toLowerCase()) > -1
+      );
+  }
+
   const paginateModalData = paginate(
-    teacherModal.filter((te) => te.teacher._id === teacherId),
+    filterCourses,
     modalCurrentPage,
     pageSize
   );
 
   return teachers ? (
     <>
-      <Breadcrumbs title="مدیریت اساتید" data={[{ title: "مدیریت اساتید" }]} />
+      <Breadcrumbs
+        title="مدیریت اساتید"
+        data={[{ title: 'مدیریت اساتید' }]}
+      />
       <Card>
         <CardHeader className="d-flex justify-content-between align-items-center">
           <div>
@@ -247,7 +287,11 @@ const TeachersList = () => {
                   <td>{course.birthDate}</td>
                   <td>
                     {course.isActive ? (
-                      <Badge className="px-1" pill color="light-success">
+                      <Badge
+                        className="px-1"
+                        pill
+                        color="light-success"
+                      >
                         فعال
                       </Badge>
                     ) : (
@@ -271,7 +315,10 @@ const TeachersList = () => {
                         color="warning"
                         size="sm"
                         onClick={() =>
-                          handleShowTeacherCourse(course._id, course.fullName)
+                          handleShowTeacherCourse(
+                            course._id,
+                            course.fullName
+                          )
                         }
                       >
                         <Inbox size={16} />
@@ -343,9 +390,27 @@ const TeachersList = () => {
       >
         <ModalHeader toggle={() => setModal(!modal)}>
           درس های استاد :
-          {teachers.map((name) => name.fullName).find((m) => m === teacherName)}
+          {teachers
+            .map((name) => name.fullName)
+            .find((m) => m === teacherName)}
         </ModalHeader>
         <ModalBody>
+          <Row className="mb-1">
+            <Col sm={2}></Col>
+            <Col sm={8}>
+              <InputGroup className="input-group-merge">
+                <InputGroupText>
+                  <Search size={14} />
+                </InputGroupText>
+                <Input
+                  value={searchCourse}
+                  onChange={(e) => handleSearchCourse(e.target.value)}
+                  placeholder="جستجو..."
+                />
+              </InputGroup>
+            </Col>
+            <Col sm={2}></Col>
+          </Row>
           <Table responsive>
             <thead>
               <tr>
@@ -358,7 +423,9 @@ const TeachersList = () => {
               {paginateModalData.map((course) => (
                 <tr key={course._id}>
                   <td>
-                    <span className="align-middle fw-bold">{course.title}</span>
+                    <span className="align-middle fw-bold">
+                      {course.title}
+                    </span>
                   </td>
                   <td>{course.capacity}</td>
                   <td>
@@ -367,7 +434,10 @@ const TeachersList = () => {
                         color="danger"
                         size="sm"
                         onClick={() =>
-                          handleDeleteTeacherCourse(course._id, course.title)
+                          handleDeleteTeacherCourse(
+                            course._id,
+                            course.title
+                          )
                         }
                       >
                         <Trash size={16} />
@@ -380,12 +450,18 @@ const TeachersList = () => {
           </Table>
           <div className="d-flex justify-content-between align-items-center mt-3">
             <h6>
-              تعداد آیتم ها :{" "}
-              {teacherModal.filter((te) => te.teacher._id === teacherId).length}
+              تعداد آیتم ها :{' '}
+              {
+                teacherModal.filter(
+                  (te) => te.teacher._id === teacherId
+                ).length
+              }
             </h6>
             <PaginationIcons
               itemsCount={
-                teacherModal.filter((te) => te.teacher._id === teacherId).length
+                teacherModal.filter(
+                  (te) => te.teacher._id === teacherId
+                ).length
               }
               pageSize={pageSize}
               currentPage={modalCurrentPage}

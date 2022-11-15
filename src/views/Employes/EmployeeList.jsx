@@ -112,7 +112,7 @@ const EmployeesList = () => {
   };
 
   const handleNext = () => {
-    const pagesCount = Math.ceil(employees.length / pageSize);
+    const pagesCount = Math.ceil(employees?.length / pageSize);
     currentPage !== pagesCount &&
       setCurrentPage((currentPage) => currentPage + 1);
   };
@@ -179,7 +179,7 @@ const EmployeesList = () => {
               </tr>
             </thead>
             <tbody>
-              {paginateData.length > 0
+              {paginateData?.length > 0
                 ? paginateData
                     .filter(
                       (em) => em.fullName !== userData?.fullName
@@ -288,10 +288,10 @@ const EmployeesList = () => {
                 <option value="6">6</option>
                 <option value="8">8</option>
               </Input>
-              <h6>تعداد کل ادمین ها : {employees.length - 1}</h6>
+              <h6>تعداد کل ادمین ها : {employees?.length - 1}</h6>
             </div>
             <PaginationIcons
-              itemsCount={employees.length}
+              itemsCount={employees?.length}
               pageSize={pageSize}
               currentPage={currentPage}
               onPageChange={handlePageChange}

@@ -215,7 +215,7 @@ const Blogs = () => {
                 <option value="6">6</option>
                 <option value="8">8</option>
               </Input>
-              <h6>تعداد کل اخبار و مقالات : {blogs.length}</h6>
+              <h6>تعداد کل اخبار و مقالات : {blogs?.length}</h6>
             </div>
             <PaginationIcons
               itemsCount={blogs?.length}

@@ -319,7 +319,7 @@ const Courses = () => {
                 <option value="6">6</option>
                 <option value="8">8</option>
               </Input>
-              <h6>تعداد کل دوره ها : {courses.length}</h6>
+              <h6>تعداد کل دوره ها : {courses?.length}</h6>
             </div>
             <PaginationIcons
               itemsCount={courses?.length}

@@ -1,12 +1,5 @@
-import { useEffect, useState } from 'react';
-import {
-  Edit,
-  Trash,
-  UserCheck,
-  UserX,
-  Inbox,
-  Search,
-} from 'react-feather';
+import { useEffect, useState } from "react";
+import { Edit, Trash, UserCheck, UserX, Inbox, Search } from "react-feather";
 import {
   Table,
   Button,
@@ -22,20 +15,20 @@ import {
   Input,
   Row,
   Col,
-} from 'reactstrap';
-import toast from 'react-hot-toast';
-import { DeactiveEmployee } from '../../services/api/deactiveEmployee';
-import { ActiveEmployee } from '../../services/api/ActiveEmployee';
-import { GetAllTeachers } from './../../services/api/GetAllTeachers.api';
-import { DeleteEmployee } from './../../services/api/DeleteEmployee.api';
-import { DeleteCourse } from './../../services/api/DeleteCourse.api';
-import AddTeacher from './AddTeacher';
-import TeacherEdit from './TeacherEdit';
-import { GetCourseById } from './../../services/api/GetCourseById.api';
-import { getAllCourses } from './../../services/api/GetAllCourses.api';
-import Breadcrumbs from '@components/breadcrumbs';
-import PaginationIcons from '../pagination';
-import { paginate } from '../../utility/paginate';
+} from "reactstrap";
+import toast from "react-hot-toast";
+import { DeactiveEmployee } from "../../services/api/deactiveEmployee";
+import { ActiveEmployee } from "../../services/api/ActiveEmployee";
+import { GetAllTeachers } from "./../../services/api/GetAllTeachers.api";
+import { DeleteEmployee } from "./../../services/api/DeleteEmployee.api";
+import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
+import AddTeacher from "./AddTeacher";
+import TeacherEdit from "./TeacherEdit";
+import { getAllCourses } from "./../../services/api/GetAllCourses.api";
+import Breadcrumbs from "@components/breadcrumbs";
+import PaginationIcons from "../pagination";
+import { paginate } from "../../utility/paginate";
+import Skeleton from "./../skeleton";
 
 const TeachersList = () => {
   const [teachers, setTeachers] = useState([]);
@@ -49,9 +42,9 @@ const TeachersList = () => {
   const [rTc, setRtc] = useState(false);
   const [pageSize, setPageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTeachers, setSearchTeachers] = useState('');
+  const [searchTeachers, setSearchTeachers] = useState("");
   const [modalCurrentPage, setModalCurrentPage] = useState(1);
-  const [searchCourse, setSearchCourse] = useState('');
+  const [searchCourse, setSearchCourse] = useState("");
 
   useEffect(() => {
     const getAll = async () => {
@@ -72,7 +65,7 @@ const TeachersList = () => {
       setRefreshTeacherInfo((old) => !old);
       toast.success(`استاد با موفقیت حذف شد`);
     } catch (error) {
-      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
+      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
       setTeachers(originalTeachers);
     }
   };
@@ -92,7 +85,7 @@ const TeachersList = () => {
       setRtc((old) => !old);
       toast.success(`دوره ${courseName} با موفقیت از استاد حذف شد`);
     } else {
-      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
+      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
     }
   };
 
@@ -103,7 +96,7 @@ const TeachersList = () => {
       setRefreshTeacherInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error('خطایی رخ داده');
+        toast.error("خطایی رخ داده");
       }
     }
   };
@@ -115,7 +108,7 @@ const TeachersList = () => {
       setRefreshTeacherInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error('خطایی رخ داده');
+        toast.error("خطایی رخ داده");
       }
     }
   };
@@ -135,8 +128,7 @@ const TeachersList = () => {
   };
 
   const toggleAddSidebar = () => setAddTeacherOpen(!addTeacherOpen);
-  const toggleEditSidebar = () =>
-    setEditTeacherOpen(!editTeacherOpen);
+  const toggleEditSidebar = () => setEditTeacherOpen(!editTeacherOpen);
 
   const handleEdit = (teacherId) => {
     toggleEditSidebar();
@@ -154,8 +146,7 @@ const TeachersList = () => {
   };
 
   const handlePrev = () => {
-    currentPage !== 1 &&
-      setCurrentPage((currentPage) => currentPage - 1);
+    currentPage !== 1 && setCurrentPage((currentPage) => currentPage - 1);
   };
 
   const handleSearch = (value) => {
@@ -175,11 +166,7 @@ const TeachersList = () => {
     );
   }
 
-  const paginateData = paginate(
-    filterTeachers,
-    currentPage,
-    pageSize
-  );
+  const paginateData = paginate(filterTeachers, currentPage, pageSize);
 
   const handleModalPageChange = (page) => {
     setModalCurrentPage(page);
@@ -187,8 +174,8 @@ const TeachersList = () => {
 
   const handleModalNext = () => {
     const pagesCount = Math.ceil(
-      teacherModal.filter((te) => te.teacher._id === teacherId)
-        .length / pageSize
+      teacherModal.filter((te) => te.teacher._id === teacherId).length /
+        pageSize
     );
     modalCurrentPage !== pagesCount &&
       setModalCurrentPage((modalCurrentPage) => modalCurrentPage + 1);
@@ -204,9 +191,7 @@ const TeachersList = () => {
     setModalCurrentPage(1);
   };
 
-  let filterCourses = teacherModal.filter(
-    (te) => te.teacher._id === teacherId
-  );
+  let filterCourses = teacherModal.filter((te) => te.teacher._id === teacherId);
 
   if (searchCourse) {
     filterCourses = teacherModal
@@ -220,18 +205,11 @@ const TeachersList = () => {
       );
   }
 
-  const paginateModalData = paginate(
-    filterCourses,
-    modalCurrentPage,
-    pageSize
-  );
+  const paginateModalData = paginate(filterCourses, modalCurrentPage, pageSize);
 
-  return teachers ? (
+  return (
     <>
-      <Breadcrumbs
-        title="مدیریت اساتید"
-        data={[{ title: 'مدیریت اساتید' }]}
-      />
+      <Breadcrumbs title="مدیریت اساتید" data={[{ title: "مدیریت اساتید" }]} />
       <Card>
         <CardHeader className="d-flex justify-content-between align-items-center">
           <div>
@@ -242,7 +220,7 @@ const TeachersList = () => {
               <Input
                 value={searchTeachers}
                 onChange={(e) => handleSearch(e.target.value)}
-                placeholder="search..."
+                placeholder="جستجو..."
               />
             </InputGroup>
           </div>
@@ -268,94 +246,95 @@ const TeachersList = () => {
               </tr>
             </thead>
             <tbody>
-              {paginateData?.map((course) => (
-                <tr key={course._id}>
-                  <td>
-                    <img
-                      className="me-75 rounded-circle"
-                      src={course.profile}
-                      alt="angular"
-                      height="40"
-                      width="40"
-                    />
-                    <span className="align-middle fw-bold">
-                      {course.fullName}
-                    </span>
-                  </td>
-                  <td>{course.nationalId}</td>
-                  <td>{course.phoneNumber}</td>
-                  <td>{course.birthDate}</td>
-                  <td>
-                    {course.isActive ? (
-                      <Badge
-                        className="px-1"
-                        pill
-                        color="light-success"
-                      >
-                        فعال
-                      </Badge>
-                    ) : (
-                      <Badge className="px-2" color="light-danger">
-                        غیرفعال
-                      </Badge>
-                    )}
-                  </td>
-                  <td>
-                    <div className="d-inline-block me-1">
-                      <Button.Ripple
-                        color="primary"
-                        size="sm"
-                        onClick={() => handleEdit(course?._id)}
-                      >
-                        <Edit size={16} />
-                      </Button.Ripple>
-                    </div>
-                    <div className="d-inline-block me-1">
-                      <Button.Ripple
-                        color="warning"
-                        size="sm"
-                        onClick={() =>
-                          handleShowTeacherCourse(
-                            course._id,
-                            course.fullName
-                          )
-                        }
-                      >
-                        <Inbox size={16} />
-                      </Button.Ripple>
-                    </div>
-                    <div className="d-inline-block me-1">
-                      {course.isActive === true ? (
-                        <Button.Ripple
-                          color="danger"
-                          size="sm"
-                          onClick={() => handleDeactive(course._id)}
-                        >
-                          <UserX size={16} />
-                        </Button.Ripple>
-                      ) : (
-                        <Button.Ripple
-                          color="success"
-                          size="sm"
-                          onClick={() => handleActive(course._id)}
-                        >
-                          <UserCheck size={16} />
-                        </Button.Ripple>
-                      )}
-                    </div>
-                    <div className="d-inline-block me-1">
-                      <Button.Ripple color="danger" size="sm">
-                        <Trash
-                          size={16}
-                          onClick={() =>
-                            handleDelete(course._id, course.fullName)
-                          }
+              {paginateData.length > 0
+                ? paginateData?.map((course) => (
+                    <tr key={course._id}>
+                      <td>
+                        <img
+                          className="me-75 rounded-circle"
+                          src={course.profile}
+                          alt="angular"
+                          height="40"
+                          width="40"
                         />
-                      </Button.Ripple>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                        <span className="align-middle fw-bold">
+                          {course.fullName}
+                        </span>
+                      </td>
+                      <td>{course.nationalId}</td>
+                      <td>{course.phoneNumber}</td>
+                      <td>{course.birthDate}</td>
+                      <td>
+                        {course.isActive ? (
+                          <Badge className="px-1" pill color="light-success">
+                            فعال
+                          </Badge>
+                        ) : (
+                          <Badge className="px-2" color="light-danger">
+                            غیرفعال
+                          </Badge>
+                        )}
+                      </td>
+                      <td>
+                        <div className="d-inline-block me-1">
+                          {course.isActive === true ? (
+                            <Button.Ripple
+                              color="danger"
+                              size="sm"
+                              onClick={() => handleDeactive(course._id)}
+                            >
+                              <UserX size={16} />
+                            </Button.Ripple>
+                          ) : (
+                            <Button.Ripple
+                              color="success"
+                              size="sm"
+                              onClick={() => handleActive(course._id)}
+                            >
+                              <UserCheck size={16} />
+                            </Button.Ripple>
+                          )}
+                        </div>
+                        <div className="d-inline-block me-1">
+                          <Button.Ripple
+                            color="warning"
+                            size="sm"
+                            onClick={() =>
+                              handleShowTeacherCourse(
+                                course._id,
+                                course.fullName
+                              )
+                            }
+                          >
+                            <Inbox size={16} />
+                          </Button.Ripple>
+                        </div>
+                        <div className="d-inline-block me-1">
+                          <Button.Ripple
+                            color="primary"
+                            size="sm"
+                            onClick={() => handleEdit(course?._id)}
+                          >
+                            <Edit size={16} />
+                          </Button.Ripple>
+                        </div>
+
+                        <div className="d-inline-block me-1">
+                          <Button.Ripple color="danger" size="sm">
+                            <Trash
+                              size={16}
+                              onClick={() =>
+                                handleDelete(course._id, course.fullName)
+                              }
+                            />
+                          </Button.Ripple>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                : Array(pageSize)
+                    .fill()
+                    .map((i) => <Skeleton key={i} />)}
             </tbody>
           </Table>
           <div className="d-flex justify-content-between align-items-center mt-3">
@@ -404,9 +383,7 @@ const TeachersList = () => {
       >
         <ModalHeader toggle={() => setModal(!modal)}>
           درس های استاد :
-          {teachers
-            .map((name) => name.fullName)
-            .find((m) => m === teacherName)}
+          {teachers.map((name) => name.fullName).find((m) => m === teacherName)}
         </ModalHeader>
         <ModalBody>
           <Row className="mb-1">
@@ -437,21 +414,16 @@ const TeachersList = () => {
               {paginateModalData.map((course) => (
                 <tr key={course._id}>
                   <td>
-                    <span className="align-middle fw-bold">
-                      {course.title}
-                    </span>
+                    <span className="align-middle fw-bold">{course.title}</span>
                   </td>
                   <td>{course.capacity}</td>
                   <td>
-                    <div className="d-inline-block me-1 mb-1">
+                    <div className="d-inline-block me-1">
                       <Button.Ripple
                         color="danger"
                         size="sm"
                         onClick={() =>
-                          handleDeleteTeacherCourse(
-                            course._id,
-                            course.title
-                          )
+                          handleDeleteTeacherCourse(course._id, course.title)
                         }
                       >
                         <Trash size={16} />
@@ -464,18 +436,12 @@ const TeachersList = () => {
           </Table>
           <div className="d-flex justify-content-between align-items-center mt-3">
             <h6>
-              تعداد آیتم ها :{' '}
-              {
-                teacherModal.filter(
-                  (te) => te.teacher._id === teacherId
-                ).length
-              }
+              تعداد آیتم ها :
+              {teacherModal.filter((te) => te.teacher._id === teacherId).length}
             </h6>
             <PaginationIcons
               itemsCount={
-                teacherModal.filter(
-                  (te) => te.teacher._id === teacherId
-                ).length
+                teacherModal.filter((te) => te.teacher._id === teacherId).length
               }
               pageSize={pageSize}
               currentPage={modalCurrentPage}
@@ -487,8 +453,6 @@ const TeachersList = () => {
         </ModalBody>
       </Modal>
     </>
-  ) : (
-    <p>Loading...</p>
   );
 };
 

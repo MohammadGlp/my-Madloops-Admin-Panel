@@ -30,6 +30,7 @@ import { addComma } from '../../utility/funcs';
 import Breadcrumbs from '@components/breadcrumbs';
 import PaginationIcons from './../pagination';
 import { paginate } from './../../utility/paginate';
+import Skeleton from './../skeleton';
 
 const LessonList = () => {
   const [lessons, setLessons] = useState();
@@ -177,7 +178,7 @@ const LessonList = () => {
 
   const paginateData = paginate(filterLessons, currentPage, pageSize);
 
-  return lessons ? (
+  return (
     <>
       <Breadcrumbs
         title="مدیریت درس"
@@ -218,60 +219,64 @@ const LessonList = () => {
               </tr>
             </thead>
             <tbody>
-              {paginateData.map((lesson) => (
-                <tr key={lesson._id}>
-                  <td>
-                    <img
-                      className="me-75 rounded-circle"
-                      src={lesson.image}
-                      alt={lesson.lessonName}
-                      height="40"
-                      width="40"
-                    />
-                    <span className="align-middle fw-bold">
-                      {lesson.lessonName}
-                    </span>
-                  </td>
+              {paginateData.length > 0
+                ? paginateData.map((lesson) => (
+                    <tr key={lesson._id}>
+                      <td>
+                        <img
+                          className="me-75 rounded-circle"
+                          src={lesson.image}
+                          alt={lesson.lessonName}
+                          height="40"
+                          width="40"
+                        />
+                        <span className="align-middle fw-bold">
+                          {lesson.lessonName}
+                        </span>
+                      </td>
 
-                  <td>{handleLead(lesson.description)}</td>
-                  <td>{convertDate(lesson.createDate)}</td>
-                  <td>
-                    <Button.Ripple
-                      color="warning"
-                      size="sm"
-                      onClick={() =>
-                        handleShowLessonCourses(lesson._id)
-                      }
-                    >
-                      <span className="me-2">
-                        {lesson?.courses?.length}
-                      </span>
+                      <td>{handleLead(lesson.description)}</td>
+                      <td>{convertDate(lesson.createDate)}</td>
+                      <td>
+                        <Button.Ripple
+                          color="warning"
+                          size="sm"
+                          onClick={() =>
+                            handleShowLessonCourses(lesson._id)
+                          }
+                        >
+                          <span className="me-2">
+                            {lesson?.courses?.length}
+                          </span>
 
-                      <Inbox size={16} />
-                    </Button.Ripple>
-                  </td>
-                  <td>
-                    <div className="d-inline-block me-1">
-                      <Button.Ripple
-                        color="primary"
-                        size="sm"
-                        onClick={() => handleEdit(lesson?._id)}
-                      >
-                        <Edit size={16} />
-                      </Button.Ripple>
-                    </div>
-                    <div className="d-inline-block me-1">
-                      <Button.Ripple
-                        color="danger"
-                        size="sm"
-                        onClick={() => handleDelete(lesson._id)}
-                      >
-                        <Trash size={16} />
-                      </Button.Ripple>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                          <Inbox size={16} />
+                        </Button.Ripple>
+                      </td>
+                      <td>
+                        <div className="d-inline-block me-1">
+                          <Button.Ripple
+                            color="primary"
+                            size="sm"
+                            onClick={() => handleEdit(lesson?._id)}
+                          >
+                            <Edit size={16} />
+                          </Button.Ripple>
+                        </div>
+                        <div className="d-inline-block me-1">
+                          <Button.Ripple
+                            color="danger"
+                            size="sm"
+                            onClick={() => handleDelete(lesson._id)}
+                          >
+                            <Trash size={16} />
+                          </Button.Ripple>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                : Array(pageSize)
+                    .fill()
+                    .map((i) => <Skeleton key={i} />)}
             </tbody>
           </Table>
           <div className="d-flex justify-content-between align-items-center mt-3">
@@ -288,10 +293,10 @@ const LessonList = () => {
                 <option value="6">6</option>
                 <option value="8">8</option>
               </Input>
-              <h6>تعداد کل درس ها : {lessons.length}</h6>
+              <h6>تعداد کل درس ها : {lessons?.length}</h6>
             </div>
             <PaginationIcons
-              itemsCount={lessons.length}
+              itemsCount={lessons?.length}
               pageSize={pageSize}
               currentPage={currentPage}
               onPageChange={handlePageChange}
@@ -379,8 +384,6 @@ const LessonList = () => {
         </ModalBody>
       </Modal>
     </>
-  ) : (
-    <p>Loading...</p>
   );
 };
 

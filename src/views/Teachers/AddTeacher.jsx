@@ -109,9 +109,9 @@ const AddTeacher = ({ open, toggleSidebar, setRefreshTeacherInfo }) => {
         profile:
           "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png",
       });
+      setRefreshTeacherInfo((old) => !old);
       toast.success("استاد با موفقیت اضافه شد");
       console.log(result);
-      setRefreshTeacherInfo((old) => !old);
     } catch (error) {
       return toast.error("افزودن استاد با خطا مواجه شد");
     }

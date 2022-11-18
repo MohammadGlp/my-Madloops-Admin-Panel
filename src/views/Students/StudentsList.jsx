@@ -341,7 +341,7 @@ const StudentsList = () => {
                 <th>شماره تماس</th>
                 <th>تاریخ تولد</th>
                 <th>وضعیت</th>
-                <th></th>
+                <th>عملیات</th>
               </tr>
             </thead>
             <tbody>
@@ -450,7 +450,7 @@ const StudentsList = () => {
                 id="rows-per-page"
                 value={pageSize}
                 onChange={(e) => setPageSize(e.target.value)}
-                style={{ width: '5rem' }}
+                style={{ width: "5rem" }}
               >
                 <option value="4">4</option>
                 <option value="6">6</option>

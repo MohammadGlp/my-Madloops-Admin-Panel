@@ -22,7 +22,6 @@ export const EditEmployeeInfo = async (object, avatar) => {
     ) {
       toast.error("اطلاعات وارد شده تکراری است");
     } else {
-      console.log(object);
       const result = await http.put(`${MainURL}employee/${employeeInfo._id}`, {
         fullName: object.fullName,
         email: object.email,
@@ -33,7 +32,7 @@ export const EditEmployeeInfo = async (object, avatar) => {
         role: object.role,
         profile: avatar,
       });
-      console.log(result);
+
       // Access The Result Of Our Request
       const newInfo = result.data.result;
 

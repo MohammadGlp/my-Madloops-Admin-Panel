@@ -29,8 +29,11 @@ import Avatar from "@components/avatar";
 import "@styles/react/pages/page-authentication.scss";
 import { LoginEmployee } from "../services/api/employee/LoginEmployee.api";
 import { clearStorage } from "../services/storage/storage";
+import { useDispatch } from "react-redux";
+import { logIn, logOut } from "../redux/authSlice";
 
 const LoginBasic = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const SignupSchema = yup.object().shape({
     email: yup
@@ -59,11 +62,19 @@ const LoginBasic = () => {
       setTimeout(() => {
         navigate("/home");
       }, 2000);
+      console.log(result?.result);
+      dispatch(
+        logIn({
+          user: result?.result.employeeModel,
+          token: result?.result.jwtToken,
+        })
+      );
       toast.success(result?.message[0].message);
     }
   };
 
   const handleLanding = () => {
+    dispatch(logOut());
     clearStorage();
     window.location.href = "http://localhost:2000";
   };

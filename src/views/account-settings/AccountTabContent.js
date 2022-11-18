@@ -27,6 +27,8 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { UploadFile } from "./../../services/api/UploadFile.api";
 import { EditEmployeeInfo } from "./../../services/api/EditEmployeInfo.api";
+import { useDispatch } from "react-redux";
+import { refreshUser } from "../../redux/authSlice";
 
 const AccountTabs = ({ data, setRefresh }) => {
   const SignupSchema = yup.object().shape({
@@ -76,7 +78,7 @@ const AccountTabs = ({ data, setRefresh }) => {
     mode: "onChange",
     resolver: yupResolver(SignupSchema),
   });
-
+  const dispatch = useDispatch();
   // ** States
   const [avatar, setAvatar] = useState(data?.profile ? data?.profile : "");
 
@@ -95,7 +97,11 @@ const AccountTabs = ({ data, setRefresh }) => {
   };
 
   const onSubmit = async (data) => {
-    await EditEmployeeInfo(data, avatar);
+    const result = await EditEmployeeInfo(data, avatar);
+
+    if (result?.success === true) {
+      dispatch(refreshUser(true));
+    }
     setRefresh((old) => !old);
   };
 

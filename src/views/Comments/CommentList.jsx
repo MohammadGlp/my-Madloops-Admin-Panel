@@ -130,6 +130,14 @@ const CommentList = () => {
     currentPage !== 1 && setCurrentPage((currentPage) => currentPage - 1);
   };
 
+  const handleLead = (value, num) => {
+    const trimmedLead =
+      value
+        .substring(0, num)
+        .substring(0, value.substring(0, 200).lastIndexOf(" ")) + "...";
+    return trimmedLead;
+  };
+
   const paginateData = paginate(comments, currentPage, pageSize);
 
   return (
@@ -173,7 +181,7 @@ const CommentList = () => {
                           </div>
                         </div>
                       </td>
-                      <td>{comment.comment}</td>
+                      <td>{handleLead(comment.comment, 50)}</td>
                       <td>{convertDate(comment?.createDate)}</td>
 
                       <td>
@@ -223,7 +231,7 @@ const CommentList = () => {
                 id="rows-per-page"
                 value={pageSize}
                 onChange={(e) => setPageSize(e.target.value)}
-                style={{ width: '5rem' }}
+                style={{ width: "5rem" }}
               >
                 <option value="4">4</option>
                 <option value="6">6</option>

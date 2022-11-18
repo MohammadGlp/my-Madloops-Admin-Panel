@@ -24,28 +24,32 @@ import {
 import { DecodeToken } from "./../../../../utility/DecodeToken";
 import { useState, useEffect } from "react";
 import { getItem } from "../../../../services/storage/storage";
+import { useSelector } from "react-redux";
+import { selectToken } from "../../../../redux/authSlice";
+import { selectCurrentUser } from "./../../../../redux/authSlice";
+import { selectRefUserData } from "./../../../../redux/authSlice";
 
 const UserDropdown = () => {
-  const userToken = getToken();
+  const ref = useSelector((state) => state.auth.refresh);
+  const userToken = useSelector(selectToken);
   const id = DecodeToken(userToken);
   const [userData, setUserData] = useState();
-  const [refUser, setRefUser] = useState(false);
 
   const navigate = useNavigate();
-  const user = getItem("userInfo");
-  const x = JSON.parse(user);
-
+  // const user = getItem("userInfo");
+  // const x = JSON.parse(user);
+  console.log(ref, id);
   useEffect(() => {
     const getAdminById = async () => {
-      const result = await GetEmployeeById(id._id);
+      const result = await GetEmployeeById(id?._id);
       setUserData(result?.result);
     };
     getAdminById();
   }, []);
 
   const handleLanding = () => {
-    if (x.role === "admin" || x.role === "teacher") {
-      const EmpToken = getItem("token");
+    if (userData?.role === "admin" || userData?.role === "teacher") {
+      const EmpToken = userToken;
       window.location.href = `http://localhost:2000/adminAuth/${EmpToken}`;
     }
   };
@@ -84,15 +88,9 @@ const UserDropdown = () => {
             پروفایل
           </span>
         </DropdownItem>
-        <DropdownItem
-          tag={Link}
-          to="/edit-profile"
-          onClick={(e) => e.preventDefault()}
-        >
+        <DropdownItem className="w-100" onClick={handleLanding}>
           <Home size={14} className="me-75" />
-          <span className="align-middle" onClick={handleLanding}>
-            سایت
-          </span>
+          <span className="align-middle">سایت</span>
         </DropdownItem>
         <DropdownItem divider />
         <DropdownItem tag={Link} to="/login" onClick={() => logOut()}>

@@ -57,7 +57,7 @@ const LoginBasic = () => {
     const result = await LoginEmployee(data);
     if (result?.success === true) {
       setTimeout(() => {
-        navigate("/");
+        navigate("/home");
       }, 2000);
       toast.success(result?.message[0].message);
     }

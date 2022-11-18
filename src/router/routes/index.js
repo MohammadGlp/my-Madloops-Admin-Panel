@@ -26,88 +26,28 @@ const TemplateTitle = "%s - Vuexy React Admin Template";
 // ** Default Route
 const DefaultRoute = "/home";
 
-const Home = lazy(() => import("./../../views/Home"));
-const Courses = lazy(() => import("../../views/Courses/Courses"));
-const Blogs = lazy(() => import("../../views/Blogs/Blogs"));
-const LessonList = lazy(() => import("./../../views/Lessons/Lessons"));
-const AccountSettings = lazy(() => import("../../views/account-settings"));
-const EmployeesList = lazy(() => import("./../../views/Employes/EmployeeList"));
-const TeachersList = lazy(() => import("./../../views/Teachers/TeachersList"));
-const StudentsList = lazy(() => import("./../../views/Students/StudentsList"));
-const Login = lazy(() => import("../../views/LoginBasic"));
-const Register = lazy(() => import("../../views/RegisterBasic"));
-const CommentList = lazy(() => import("./../../views/Comments/CommentList"));
-const Error = lazy(() => import("../../views/Error"));
+// const Home = lazy(() => import("./../../views/Home"));
+// const Courses = lazy(() => import("../../views/Courses/Courses"));
+// const Blogs = lazy(() => import("../../views/Blogs/Blogs"));
+// const LessonList = lazy(() => import("./../../views/Lessons/Lessons"));
+// const AccountSettings = lazy(() => import("../../views/account-settings"));
+// const EmployeesList = lazy(() => import("./../../views/Employes/EmployeeList"));
+// const TeachersList = lazy(() => import("./../../views/Teachers/TeachersList"));
+// const StudentsList = lazy(() => import("./../../views/Students/StudentsList"));
+// const Login = lazy(() => import("../../views/LoginBasic"));
+// const Register = lazy(() => import("../../views/RegisterBasic"));
+// const CommentList = lazy(() => import("./../../views/Comments/CommentList"));
+// const Error = lazy(() => import("../../views/Error"));
+
+import AuthenticationRoutes from "./authentication";
+import UnAuthentication from "./unauthentication";
 
 const currentUser = getItem("userInfo");
 const x = JSON.parse(currentUser);
 
 // ** Merge Routes
 
-const Routes = [
-  {
-    path: "/",
-    index: true,
-    element: <Navigate replace to={DefaultRoute} />,
-  },
-  {
-    path: "/home",
-    element: <Home />,
-  },
-  {
-    path: "/courses",
-    element: <Courses />,
-  },
-  {
-    path: "/lessons",
-    element: <LessonList />,
-  },
-  {
-    path: "/blogs",
-    element: <Blogs />,
-  },
-  {
-    path: "/students",
-    element: <StudentsList />,
-  },
-  {
-    path: "/teachers",
-    element: <TeachersList />,
-  },
-  {
-    path: "/employees",
-    element: <EmployeesList />,
-  },
-  {
-    path: "/edit-profile",
-    element: <AccountSettings />,
-  },
-  {
-    path: "/comments",
-    element: <CommentList />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-    meta: {
-      layout: "blank",
-    },
-  },
-  {
-    path: "/register",
-    element: <Register />,
-    meta: {
-      layout: "blank",
-    },
-  },
-  {
-    path: "*",
-    element: <Error />,
-    meta: {
-      layout: "blank",
-    },
-  },
-];
+const Routes = [...AuthenticationRoutes, ...UnAuthentication];
 
 const getRouteMeta = (route) => {
   if (isObjEmpty(route.element.props)) {

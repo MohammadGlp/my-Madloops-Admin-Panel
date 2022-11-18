@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Book,
   Edit,
@@ -9,7 +9,7 @@ import {
   UserCheck,
   UserX,
   Layers,
-} from 'react-feather';
+} from "react-feather";
 import {
   Table,
   Button,
@@ -25,24 +25,24 @@ import {
   Input,
   Row,
   Col,
-} from 'reactstrap';
-import Avatar from '@components/avatar';
-import { GetAllStudents } from '../../services/api/GetAllStudents.api';
-import toast from 'react-hot-toast';
-import { ActiveStudent } from '../../services/api/ActiveStudent';
-import { DeactiveStudent } from '../../services/api/deactiveStudent';
-import { DeleteStudentById } from '../../services/api/DeleteStudentById';
-import StudentEdit from './StudentEdit';
-import { RemoveStudentFromCourse } from './../../services/api/RemoveStudentFromCourse.api';
-import { AddStudentToCourse } from './../../services/api/AddStudentToCourse.api';
-import { getAllCourses } from './../../services/api/GetAllCourses.api';
-import AddStudent from './AddStudent';
-import Breadcrumbs from '@components/breadcrumbs';
-import PaginationIcons from '../pagination';
-import { paginate } from '../../utility/paginate';
-import { DeleteCourse } from './../../services/api/DeleteCourse.api';
-import { GetStudentById } from './../../services/api/GetStudentById';
-import Skeleton from './../skeleton';
+} from "reactstrap";
+import Avatar from "@components/avatar";
+import { GetAllStudents } from "../../services/api/GetAllStudents.api";
+import toast from "react-hot-toast";
+import { ActiveStudent } from "../../services/api/ActiveStudent";
+import { DeactiveStudent } from "../../services/api/deactiveStudent";
+import { DeleteStudentById } from "../../services/api/DeleteStudentById";
+import StudentEdit from "./StudentEdit";
+import { RemoveStudentFromCourse } from "./../../services/api/RemoveStudentFromCourse.api";
+import { AddStudentToCourse } from "./../../services/api/AddStudentToCourse.api";
+import { getAllCourses } from "./../../services/api/GetAllCourses.api";
+import AddStudent from "./AddStudent";
+import Breadcrumbs from "@components/breadcrumbs";
+import PaginationIcons from "../pagination";
+import { paginate } from "../../utility/paginate";
+import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
+import { GetStudentById } from "./../../services/api/GetStudentById";
+import Skeleton from "./../skeleton";
 
 const StudentsList = () => {
   const [students, setStudents] = useState([]);
@@ -59,13 +59,11 @@ const StudentsList = () => {
   const [modal, setModal] = useState(false);
   const [pageSize, setPageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
-  const [modalCurrentPageCourse, setModalCurrentPageCourse] =
-    useState(1);
-  const [modalCurrentPageLesson, setModalCurrentPageLesson] =
-    useState(1);
-  const [searchStudents, setSearchStudents] = useState('');
-  const [searchCourse, setSearchCourse] = useState('');
-  const [searchLesson, setSearchLesson] = useState('');
+  const [modalCurrentPageCourse, setModalCurrentPageCourse] = useState(1);
+  const [modalCurrentPageLesson, setModalCurrentPageLesson] = useState(1);
+  const [searchStudents, setSearchStudents] = useState("");
+  const [searchCourse, setSearchCourse] = useState("");
+  const [searchLesson, setSearchLesson] = useState("");
 
   useEffect(() => {
     const getAll = async () => {
@@ -113,7 +111,7 @@ const StudentsList = () => {
       });
       toast.success(`دانشجو با موفقیت حذف شد`);
     } else {
-      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
+      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
     }
   };
 
@@ -124,7 +122,7 @@ const StudentsList = () => {
       setRefreshStudentInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error('خطایی رخ داده');
+        toast.error("خطایی رخ داده");
       }
     }
   };
@@ -136,7 +134,7 @@ const StudentsList = () => {
       setRefreshStudentInfo((old) => !old);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error('خطایی رخ داده');
+        toast.error("خطایی رخ داده");
       }
     }
   };
@@ -151,9 +149,9 @@ const StudentsList = () => {
     try {
       await AddStudentToCourse(courseId, studentsId);
       setRefStudentModal((old) => !old);
-      toast.success('دانشجو با موفقیت به دوره اضافه شد');
+      toast.success("دانشجو با موفقیت به دوره اضافه شد");
     } catch (error) {
-      toast.error('افزودن دانشجو با مشکل مواجه شد');
+      toast.error("افزودن دانشجو با مشکل مواجه شد");
     }
   };
 
@@ -162,14 +160,13 @@ const StudentsList = () => {
     try {
       await RemoveStudentFromCourse(courseId, studentsId);
       setRefStudentModal((old) => !old);
-      toast.success('دانشجو با موفقیت از دوره حذف شد');
+      toast.success("دانشجو با موفقیت از دوره حذف شد");
     } catch (error) {
-      toast.error('حذف دانشجو با مشکل مواجه شد');
+      toast.error("حذف دانشجو با مشکل مواجه شد");
     }
   };
   const toggleAddSidebar = () => setAddStudentOpen(!addStudentOpen);
-  const toggleEditSidebar = () =>
-    setEditStudentOpen(!editStudentOpen);
+  const toggleEditSidebar = () => setEditStudentOpen(!editStudentOpen);
 
   const handleEdit = (studentId) => {
     toggleEditSidebar();
@@ -190,7 +187,7 @@ const StudentsList = () => {
       setRefStudentModal2((old) => !old);
       toast.success(`دوره ${courseName} با موفقیت از دانشجو حذف شد`);
     } catch (error) {
-      toast.error('خطایی رخ داده لطفا مجددا امتحان فرمایید');
+      toast.error("خطایی رخ داده لطفا مجددا امتحان فرمایید");
     }
   };
 
@@ -205,8 +202,7 @@ const StudentsList = () => {
   };
 
   const handlePrev = () => {
-    currentPage !== 1 &&
-      setCurrentPage((currentPage) => currentPage - 1);
+    currentPage !== 1 && setCurrentPage((currentPage) => currentPage - 1);
   };
 
   const handleSearch = (value) => {
@@ -226,11 +222,7 @@ const StudentsList = () => {
     );
   }
 
-  const paginateData = paginate(
-    filterStudents,
-    currentPage,
-    pageSize
-  );
+  const paginateData = paginate(filterStudents, currentPage, pageSize);
 
   const handleModalPageChange = (page) => {
     setModalCurrentPageCourse(page);
@@ -239,16 +231,12 @@ const StudentsList = () => {
   const handleModalNext = () => {
     const pagesCount = Math.ceil(courses?.length / pageSize);
     modalCurrentPageCourse !== pagesCount &&
-      setModalCurrentPageCourse(
-        (modalCurrentPage) => modalCurrentPage + 1
-      );
+      setModalCurrentPageCourse((modalCurrentPage) => modalCurrentPage + 1);
   };
 
   const handleModalPrev = () => {
     modalCurrentPageCourse !== 1 &&
-      setModalCurrentPageCourse(
-        (modalCurrentPage) => modalCurrentPage - 1
-      );
+      setModalCurrentPageCourse((modalCurrentPage) => modalCurrentPage - 1);
   };
 
   const handleSearchCourse = (value) => {
@@ -279,20 +267,14 @@ const StudentsList = () => {
   };
 
   const handleLessonModalNext = () => {
-    const pagesCount = Math.ceil(
-      studentModal?.courses?.length / pageSize
-    );
+    const pagesCount = Math.ceil(studentModal?.courses?.length / pageSize);
     modalCurrentPageLesson !== pagesCount &&
-      setModalCurrentPageLesson(
-        (modalCurrentPage) => modalCurrentPage + 1
-      );
+      setModalCurrentPageLesson((modalCurrentPage) => modalCurrentPage + 1);
   };
 
   const handleLessonModalPrev = () => {
     modalCurrentPageLesson !== 1 &&
-      setModalCurrentPageLesson(
-        (modalCurrentPage) => modalCurrentPage - 1
-      );
+      setModalCurrentPageLesson((modalCurrentPage) => modalCurrentPage - 1);
   };
 
   const handleSearchLesson = (value) => {
@@ -322,7 +304,7 @@ const StudentsList = () => {
     <>
       <Breadcrumbs
         title="مدیریت دانشجویان"
-        data={[{ title: 'مدیریت دانشجویان' }]}
+        data={[{ title: "مدیریت دانشجویان" }]}
       />
       <Card>
         <CardHeader className="d-flex justify-content-between align-items-center">
@@ -380,18 +362,11 @@ const StudentsList = () => {
                       <td>{course.birthDate}</td>
                       <td>
                         {course.isActive ? (
-                          <Badge
-                            className="px-1"
-                            pill
-                            color="light-success"
-                          >
+                          <Badge className="px-1" pill color="light-success">
                             فعال
                           </Badge>
                         ) : (
-                          <Badge
-                            className="px-2"
-                            color="light-danger"
-                          >
+                          <Badge className="px-2" color="light-danger">
                             غیرفعال
                           </Badge>
                         )}
@@ -402,9 +377,7 @@ const StudentsList = () => {
                             <Button.Ripple
                               color="danger"
                               size="sm"
-                              onClick={() =>
-                                handleDeactive(course._id)
-                              }
+                              onClick={() => handleDeactive(course._id)}
                             >
                               <UserX size={16} />
                             </Button.Ripple>
@@ -422,9 +395,7 @@ const StudentsList = () => {
                           <Button.Ripple
                             color="success"
                             size="sm"
-                            onClick={() =>
-                              handleShowCourses(course._id)
-                            }
+                            onClick={() => handleShowCourses(course._id)}
                           >
                             <Book size={16} />
                           </Button.Ripple>
@@ -548,9 +519,7 @@ const StudentsList = () => {
                 />
                 <div className="my-auto">
                   <h6 className="mb-0">{course.title}</h6>
-                  <small className="text-muted">
-                    {course.cost} تومان
-                  </small>
+                  <small className="text-muted">{course.cost} تومان</small>
                 </div>
               </div>
               <div className="d-flex align-items-center">
@@ -563,9 +532,7 @@ const StudentsList = () => {
                       (student) => student._id === studentsId
                     )
                   }
-                  onClick={() =>
-                    handleRemoveStudentFromCourse(course._id)
-                  }
+                  onClick={() => handleRemoveStudentFromCourse(course._id)}
                 >
                   <Minus size={16} />
                 </Button.Ripple>
@@ -602,9 +569,7 @@ const StudentsList = () => {
       >
         <ModalHeader toggle={() => setModal(!modal)}>
           درس های دانشجو :
-          {students
-            .map((name) => name.fullName)
-            .find((m) => m === studentName)}
+          {students.map((name) => name.fullName).find((m) => m === studentName)}
         </ModalHeader>
         <ModalBody>
           <Row className="mb-1">
@@ -635,21 +600,16 @@ const StudentsList = () => {
               {paginateModalLessons?.map((course) => (
                 <tr key={course._id}>
                   <td>
-                    <span className="align-middle fw-bold">
-                      {course.title}
-                    </span>
+                    <span className="align-middle fw-bold">{course.title}</span>
                   </td>
                   <td>{course.teacher.fullName}</td>
                   <td>
-                    <div className="d-inline-block me-1 mb-1">
+                    <div className="d-inline-block me-1">
                       <Button.Ripple
                         color="danger"
                         size="sm"
                         onClick={() =>
-                          handleDeleteStudentCourse(
-                            course._id,
-                            course.title
-                          )
+                          handleDeleteStudentCourse(course._id, course.title)
                         }
                       >
                         <Trash size={16} />

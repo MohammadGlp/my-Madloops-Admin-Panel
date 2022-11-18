@@ -59,10 +59,8 @@ const LoginBasic = () => {
   const onSubmit = async (data) => {
     const result = await LoginEmployee(data);
     if (result?.success === true) {
-      setTimeout(() => {
-        navigate("/home");
-      }, 2000);
-      console.log(result?.result);
+      navigate("/home");
+
       dispatch(
         logIn({
           user: result?.result.employeeModel,

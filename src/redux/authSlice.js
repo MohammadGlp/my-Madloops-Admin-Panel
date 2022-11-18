@@ -32,7 +32,7 @@ export const selectCurrentUser = (state) => state.auth.user;
 export const selectToken = (state) => state.auth.token;
 
 export const selectRefUserData = (state) => state.auth.refresh;
-console.log((state) => state.auth.refresh);
+console.log(selectRefUserData);
 export const { logIn, logOut, refreshUser } = authSlice.actions;
 
 export default authSlice.reducer;

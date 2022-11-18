@@ -27,10 +27,11 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { UploadFile } from "./../../services/api/UploadFile.api";
 import { EditEmployeeInfo } from "./../../services/api/EditEmployeInfo.api";
-import { useDispatch } from "react-redux";
-import { refreshUser } from "../../redux/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { refreshUser, selectRefUserData } from "../../redux/authSlice";
 
 const AccountTabs = ({ data, setRefresh }) => {
+  const dispatch = useDispatch();
   const SignupSchema = yup.object().shape({
     fullName: yup.string().required("لطفا فیلد نام و نام خانوادگی را پر کنید"),
     address: yup.string().required("لطفا فیلد آدرس را پر کنید"),
@@ -78,9 +79,11 @@ const AccountTabs = ({ data, setRefresh }) => {
     mode: "onChange",
     resolver: yupResolver(SignupSchema),
   });
-  const dispatch = useDispatch();
+
   // ** States
   const [avatar, setAvatar] = useState(data?.profile ? data?.profile : "");
+
+  const ref = useSelector(selectRefUserData);
 
   const handleImgChange = async (e) => {
     let myFormData = new FormData();
@@ -100,7 +103,7 @@ const AccountTabs = ({ data, setRefresh }) => {
     const result = await EditEmployeeInfo(data, avatar);
 
     if (result?.success === true) {
-      dispatch(refreshUser(true));
+      dispatch(refreshUser(!ref));
     }
     setRefresh((old) => !old);
   };

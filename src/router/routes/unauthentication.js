@@ -14,6 +14,7 @@ const UnAuthentication = [
       restricted: true,
       layout: "blank",
     },
+    auth: false,
   },
   {
     path: "/register",
@@ -24,6 +25,7 @@ const UnAuthentication = [
       layout: "blank",
       restricted: true,
     },
+    auth: false,
   },
   {
     path: "*",
@@ -33,6 +35,7 @@ const UnAuthentication = [
       layout: "blank",
       publicRoute: true,
     },
+    auth: false,
   },
 ];
 export default UnAuthentication;

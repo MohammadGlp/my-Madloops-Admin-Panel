@@ -41,6 +41,8 @@ const DefaultRoute = "/home";
 
 import AuthenticationRoutes from "./authentication";
 import UnAuthentication from "./unauthentication";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../redux/authSlice";
 
 const currentUser = getItem("userInfo");
 const x = JSON.parse(currentUser);
@@ -60,17 +62,19 @@ const getRouteMeta = (route) => {
 };
 
 // ** Return Filtered Array of Routes & Paths
-const MergeLayoutRoutes = (layout, defaultLayout) => {
+const MergeLayoutRoutes = (layout, defaultLayout, isAuth) => {
   const LayoutRoutes = [];
 
   if (Routes) {
     Routes.filter((route) => {
       let isBlank = false;
+      // console.log(route.auth, route);
       // ** Checks if Route layout or Default layout matches current layout
       if (
-        (route.meta && route.meta.layout && route.meta.layout === layout) ||
-        ((route.meta === undefined || route.meta.layout === undefined) &&
-          defaultLayout === layout)
+        ((route.meta && route.meta.layout && route.meta.layout === layout) ||
+          ((route.meta === undefined || route.meta.layout === undefined) &&
+            defaultLayout === layout)) &&
+        route.auth === isAuth
       ) {
         const RouteTag = PublicRoute;
 
@@ -102,14 +106,18 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
   return LayoutRoutes;
 };
 
-const getRoutes = (layout) => {
+const getRoutes = (layout, isAuth) => {
   const defaultLayout = layout || "vertical";
   const layouts = ["vertical", "horizontal", "blank"];
 
   const AllRoutes = [];
 
   layouts.forEach((layoutItem) => {
-    const LayoutRoutes = MergeLayoutRoutes(layoutItem, defaultLayout);
+    const LayoutRoutes = MergeLayoutRoutes(
+      layoutItem,
+      defaultLayout,
+      isAuth ? true : false
+    );
 
     AllRoutes.push({
       path: "/",

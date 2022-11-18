@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { CheckCircle, MessageCircle } from "react-feather";
+import { useEffect, useState } from 'react';
+import { CheckCircle, MessageCircle } from 'react-feather';
 import {
   Table,
   Button,
@@ -14,33 +14,33 @@ import {
   CardHeader,
   CardBody,
   Card,
-} from "reactstrap";
-import toast from "react-hot-toast";
-import { GetAllComments } from "./../../services/api/GetAllComments.api";
-import { VarifyComment } from "./../../services/api/VarifyComment.api";
-import { AnswerComment } from "./../../services/api/AnswerComment.api";
+} from 'reactstrap';
+import toast from 'react-hot-toast';
+import { GetAllComments } from './../../services/api/GetAllComments.api';
+import { VarifyComment } from './../../services/api/VarifyComment.api';
+import { AnswerComment } from './../../services/api/AnswerComment.api';
 import {
   dateConvert,
   timeConvert,
   toFarsiNumber,
-} from "../../utility/TimeAndDateConverter";
-import Breadcrumbs from "@components/breadcrumbs";
+} from '../../utility/TimeAndDateConverter';
+import Breadcrumbs from '@components/breadcrumbs';
 
-import Avatar from "@components/avatar";
-import profileImg from "@src/assets/images/portrait/small/avatar-s-11.jpg";
-import { Controller, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { paginate } from "../../utility/paginate";
-import PaginationIcons from "../pagination";
-import Skeleton from "./../skeleton";
+import Avatar from '@components/avatar';
+import profileImg from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { paginate } from '../../utility/paginate';
+import PaginationIcons from '../pagination';
+import Skeleton from './../skeleton';
 
 const CommentList = () => {
   const [comments, setComments] = useState([]);
   const [show, setShow] = useState(false);
   const [comment, setComment] = useState({});
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
   const [RefreshComments, setRefreshComments] = useState(false);
   const [pageSize, setPageSize] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
@@ -66,7 +66,7 @@ const CommentList = () => {
       toast.success(`کامنت تایید شد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
   };
@@ -81,7 +81,9 @@ const CommentList = () => {
   const handleModalActive = (commentId) => {
     setShow(!show);
 
-    const comment = comments.find((comment) => comment._id === commentId);
+    const comment = comments.find(
+      (comment) => comment._id === commentId
+    );
     setComment(comment);
 
     setDate(convertDate(comment?.createDate));
@@ -89,7 +91,9 @@ const CommentList = () => {
   };
 
   const SignupSchema = yup.object().shape({
-    answer: yup.string().required("لطفا جوابی برای کامنت در نظر بگیرید"),
+    answer: yup
+      .string()
+      .required('لطفا جوابی برای کامنت در نظر بگیرید'),
   });
 
   const {
@@ -98,7 +102,7 @@ const CommentList = () => {
     reset,
     formState: { errors },
   } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     resolver: yupResolver(SignupSchema),
     defaultValues,
   });
@@ -110,7 +114,7 @@ const CommentList = () => {
       toast.warning(`وضعیت دانشجو به فعال تغییر کرد`);
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("خطایی رخ داده");
+        toast.error('خطایی رخ داده');
       }
     }
     setShow(!show);
@@ -121,13 +125,14 @@ const CommentList = () => {
   };
 
   const handleNext = () => {
-    const pagesCount = Math.ceil(comments.length / pageSize);
+    const pagesCount = Math.ceil(comments?.length / pageSize);
     currentPage !== pagesCount &&
       setCurrentPage((currentPage) => currentPage + 1);
   };
 
   const handlePrev = () => {
-    currentPage !== 1 && setCurrentPage((currentPage) => currentPage - 1);
+    currentPage !== 1 &&
+      setCurrentPage((currentPage) => currentPage - 1);
   };
 
   const paginateData = paginate(comments, currentPage, pageSize);
@@ -136,7 +141,7 @@ const CommentList = () => {
     <>
       <Breadcrumbs
         title="مدیریت کامنت ها"
-        data={[{ title: "مدیریت کامنت ها" }]}
+        data={[{ title: 'مدیریت کامنت ها' }]}
       />
       <Card>
         <CardHeader></CardHeader>
@@ -152,14 +157,17 @@ const CommentList = () => {
               </tr>
             </thead>
             <tbody>
-              {paginateData.length > 0
+              {paginateData?.length > 0
                 ? paginateData.map((comment) => (
                     <tr key={comment._id}>
                       <td>
                         <div className="d-flex align-items-center">
-                          <div style={{ width: "30px" }}>
+                          <div style={{ width: '30px' }}>
                             {comment.answer ? (
-                              <CheckCircle className="text-success" size={14} />
+                              <CheckCircle
+                                className="text-success"
+                                size={14}
+                              />
                             ) : null}
                           </div>
 
@@ -178,11 +186,18 @@ const CommentList = () => {
 
                       <td>
                         {comment.verified ? (
-                          <Badge className="px-1" pill color="light-success">
+                          <Badge
+                            className="px-1"
+                            pill
+                            color="light-success"
+                          >
                             تایید
                           </Badge>
                         ) : (
-                          <Badge className="px-2" color="light-danger">
+                          <Badge
+                            className="px-2"
+                            color="light-danger"
+                          >
                             عدم تایید
                           </Badge>
                         )}
@@ -202,7 +217,9 @@ const CommentList = () => {
                           <Button.Ripple
                             color="primary"
                             size="sm"
-                            onClick={() => handleModalActive(comment._id)}
+                            onClick={() =>
+                              handleModalActive(comment._id)
+                            }
                           >
                             <MessageCircle size={16} />
                           </Button.Ripple>
@@ -229,10 +246,10 @@ const CommentList = () => {
                 <option value="6">6</option>
                 <option value="8">8</option>
               </Input>
-              <h6>تعداد کل کامنت ها : {comments.length}</h6>
+              <h6>تعداد کل کامنت ها : {comments?.length}</h6>
             </div>
             <PaginationIcons
-              itemsCount={comments.length}
+              itemsCount={comments?.length}
               pageSize={pageSize}
               currentPage={currentPage}
               onPageChange={handlePageChange}
@@ -263,7 +280,7 @@ const CommentList = () => {
               />
               <div>
                 <h6 className="mb-0">{comment.username}</h6>
-                <small className="text-muted">{date}</small>{" "}
+                <small className="text-muted">{date}</small>{' '}
                 <small className="text-muted">{time}</small>
               </div>
             </div>

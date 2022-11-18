@@ -122,7 +122,7 @@ const AddCourse = ({ open, toggleSidebar, setRefreshCourses }) => {
     };
     toggleSidebar();
     try {
-      await AddNewCourse(data);
+      await AddNewCourse(newData);
       setRefreshCourses((old) => !old);
       toast.success('دوره با موفقیت اضافه شد');
     } catch (error) {

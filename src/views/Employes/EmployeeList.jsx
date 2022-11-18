@@ -161,7 +161,7 @@ const EmployeesList = () => {
               <Input
                 value={searchEmployees}
                 onChange={(e) => handleSearch(e.target.value)}
-                placeholder="search..."
+                placeholder="جست و جو..."
               />
             </InputGroup>
           </div>

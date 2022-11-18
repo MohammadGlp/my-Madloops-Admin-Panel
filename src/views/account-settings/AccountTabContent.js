@@ -1,10 +1,10 @@
 // ** React Imports
-import { Fragment, useState } from "react";
+import { Fragment, useState } from 'react';
 
 // ** Third Party Components
-import Cleave from "cleave.js/react";
-import { useForm, Controller } from "react-hook-form";
-import "cleave.js/dist/addons/cleave-phone.us";
+import Cleave from 'cleave.js/react';
+import { useForm, Controller } from 'react-hook-form';
+import 'cleave.js/dist/addons/cleave-phone.us';
 
 // ** Reactstrap Imports
 import {
@@ -19,42 +19,44 @@ import {
   CardTitle,
   CardHeader,
   FormFeedback,
-} from "reactstrap";
+} from 'reactstrap';
 
 // ** Demo Components
-import classnames from "classnames";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { UploadFile } from "./../../services/api/UploadFile.api";
-import { EditEmployeeInfo } from "./../../services/api/EditEmployeInfo.api";
+import classnames from 'classnames';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { UploadFile } from './../../services/api/UploadFile.api';
+import { EditEmployeeInfo } from './../../services/api/EditEmployeInfo.api';
 
 const AccountTabs = ({ data, setRefresh }) => {
   const SignupSchema = yup.object().shape({
-    fullName: yup.string().required("لطفا فیلد نام و نام خانوادگی را پر کنید"),
-    address: yup.string().required("لطفا فیلد آدرس را پر کنید"),
+    fullName: yup
+      .string()
+      .required('لطفا فیلد نام و نام خانوادگی را پر کنید'),
+    address: yup.string().required('لطفا فیلد آدرس را پر کنید'),
     email: yup
       .string()
-      .email("الگوی وارد شده صحیح نمی باشد")
-      .required("لطفا فیلد ایمیل را پر کنید"),
+      .email('الگوی وارد شده صحیح نمی باشد')
+      .required('لطفا فیلد ایمیل را پر کنید'),
 
     nationalId: yup
       .string()
-      .required("لطفا فیلد کد ملی را پر کنید")
-      .matches(/^[0-9]+$/, "الگوی وارد شده صحیح نمی باشد")
-      .min(10, "تعداد ارقام کد ملی صحیح نیست")
-      .max(10, "تعداد ارقام کد ملی صحیح نیست"),
+      .required('لطفا فیلد کد ملی را پر کنید')
+      .matches(/^[0-9]+$/, 'الگوی وارد شده صحیح نمی باشد')
+      .min(10, 'تعداد ارقام کد ملی صحیح نیست')
+      .max(10, 'تعداد ارقام کد ملی صحیح نیست'),
 
     phoneNumber: yup
       .string()
-      .required("شماره تماس را وارد کنید")
+      .required('شماره تماس را وارد کنید')
       .matches(
         /^(0|0098|\+98|98)9(0[1-5]|[1 3]\d|2[0-2]|98)\d{7}$/,
-        "شماره تلفن صحیح نیست"
+        'شماره تلفن صحیح نیست'
       ),
 
     birthDate: yup
       .string()
-      .required("لطفا فیلد تاریخ تولد را پر کنید")
+      .required('لطفا فیلد تاریخ تولد را پر کنید')
       .nullable(),
   });
 
@@ -73,24 +75,26 @@ const AccountTabs = ({ data, setRefresh }) => {
     formState: { errors },
   } = useForm({
     defaultValues,
-    mode: "onChange",
+    mode: 'onChange',
     resolver: yupResolver(SignupSchema),
   });
 
   // ** States
-  const [avatar, setAvatar] = useState(data?.profile ? data?.profile : "");
+  const [avatar, setAvatar] = useState(
+    data?.profile ? data?.profile : ''
+  );
 
   const handleImgChange = async (e) => {
     let myFormData = new FormData();
-    myFormData.append("image", e.target.files[0]);
+    myFormData.append('image', e.target.files[0]);
 
     const result = await UploadFile({ myFormData: myFormData });
-    setAvatar(result?.data.result);
+    setAvatar(result?.data?.result);
   };
 
   const handleImgReset = () => {
     setAvatar(
-      "https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png"
+      'https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png'
     );
   };
 
@@ -101,8 +105,8 @@ const AccountTabs = ({ data, setRefresh }) => {
 
   const options1 = {
     date: true,
-    delimiter: "-",
-    datePattern: ["Y", "m", "d"],
+    delimiter: '-',
+    datePattern: ['Y', 'm', 'd'],
   };
 
   return (
@@ -178,7 +182,9 @@ const AccountTabs = ({ data, setRefresh }) => {
                   )}
                 />
                 {errors && errors.fullName && (
-                  <FormFeedback>{errors.fullName.message}</FormFeedback>
+                  <FormFeedback>
+                    {errors.fullName.message}
+                  </FormFeedback>
                 )}
               </Col>
               <Col sm="6" className="mb-1">
@@ -213,8 +219,8 @@ const AccountTabs = ({ data, setRefresh }) => {
                   render={({ field }) => (
                     <Cleave
                       {...field}
-                      className={classnames("form-control", {
-                        "is-invalid": errors.birthDate && true,
+                      className={classnames('form-control', {
+                        'is-invalid': errors.birthDate && true,
                       })}
                       placeholder={data?.birthDate}
                       options={options1}
@@ -222,7 +228,9 @@ const AccountTabs = ({ data, setRefresh }) => {
                   )}
                 />
                 {errors.birthDate && (
-                  <FormFeedback>{errors.birthDate.message}</FormFeedback>
+                  <FormFeedback>
+                    {errors.birthDate.message}
+                  </FormFeedback>
                 )}
               </Col>
               <Col sm="6" className="mb-1">
@@ -244,7 +252,9 @@ const AccountTabs = ({ data, setRefresh }) => {
                     )}
                   />
                   {errors.nationalId && (
-                    <FormFeedback>{errors.nationalId.message}</FormFeedback>
+                    <FormFeedback>
+                      {errors.nationalId.message}
+                    </FormFeedback>
                   )}
                 </div>
               </Col>
@@ -267,7 +277,9 @@ const AccountTabs = ({ data, setRefresh }) => {
                   )}
                 />
                 {errors.phoneNumber && (
-                  <FormFeedback>{errors.phoneNumber.message}</FormFeedback>
+                  <FormFeedback>
+                    {errors.phoneNumber.message}
+                  </FormFeedback>
                 )}
               </Col>
 
@@ -290,12 +302,18 @@ const AccountTabs = ({ data, setRefresh }) => {
                   )}
                 />
                 {errors.address && (
-                  <FormFeedback>{errors.address.message}</FormFeedback>
+                  <FormFeedback>
+                    {errors.address.message}
+                  </FormFeedback>
                 )}
               </Col>
 
               <Col className="mt-2" sm="12">
-                <Button type="submit" className="me-1" color="primary">
+                <Button
+                  type="submit"
+                  className="me-1"
+                  color="primary"
+                >
                   ثبت تغییرات
                 </Button>
               </Col>

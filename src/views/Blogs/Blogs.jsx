@@ -122,7 +122,7 @@ const Blogs = () => {
               <Input
                 value={searchBlogs}
                 onChange={(e) => handleSearch(e.target.value)}
-                placeholder="search..."
+                placeholder="جست و جو ..."
               />
             </InputGroup>
           </div>

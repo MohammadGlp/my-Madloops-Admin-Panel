@@ -87,7 +87,7 @@ const AccountTabs = ({ data, setRefresh }) => {
     myFormData.append("image", e.target.files[0]);
 
     const result = await UploadFile({ myFormData: myFormData });
-    setAvatar(result?.data.result);
+    setAvatar(result?.data?.result);
   };
 
   const handleImgReset = () => {

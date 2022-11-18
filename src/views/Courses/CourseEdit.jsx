@@ -140,7 +140,7 @@ const CourseEdit = ({
     };
     toggleSidebar();
     try {
-      await EditCourse(data, courseId);
+      await EditCourse(newData, courseId);
       setRefreshCourses((old) => !old);
       toast.success('دوره با موفقیت ویرایش شد');
     } catch (error) {

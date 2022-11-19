@@ -54,17 +54,6 @@ const AddLesson = ({ open, toggleSidebar, setRefreshLessons }) => {
     lessonName: yup.string().required('لطفا فیلد نام درس را پر کنید'),
   });
 
-  const category = [
-    { value: 1, label: '1' },
-    { value: 2, label: '2' },
-    { value: 3, label: '3' },
-    { value: 4, label: '4' },
-    { value: 5, label: '5' },
-    { value: 6, label: '6' },
-    { value: 7, label: '7' },
-    { value: 8, label: '8' },
-  ];
-
   const defaultValues = {
     lessonName: '',
   };
@@ -123,64 +112,64 @@ const AddLesson = ({ open, toggleSidebar, setRefreshLessons }) => {
 
   const colorOptions = [
     {
-      value: 'Javascript',
-      label: 'Javascript',
+      value: 'javascript',
+      label: 'javascript',
     },
     {
-      value: 'Php',
-      label: 'Php',
+      value: 'php',
+      label: 'php',
     },
     {
-      value: 'Laravel',
-      label: 'Laravel',
+      value: 'jaravel',
+      label: 'jaravel',
     },
     {
-      value: 'Spring',
-      label: 'Spring',
+      value: 'jpring',
+      label: 'jpring',
     },
     {
-      value: 'Java',
-      label: 'Java',
+      value: 'java',
+      label: 'java',
     },
     {
-      value: 'C#',
-      label: 'C#',
+      value: 'c#',
+      label: 'c#',
     },
     {
       value: 'react',
       label: 'react',
     },
     {
-      value: 'Node js',
-      label: 'Node js',
+      value: 'node js',
+      label: 'node js',
     },
     {
-      value: 'Django',
-      label: 'Django',
+      value: 'pjango',
+      label: 'pjango',
     },
     {
-      value: 'Python',
-      label: 'Python',
+      value: 'python',
+      label: 'python',
     },
     {
-      value: 'HTML',
-      label: 'HTMl',
+      value: 'html',
+      label: 'html',
     },
     {
-      value: 'Css',
-      label: 'Css',
+      value: 'css',
+      label: 'css',
     },
     {
-      value: 'WordPress',
-      label: 'WordPress',
+      value: 'wordpress',
+      label: 'wordpress',
     },
     {
-      value: 'Angular',
-      label: 'Angular',
+      value: 'angular',
+      label: 'angular',
     },
     {
-      value: 'Vue',
-      label: 'Vue',
+      value: 'vue',
+      label: 'vue',
     },
   ];
 

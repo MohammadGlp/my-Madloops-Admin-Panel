@@ -123,66 +123,67 @@ const EditLesson = ({
   };
   const colorOptions = [
     {
-      value: 'Javascript',
-      label: 'Javascript',
+      value: 'javascript',
+      label: 'javascript',
     },
     {
-      value: 'Php',
-      label: 'Php',
+      value: 'php',
+      label: 'php',
     },
     {
-      value: 'Laravel',
-      label: 'Laravel',
+      value: 'jaravel',
+      label: 'jaravel',
     },
     {
-      value: 'Spring',
-      label: 'Spring',
+      value: 'jpring',
+      label: 'jpring',
     },
     {
-      value: 'Java',
-      label: 'Java',
+      value: 'java',
+      label: 'java',
     },
     {
-      value: 'C#',
-      label: 'C#',
+      value: 'c#',
+      label: 'c#',
     },
     {
       value: 'react',
       label: 'react',
     },
     {
-      value: 'Node js',
-      label: 'Node js',
+      value: 'node js',
+      label: 'node js',
     },
     {
-      value: 'Django',
-      label: 'Django',
+      value: 'pjango',
+      label: 'pjango',
     },
     {
-      value: 'Python',
-      label: 'Python',
+      value: 'python',
+      label: 'python',
     },
     {
-      value: 'HTML',
-      label: 'HTMl',
+      value: 'html',
+      label: 'html',
     },
     {
-      value: 'Css',
-      label: 'Css',
+      value: 'css',
+      label: 'css',
     },
     {
-      value: 'WordPress',
-      label: 'WordPress',
+      value: 'wordpress',
+      label: 'wordpress',
     },
     {
-      value: 'Angular',
-      label: 'Angular',
+      value: 'angular',
+      label: 'angular',
     },
     {
-      value: 'Vue',
-      label: 'Vue',
+      value: 'vue',
+      label: 'vue',
     },
   ];
+
   const onSubmit = async (data) => {
     toggleSidebar();
     try {

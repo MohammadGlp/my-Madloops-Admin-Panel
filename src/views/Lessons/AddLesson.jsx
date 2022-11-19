@@ -132,8 +132,8 @@ const AddLesson = ({ open, toggleSidebar, setRefreshLessons }) => {
       label: 'java',
     },
     {
-      value: 'c#',
-      label: 'c#',
+      value: '#c',
+      label: '#c',
     },
     {
       value: 'react',

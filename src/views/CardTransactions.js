@@ -50,7 +50,7 @@ const CardTransactions = () => {
               </div>
               <div
                 className={`fw-bolder ${
-                  item.cost < 500000 ? "text-danger" : "text-success"
+                  item.cost < 200000 ? "text-danger" : "text-success"
                 }`}
               >
                 {item.cost * item.students?.length >= 1000000

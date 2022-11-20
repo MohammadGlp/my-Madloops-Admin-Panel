@@ -51,8 +51,7 @@ const UserDropdown = () => {
 
   const handleLanding = () => {
     if (userData?.role === "admin" || userData?.role === "teacher") {
-      const EmpToken = userToken;
-      window.location.href = `http://localhost:2000/adminAuth/${EmpToken}`;
+      window.location.href = `http://localhost:2000/adminAuth/${userToken}`;
     }
   };
 

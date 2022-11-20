@@ -120,12 +120,12 @@ const AddLesson = ({ open, toggleSidebar, setRefreshLessons }) => {
       label: 'php',
     },
     {
-      value: 'jaravel',
-      label: 'jaravel',
+      value: 'laravel',
+      label: 'laravel',
     },
     {
-      value: 'jpring',
-      label: 'jpring',
+      value: 'spring',
+      label: 'spring',
     },
     {
       value: 'java',
@@ -144,8 +144,8 @@ const AddLesson = ({ open, toggleSidebar, setRefreshLessons }) => {
       label: 'node js',
     },
     {
-      value: 'pjango',
-      label: 'pjango',
+      value: 'django',
+      label: 'django',
     },
     {
       value: 'python',
@@ -170,6 +170,10 @@ const AddLesson = ({ open, toggleSidebar, setRefreshLessons }) => {
     {
       value: 'vue',
       label: 'vue',
+    },
+    {
+      value: 'ui/ux',
+      label: 'ui/ux',
     },
   ];
 

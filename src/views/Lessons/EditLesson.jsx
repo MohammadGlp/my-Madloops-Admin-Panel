@@ -121,6 +121,7 @@ const EditLesson = ({
       'https://mechanicwp.ir/wp-content/uploads/2018/04/user-circle.png'
     );
   };
+
   const colorOptions = [
     {
       value: 'javascript',
@@ -131,20 +132,20 @@ const EditLesson = ({
       label: 'php',
     },
     {
-      value: 'jaravel',
-      label: 'jaravel',
+      value: 'laravel',
+      label: 'laravel',
     },
     {
-      value: 'jpring',
-      label: 'jpring',
+      value: 'spring',
+      label: 'spring',
     },
     {
       value: 'java',
       label: 'java',
     },
     {
-      value: 'c#',
-      label: 'c#',
+      value: '#c',
+      label: '#c',
     },
     {
       value: 'react',
@@ -155,8 +156,8 @@ const EditLesson = ({
       label: 'node js',
     },
     {
-      value: 'pjango',
-      label: 'pjango',
+      value: 'django',
+      label: 'django',
     },
     {
       value: 'python',
@@ -182,8 +183,11 @@ const EditLesson = ({
       value: 'vue',
       label: 'vue',
     },
+    {
+      value: 'ui/ux',
+      label: 'ui/ux',
+    },
   ];
-
   const onSubmit = async (data) => {
     toggleSidebar();
     try {

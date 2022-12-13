@@ -10,8 +10,14 @@ const TeachersList = lazy(() => import("./../../views/Teachers/TeachersList"));
 const StudentsList = lazy(() => import("./../../views/Students/StudentsList"));
 const CommentList = lazy(() => import("./../../views/Comments/CommentList"));
 const Error = lazy(() => import("../../views/Error"));
+import { Navigate } from "react-router-dom";
 
 const AuthenticationRoutes = [
+  {
+    path: "/",
+    element: <Navigate to="/home" />,
+    auth: true,
+  },
   {
     path: "/home",
     element: <Home />,

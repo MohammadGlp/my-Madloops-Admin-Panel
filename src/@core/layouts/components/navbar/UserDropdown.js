@@ -51,7 +51,7 @@ const UserDropdown = () => {
 
   const handleLanding = () => {
     if (userData?.role === "admin" || userData?.role === "teacher") {
-      window.location.href = `http://localhost:2000/adminAuth/${userToken}`;
+      window.location.href = `http://madloops.sepehracademy.ir/adminAuth/${userToken}`;
     }
   };
 

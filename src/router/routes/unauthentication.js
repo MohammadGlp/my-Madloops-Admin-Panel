@@ -1,10 +1,15 @@
 import { lazy } from "react";
-
+import { Navigate } from "react-router-dom";
 const Error = lazy(() => import("../../views/Error"));
 const Login = lazy(() => import("../../views/LoginBasic"));
 const Register = lazy(() => import("../../views/RegisterBasic"));
 
 const UnAuthentication = [
+  {
+    path: "/",
+    element: <Navigate to="/login" />,
+    auth: false,
+  },
   {
     path: "/login",
     element: <Login />,

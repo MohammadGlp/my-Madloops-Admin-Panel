@@ -1,6 +1,5 @@
 // ** React Imports
-import { Fragment, lazy } from "react";
-import { Navigate } from "react-router-dom";
+import { Fragment } from "react";
 // ** Layouts
 import BlankLayout from "@layouts/BlankLayout";
 import VerticalLayout from "@src/layouts/VerticalLayout";
@@ -12,7 +11,6 @@ import PublicRoute from "@components/routes/PublicRoute";
 
 // ** Utils
 import { isObjEmpty } from "@utils";
-import { getItem } from "../../services/storage/storage";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -24,28 +22,10 @@ const getLayout = {
 const TemplateTitle = "%s - Vuexy React Admin Template";
 
 // ** Default Route
-const DefaultRoute = "/home";
-
-// const Home = lazy(() => import("./../../views/Home"));
-// const Courses = lazy(() => import("../../views/Courses/Courses"));
-// const Blogs = lazy(() => import("../../views/Blogs/Blogs"));
-// const LessonList = lazy(() => import("./../../views/Lessons/Lessons"));
-// const AccountSettings = lazy(() => import("../../views/account-settings"));
-// const EmployeesList = lazy(() => import("./../../views/Employes/EmployeeList"));
-// const TeachersList = lazy(() => import("./../../views/Teachers/TeachersList"));
-// const StudentsList = lazy(() => import("./../../views/Students/StudentsList"));
-// const Login = lazy(() => import("../../views/LoginBasic"));
-// const Register = lazy(() => import("../../views/RegisterBasic"));
-// const CommentList = lazy(() => import("./../../views/Comments/CommentList"));
-// const Error = lazy(() => import("../../views/Error"));
+// const DefaultRoute = "/home";
 
 import AuthenticationRoutes from "./authentication";
 import UnAuthentication from "./unauthentication";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../redux/authSlice";
-
-const currentUser = getItem("userInfo");
-const x = JSON.parse(currentUser);
 
 // ** Merge Routes
 
@@ -128,4 +108,4 @@ const getRoutes = (layout, isAuth) => {
   return AllRoutes;
 };
 
-export { DefaultRoute, TemplateTitle, Routes, getRoutes };
+export { TemplateTitle, Routes, getRoutes };

@@ -74,7 +74,7 @@ const LoginBasic = () => {
   const handleLanding = () => {
     dispatch(logOut());
     clearStorage();
-    window.location.href = "http://localhost:2000";
+    window.location.href = "http://madloops.sepehracademy.ir";
   };
 
   return (

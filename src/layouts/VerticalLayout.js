@@ -25,11 +25,6 @@ const VerticalLayout = (props) => {
     }
   }, [user]);
 
-  // ** For ServerSide navigation
-  // useEffect(() => {
-  //   axios.get(URL).then(response => setMenuData(response.data))
-  // }, [])
-
   return (
     <Layout menuData={navigation} {...props}>
       <Outlet />

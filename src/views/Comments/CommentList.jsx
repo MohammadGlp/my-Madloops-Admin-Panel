@@ -34,9 +34,10 @@ import * as yup from "yup";
 import { paginate } from "../../utility/paginate";
 import PaginationIcons from "../pagination";
 import Skeleton from "./../skeleton";
+import Spinner from "./../spinner/spinner";
 
 const CommentList = () => {
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState();
   const [show, setShow] = useState(false);
   const [comment, setComment] = useState({});
   const [date, setDate] = useState("");
@@ -140,7 +141,9 @@ const CommentList = () => {
 
   const paginateData = paginate(comments, currentPage, pageSize);
 
-  return (
+  return !comments ? (
+    <Spinner />
+  ) : (
     <>
       <Breadcrumbs
         title="مدیریت کامنت ها"

@@ -40,12 +40,12 @@ import AddStudent from "./AddStudent";
 import Breadcrumbs from "@components/breadcrumbs";
 import PaginationIcons from "../pagination";
 import { paginate } from "../../utility/paginate";
-import { DeleteCourse } from "./../../services/api/DeleteCourse.api";
 import { GetStudentById } from "./../../services/api/GetStudentById";
 import Skeleton from "./../skeleton";
+import Spinner from "./../spinner/spinner";
 
 const StudentsList = () => {
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState();
   const [editStudentOpen, setEditStudentOpen] = useState(false);
   const [studentsId, setStudentsId] = useState();
   const [courses, setCourses] = useState([]);
@@ -300,7 +300,9 @@ const StudentsList = () => {
     pageSize
   );
 
-  return students ? (
+  return !students ? (
+    <Spinner />
+  ) : (
     <>
       <Breadcrumbs
         title="مدیریت دانشجویان"
@@ -634,8 +636,6 @@ const StudentsList = () => {
         </ModalBody>
       </Modal>
     </>
-  ) : (
-    <p>Loading...</p>
   );
 };
 

@@ -32,6 +32,7 @@ import Breadcrumbs from "@components/breadcrumbs";
 import PaginationIcons from "../pagination";
 import { paginate } from "../../utility/paginate";
 import Skeleton from "./../skeleton";
+import Spinner from "./../spinner/spinner";
 
 const Courses = () => {
   const [courses, setCourses] = useState();
@@ -187,7 +188,9 @@ const Courses = () => {
     pageSize
   );
 
-  return (
+  return !courses ? (
+    <Spinner />
+  ) : (
     <>
       <Breadcrumbs title="مدیریت دوره" data={[{ title: "مدیریت دوره" }]} />
       <Card>

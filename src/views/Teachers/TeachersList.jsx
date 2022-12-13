@@ -29,9 +29,10 @@ import Breadcrumbs from "@components/breadcrumbs";
 import PaginationIcons from "../pagination";
 import { paginate } from "../../utility/paginate";
 import Skeleton from "./../skeleton";
+import Spinner from "./../spinner/spinner";
 
 const TeachersList = () => {
-  const [teachers, setTeachers] = useState([]);
+  const [teachers, setTeachers] = useState();
   const [teacherModal, setTeacherModal] = useState([]);
   const [addTeacherOpen, setAddTeacherOpen] = useState(false);
   const [editTeacherOpen, setEditTeacherOpen] = useState(false);
@@ -207,7 +208,9 @@ const TeachersList = () => {
 
   const paginateModalData = paginate(filterCourses, modalCurrentPage, pageSize);
 
-  return (
+  return !teachers ? (
+    <Spinner />
+  ) : (
     <>
       <Breadcrumbs title="مدیریت اساتید" data={[{ title: "مدیریت اساتید" }]} />
       <Card>
@@ -345,7 +348,7 @@ const TeachersList = () => {
                 id="rows-per-page"
                 value={pageSize}
                 onChange={(e) => setPageSize(e.target.value)}
-                style={{ width: '5rem' }}
+                style={{ width: "5rem" }}
               >
                 <option value="4">4</option>
                 <option value="6">6</option>
